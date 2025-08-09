@@ -1,8 +1,8 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater;
+namespace CodeKaizen\WPPackageAutoupdater\ORASHub;
 
-class ORASHubV1
+class V1
 {
     public $package_file;
     /**
