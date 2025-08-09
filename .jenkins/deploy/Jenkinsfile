@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    environment {
+        // Hardcoded package URL as requested
+        PACKAGE_URL = "https://packagist.org/packages/codekaizen/wp-package-autoupdater"
+        // Define username as a variable
+        PACKAGIST_USERNAME = "AndrewJDawes"
+        // Define credentials for API token
+        PACKAGIST_API_TOKEN = credentials('packagist-api-token')
+    }
+
+    stages {
+        stage('Update Packagist') {
+            steps {
+                withCredentials([conjurSecretCredential(credentialsId: 'andrewjdawes-packagist-api-token	', variable: 'PACKAGIST_API_TOKEN')]) {
+                    script {
+                        echo "Notifying Packagist of new changes"
+                        sh '''
+                            curl -XPOST -H "content-type:application/json" \
+                            "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_API_TOKEN}" \
+                            -d "{\\\"repository\\\":{\\\"url\\\":\\\"${PACKAGE_URL}\\\"}}"
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Successfully updated package on Packagist"
+        }
+        failure {
+            echo "Failed to update package on Packagist"
+        }
+    }
+}
