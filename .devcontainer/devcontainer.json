@@ -3,9 +3,6 @@
     "dockerComposeFile": "docker-compose.yml",
     "service": "dev",
     "workspaceFolder": "/workspace",
-    "forwardPorts": [
-        8084
-    ],
     "customizations": {
         "vscode": {
             "extensions": [
@@ -17,12 +14,6 @@
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash"
             }
-        }
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "installZsh": true,
-            "upgradePackages": true
         }
     },
     "postAttachCommand": {
