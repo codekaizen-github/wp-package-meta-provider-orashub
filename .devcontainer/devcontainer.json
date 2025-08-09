@@ -1,0 +1,31 @@
+{
+    "name": "WP Package Autoupdater WordPress Development Environment",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "dev",
+    "workspaceFolder": "/workspace",
+    "forwardPorts": [
+        8084
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "xdebug.php-debug",
+                "neilbrayfield.php-docblocker",
+                "johnbillion.vscode-wordpress-hooks"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "upgradePackages": true
+        }
+    },
+    "postAttachCommand": {
+        "gitSafeDirectory": "git config --global --add safe.directory /workspace;",
+    }
+}

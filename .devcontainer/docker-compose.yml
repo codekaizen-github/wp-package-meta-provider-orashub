@@ -1,0 +1,9 @@
+services:
+    dev:
+        build:
+            context: ..
+            dockerfile: Dockerfile
+            target: dev
+        volumes:
+            - ${PWD}:/workspace
+        command: tail -f /dev/null
