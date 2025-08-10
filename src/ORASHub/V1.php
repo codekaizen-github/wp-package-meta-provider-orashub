@@ -441,10 +441,7 @@ class V1
         // Ensure required and recommended fields exist
         $meta = $this->normalize_metadata($meta);
 
-        $this->log("Successfully retrieved metadata", array(
-            'version' => isset($meta['version']) ? $meta['version'] : 'not set',
-            'name' => isset($meta['name']) ? $meta['name'] : 'not set',
-        ));
+        $this->log("Successfully retrieved metadata", $meta);
 
         $cached = $meta;
         return $meta;
