@@ -36,15 +36,48 @@ class V1
      */
     public $package_type;
     /**
-     * Initialize a new instance of the WordPress Auto-Update class
-     * @param string $package_file
+     * Annotation key for package metadata
+     * @var string
      */
-    function __construct($package_file)
+    protected $meta_annotation_key;
+
+    /**
+     * Available modes for the updater
+     */
+    const MODE_PRODUCTION = 'production';
+    const MODE_DEBUG = 'debug';
+
+    /**
+     * Initialize a new instance of the WordPress Auto-Update class
+     * @param string $package_file Path to the package file
+     * @param array $args Optional arguments
+     *        string 'mode' - Either 'production' or 'debug' (default: 'production')
+     *        string 'meta_annotation_key' - Key for package metadata in ORAS manifest
+     *                                     (default: 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata')
+     */
+    function __construct($package_file, array $args = [])
     {
+        // Process arguments with defaults
+        $defaults = [
+            'mode' => self::MODE_PRODUCTION,
+            'meta_annotation_key' => 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata'
+        ];
+
+        $args = array_merge($defaults, $args);
+
+        // Set delete_transients based on mode
+        $this->delete_transients = ($args['mode'] === self::MODE_DEBUG);
+
+        // Store the annotation key
+        $this->meta_annotation_key = $args['meta_annotation_key'];
+
+        // Initialize package
+        $this->package_file = $package_file;
+
         if ($this->delete_transients) {
             $this->delete_update_transients();
         }
-        $this->package_file = $package_file;
+
         // Determine package type
         $this->package_type = $this->get_package_type();
         // Set the class public variables based on package type
@@ -210,7 +243,6 @@ class V1
                 $transient->response[$this->package_slug] = $meta_object;
             }
         }
-        error_log('Transient: ' . print_r($transient, true));
         return $transient;
     }
     /**
@@ -251,10 +283,10 @@ class V1
         }
         $body = wp_remote_retrieve_body($request);
         $json = json_decode($body, true);
-        if (!is_array($json) || !isset($json['annotations']['org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata'])) {
+        if (!is_array($json) || !isset($json['annotations'][$this->meta_annotation_key])) {
             return false;
         }
-        $meta_json = $json['annotations']['org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata'];
+        $meta_json = $json['annotations'][$this->meta_annotation_key];
         $meta = json_decode($meta_json, true);
         if (!is_array($meta)) {
             return false;
