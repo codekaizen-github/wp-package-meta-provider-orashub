@@ -54,6 +54,18 @@ class V1
     protected $log_prefix;
 
     /**
+     * Full URL for manifest endpoint
+     * @var string
+     */
+    protected $manifest_endpoint;
+
+    /**
+     * Full URL for download endpoint
+     * @var string
+     */
+    protected $download_endpoint;
+
+    /**
      * Available modes for the updater
      */
     const MODE_PRODUCTION = 'production';
@@ -66,7 +78,9 @@ class V1
      *        string 'mode' - Either 'production' or 'debug' (default: 'production')
      *        string 'meta_annotation_key' - Key for package metadata in ORAS manifest
      *                                     (default: 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata')
-     *        string 'log_prefix' - Prefix for log messages (default: 'ORAS_UPDATER')
+     *        string 'log_prefix' - Prefix for log messages (default: 'WPPackageAutoupdater')
+     *        string 'manifest_endpoint' - Full URL for manifest endpoint (default: null, uses UpdateURI + 'manifest')
+     *        string 'download_endpoint' - Full URL for download endpoint (default: null, uses UpdateURI + 'download')
      */
     function __construct($package_file, array $args = [])
     {
@@ -74,7 +88,9 @@ class V1
         $defaults = [
             'mode' => self::MODE_PRODUCTION,
             'meta_annotation_key' => 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata',
-            'log_prefix' => 'WPPackageAutoupdater'
+            'log_prefix' => 'WPPackageAutoupdater',
+            'manifest_endpoint' => null,
+            'download_endpoint' => null
         ];
 
         $args = array_merge($defaults, $args);
@@ -87,6 +103,8 @@ class V1
         // Store configuration values
         $this->meta_annotation_key = $args['meta_annotation_key'];
         $this->log_prefix = $args['log_prefix'];
+        $this->manifest_endpoint = $args['manifest_endpoint'];
+        $this->download_endpoint = $args['download_endpoint'];
 
         // Initialize package
         $this->package_file = $package_file;
@@ -246,7 +264,15 @@ class V1
             $meta_object->slug = $this->slug;
             $meta_object->new_version = $meta_object->version;
             $meta_object->url = $meta_object->update_uri;
-            $meta_object->package = trailingslashit($meta_object->update_uri) . 'download';
+
+            // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
+            if ($this->download_endpoint !== null) {
+                // Use the provided full URL
+                $meta_object->package = $this->download_endpoint;
+            } else {
+                // Default behavior: append 'download' to the UpdateURI
+                $meta_object->package = trailingslashit($meta_object->update_uri) . 'download';
+            }
 
             // Format response appropriately for plugins vs themes
             if ($this->package_type === 'theme') {
@@ -300,8 +326,17 @@ class V1
             return false;
         }
 
-        $this->log("Fetching remote metadata from: " . trailingslashit($package_data['UpdateURI']) . 'manifest');
-        $request = wp_remote_get(trailingslashit($package_data['UpdateURI']) . 'manifest');
+        // Build manifest URL - use full URL if provided, otherwise append 'manifest' to UpdateURI
+        if ($this->manifest_endpoint !== null) {
+            // Use the provided full URL
+            $manifest_url = $this->manifest_endpoint;
+        } else {
+            // Default behavior: append 'manifest' to the UpdateURI
+            $manifest_url = trailingslashit($package_data['UpdateURI']) . 'manifest';
+        }
+
+        $this->log("Fetching remote metadata from: " . $manifest_url);
+        $request = wp_remote_get($manifest_url);
 
         if (is_wp_error($request)) {
             $this->log("Error fetching manifest", $request->get_error_message());
