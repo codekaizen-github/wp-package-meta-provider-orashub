@@ -20,7 +20,7 @@ class V1
      * Override for the UpdateURI from package headers
      * @var string|null
      */
-    protected $update_uri_override;
+    protected $update_uri;
     /**
      * Whether to delete transients for testing
      * @var bool
@@ -113,7 +113,7 @@ class V1
         $this->log_prefix = $args['log_prefix'];
         $this->manifest_endpoint = $args['manifest_endpoint'];
         $this->download_endpoint = $args['download_endpoint'];
-        $this->update_uri_override = $args['update_uri'];
+        $this->update_uri = $args['update_uri'];
 
         // Initialize package
         $this->package_file = $package_file;
@@ -274,7 +274,7 @@ class V1
             $meta_object->new_version = $meta_object->version;
 
             // Use the override if provided, otherwise use the URI from metadata
-            $update_uri = $this->update_uri_override !== null ? $this->update_uri_override : $meta_object->update_uri;
+            $update_uri = $this->update_uri !== null ? $this->update_uri : $meta_object->update_uri;
             $meta_object->url = $update_uri;
 
             // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
@@ -333,7 +333,7 @@ class V1
             return $cached;
         }
         // Get the base UpdateURI - either from the override or from package headers
-        $update_uri = $this->update_uri_override;
+        $update_uri = $this->update_uri;
 
         if ($update_uri === null) {
             $package_data = $this->get_package_data();
@@ -389,8 +389,6 @@ class V1
 
         $this->log("Successfully retrieved metadata", array(
             'version' => isset($meta['version']) ? $meta['version'] : 'not set',
-            'slug' => $this->slug,
-            'package_type' => $this->package_type
         ));
 
         $cached = $meta;
