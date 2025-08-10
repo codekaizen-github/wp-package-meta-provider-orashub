@@ -354,14 +354,6 @@ class V1
             // WordPress expects these properties for plugin information
             $info_object->external = true; // Indicates this is an external package
 
-            // Ensure the sections are properly formatted (WordPress expects HTML)
-            if (isset($info_object->sections) && is_array($info_object->sections)) {
-                foreach ($info_object->sections as $section => $content) {
-                    // Make sure section content isn't lost when casting to object
-                    $info_object->sections[$section] = $content;
-                }
-            }
-
             // Additional plugin-specific enhancements could be added here
         } else if ($this->package_type === 'theme') {
             // Additional theme-specific enhancements could be added here
