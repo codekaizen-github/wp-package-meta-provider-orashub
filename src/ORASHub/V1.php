@@ -15,6 +15,12 @@ class V1
      * @var string
      */
     public $update_path;
+
+    /**
+     * Override for the UpdateURI from package headers
+     * @var string|null
+     */
+    protected $update_uri_override;
     /**
      * Whether to delete transients for testing
      * @var bool
@@ -81,6 +87,7 @@ class V1
      *        string 'log_prefix' - Prefix for log messages (default: 'WPPackageAutoupdater')
      *        string 'manifest_endpoint' - Full URL for manifest endpoint (default: null, uses UpdateURI + 'manifest')
      *        string 'download_endpoint' - Full URL for download endpoint (default: null, uses UpdateURI + 'download')
+     *        string 'update_uri' - Override the UpdateURI from package headers (default: null, uses package header)
      */
     function __construct($package_file, array $args = [])
     {
@@ -90,7 +97,8 @@ class V1
             'meta_annotation_key' => 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata',
             'log_prefix' => 'WPPackageAutoupdater',
             'manifest_endpoint' => null,
-            'download_endpoint' => null
+            'download_endpoint' => null,
+            'update_uri' => null
         ];
 
         $args = array_merge($defaults, $args);
@@ -105,6 +113,7 @@ class V1
         $this->log_prefix = $args['log_prefix'];
         $this->manifest_endpoint = $args['manifest_endpoint'];
         $this->download_endpoint = $args['download_endpoint'];
+        $this->update_uri_override = $args['update_uri'];
 
         // Initialize package
         $this->package_file = $package_file;
@@ -263,7 +272,10 @@ class V1
         if (version_compare($current_version, $meta_object->version, '<')) {
             $meta_object->slug = $this->slug;
             $meta_object->new_version = $meta_object->version;
-            $meta_object->url = $meta_object->update_uri;
+
+            // Use the override if provided, otherwise use the URI from metadata
+            $update_uri = $this->update_uri_override !== null ? $this->update_uri_override : $meta_object->update_uri;
+            $meta_object->url = $update_uri;
 
             // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
             if ($this->download_endpoint !== null) {
@@ -271,7 +283,7 @@ class V1
                 $meta_object->package = $this->download_endpoint;
             } else {
                 // Default behavior: append 'download' to the UpdateURI
-                $meta_object->package = trailingslashit($meta_object->update_uri) . 'download';
+                $meta_object->package = trailingslashit($update_uri) . 'download';
             }
 
             // Format response appropriately for plugins vs themes
@@ -320,11 +332,19 @@ class V1
             $this->log("Returning cached metadata");
             return $cached;
         }
-        $package_data = $this->get_package_data();
-        if (!is_array($package_data) || empty($package_data) || empty($package_data['UpdateURI'])) {
-            $this->log("Invalid package data or missing UpdateURI", $package_data);
-            return false;
+        // Get the base UpdateURI - either from the override or from package headers
+        $update_uri = $this->update_uri_override;
+
+        if ($update_uri === null) {
+            $package_data = $this->get_package_data();
+            if (!is_array($package_data) || empty($package_data) || empty($package_data['UpdateURI'])) {
+                $this->log("Invalid package data or missing UpdateURI", $package_data);
+                return false;
+            }
+            $update_uri = $package_data['UpdateURI'];
         }
+
+        $this->log("Using update URI: " . $update_uri);
 
         // Build manifest URL - use full URL if provided, otherwise append 'manifest' to UpdateURI
         if ($this->manifest_endpoint !== null) {
@@ -332,7 +352,7 @@ class V1
             $manifest_url = $this->manifest_endpoint;
         } else {
             // Default behavior: append 'manifest' to the UpdateURI
-            $manifest_url = trailingslashit($package_data['UpdateURI']) . 'manifest';
+            $manifest_url = trailingslashit($update_uri) . 'manifest';
         }
 
         $this->log("Fetching remote metadata from: " . $manifest_url);
