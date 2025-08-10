@@ -322,20 +322,54 @@ class V1
     }
     /**
      * Add our self-hosted description to the filter
+     * This method is called by WordPress when displaying the plugin/theme information
+     * in the admin UI (plugin details popup or theme details screen)
      *
      * @param boolean $false
-     * @param array $action
-     * @param object $arg
+     * @param array $action The type of information being requested
+     * @param object $arg The arguments passed to the API request
      * @return bool|object
      */
     public function check_info($false, $action, $arg)
     {
-        if ($arg->slug && $arg->slug === $this->slug) {
-            $this->log("Providing package info for: " . $arg->slug);
-            $meta = $this->get_remote_metadata();
-            return $meta ? (object) $meta : false;
+        // Check if this is for our package
+        if (!$arg->slug || $arg->slug !== $this->slug) {
+            return $false;
         }
-        return false;
+
+        $this->log("Providing package info for: " . $arg->slug);
+
+        // Get metadata from remote source
+        $meta = $this->get_remote_metadata();
+        if (!$meta) {
+            $this->log("Failed to get metadata for package info");
+            return $false;
+        }
+
+        // Convert to object
+        $info_object = (object) $meta;
+
+        // Add additional fields that might be needed based on the action
+        if ($this->package_type === 'plugin') {
+            // WordPress expects these properties for plugin information
+            $info_object->external = true; // Indicates this is an external package
+
+            // Ensure the sections are properly formatted (WordPress expects HTML)
+            if (isset($info_object->sections) && is_array($info_object->sections)) {
+                foreach ($info_object->sections as $section => $content) {
+                    // Make sure section content isn't lost when casting to object
+                    $info_object->sections[$section] = $content;
+                }
+            }
+
+            // Additional plugin-specific enhancements could be added here
+        } else if ($this->package_type === 'theme') {
+            // Additional theme-specific enhancements could be added here
+        }
+
+        $this->log("Returning package info with properties: " . implode(', ', array_keys((array)$info_object)));
+
+        return $info_object;
     }
 
     /**
@@ -404,12 +438,105 @@ class V1
             return false;
         }
 
+        // Ensure required and recommended fields exist
+        $meta = $this->normalize_metadata($meta);
+
         $this->log("Successfully retrieved metadata", array(
             'version' => isset($meta['version']) ? $meta['version'] : 'not set',
+            'name' => isset($meta['name']) ? $meta['name'] : 'not set',
         ));
 
         $cached = $meta;
         return $meta;
+    }
+
+    /**
+     * Normalize and enhance metadata to ensure all expected fields are available
+     * @param array $meta The raw metadata from the manifest
+     * @return array Enhanced metadata with all expected fields
+     */
+    protected function normalize_metadata($meta)
+    {
+        // Core fields that should always be present
+        $defaults = [
+            'name' => '',
+            'slug' => '',
+            'version' => '',
+            'author' => '',
+            'author_profile' => '',
+            'requires' => '',        // Minimum WP version
+            'tested' => '',          // Tested WP version
+            'requires_php' => '',    // Minimum PHP version
+            'homepage' => '',
+            'download_link' => '',
+            'update_uri' => '',
+            'last_updated' => '',
+            'sections' => [
+                'description' => '',
+                'installation' => '',
+                'changelog' => '',
+                'faq' => ''
+            ]
+        ];
+
+        // Add package type specific defaults
+        if ($this->package_type === 'plugin') {
+            $defaults['contributors'] = [];
+            $defaults['donate_link'] = '';
+            $defaults['tags'] = [];
+            $defaults['banners'] = [
+                'low' => '',
+                'high' => ''
+            ];
+            $defaults['screenshots'] = [];
+        } elseif ($this->package_type === 'theme') {
+            $defaults['sections']['reviews'] = '';
+            $defaults['rating'] = 100;
+            $defaults['num_ratings'] = 0;
+            $defaults['downloaded'] = 0;
+            $defaults['active_installs'] = 0;
+            $defaults['theme_url'] = '';
+            $defaults['preview_url'] = '';
+        }
+
+        // Merge existing metadata with defaults
+        $normalized = array_merge($defaults, $meta);
+
+        // Handle special conversions for WordPress UI
+
+        // Convert sections from string to array if needed
+        if (isset($meta['sections']) && is_string($meta['sections'])) {
+            try {
+                $sections = json_decode($meta['sections'], true);
+                if (is_array($sections)) {
+                    $normalized['sections'] = array_merge($defaults['sections'], $sections);
+                }
+            } catch (\Exception $e) {
+                // Keep original sections
+            }
+        }
+
+        // Format author with link if profile URL is available
+        if (!empty($normalized['author']) && !empty($normalized['author_profile'])) {
+            $normalized['author'] = sprintf(
+                '<a href="%s" target="_blank">%s</a>',
+                esc_url($normalized['author_profile']),
+                esc_html($normalized['author'])
+            );
+        }
+
+        // Format contributors (if present)
+        if ($this->package_type === 'plugin' && isset($meta['contributors']) && is_array($meta['contributors'])) {
+            $formatted_contributors = [];
+            foreach ($meta['contributors'] as $username => $profile_url) {
+                $formatted_contributors[$username] = $profile_url;
+            }
+            $normalized['contributors'] = $formatted_contributors;
+        }
+
+        $this->log("Normalized metadata", array_keys($normalized));
+
+        return $normalized;
     }
 
     /**
