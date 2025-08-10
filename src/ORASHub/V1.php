@@ -88,6 +88,7 @@ class V1
      *        string 'manifest_endpoint' - Full URL for manifest endpoint (default: null, uses UpdateURI + 'manifest')
      *        string 'download_endpoint' - Full URL for download endpoint (default: null, uses UpdateURI + 'download')
      *        string 'update_uri' - Override the UpdateURI from package headers (default: null, uses package header)
+     *        string 'type' - Force the package type, either 'plugin' or 'theme' (default: null, auto-detected)
      */
     function __construct($package_file, array $args = [])
     {
@@ -98,7 +99,8 @@ class V1
             'log_prefix' => 'WPPackageAutoupdater',
             'manifest_endpoint' => null,
             'download_endpoint' => null,
-            'update_uri' => null
+            'update_uri' => null,
+            'type' => null
         ];
 
         $args = array_merge($defaults, $args);
@@ -122,9 +124,16 @@ class V1
             $this->delete_update_transients();
         }
 
-        // Determine package type
-        $this->package_type = $this->get_package_type();
+        // Determine package type - use provided type or auto-detect
+        $this->package_type = $this->get_package_type($args['type']);
         // Set the class public variables based on package type
+        if (!in_array($this->package_type, ['plugin', 'theme'])) {
+            $this->log("Error: Unable to determine package type. The package must be a valid WordPress plugin or theme.");
+            return; // Don't proceed with setup if we can't determine the type
+        }
+
+        $this->log("Setting up " . $this->package_type . " updater");
+
         if ($this->package_type === 'plugin') {
             $this->package_slug = plugin_basename($package_file);
             list($t1, $t2) = explode('/', $this->package_slug);
@@ -145,11 +154,19 @@ class V1
     }
 
     /**
-     * Detect if the package_file is a plugin or a theme.
+     * Force package type or detect if the package_file is a plugin or a theme.
+     * @param string|null $force_type Optional type to force ('plugin' or 'theme')
      * @return string|null 'plugin', 'theme', or null if not recognized.
      */
-    public function get_package_type()
+    public function get_package_type($force_type = null)
     {
+        // If a valid type is provided, use it
+        if ($force_type !== null && in_array($force_type, ['plugin', 'theme'])) {
+            $this->log("Using forced package type: " . $force_type);
+            return $force_type;
+        }
+
+        // Otherwise auto-detect
         if (strpos($this->package_file, WP_PLUGIN_DIR) === 0) {
             return 'plugin';
         }
