@@ -286,38 +286,44 @@ class V1
             return $transient;
         }
         $current_version = isset($package_data['Version']) ? $package_data['Version'] : '1.0';
-        if (version_compare($current_version, $meta_object->version, '<')) {
-            $meta_object->slug = $this->slug;
-            $meta_object->new_version = $meta_object->version;
+        $meta_object->slug = $this->slug;
+        $meta_object->new_version = $meta_object->version;
 
-            // Use the override if provided, otherwise use the URI from metadata
-            $update_uri = $this->update_uri !== null ? $this->update_uri : $meta_object->update_uri;
-            $meta_object->url = $update_uri;
+        // Use the override if provided, otherwise use the URI from metadata
+        $update_uri = $this->update_uri !== null ? $this->update_uri : $meta_object->update_uri;
+        $meta_object->url = $update_uri;
 
-            // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
-            if ($this->download_endpoint !== null) {
-                // Use the provided full URL
-                $meta_object->package = $this->download_endpoint;
-            } else {
-                // Default behavior: append 'download' to the UpdateURI
-                $meta_object->package = trailingslashit($update_uri) . 'download';
-            }
-
-            // Format response appropriately for plugins vs themes
-            if ($this->package_type === 'theme') {
-                // Themes require a specific format
-                $theme_response = array(
-                    'theme' => $this->slug,
-                    'new_version' => $meta_object->version,
-                    'url' => $meta_object->url,
-                    'package' => $meta_object->package,
-                );
+        // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
+        if ($this->download_endpoint !== null) {
+            // Use the provided full URL
+            $meta_object->package = $this->download_endpoint;
+        } else {
+            // Default behavior: append 'download' to the UpdateURI
+            $meta_object->package = trailingslashit($update_uri) . 'download';
+        }
+        // Format response appropriately for plugins vs themes
+        if ($this->package_type === 'theme') {
+            // Themes require a specific format
+            $theme_response = array(
+                'theme' => $this->slug,
+                'new_version' => $meta_object->version,
+                'url' => $meta_object->url,
+                'package' => $meta_object->package,
+            );
+            if (version_compare($current_version, $meta_object->version, '<')) {
                 $transient->response[$this->package_slug] = $theme_response;
             } else {
-                // Plugins can use the object as is
+                $transient->no_update[$this->package_slug] = $theme_response;
+            }
+        } else {
+            // Plugins can use the object as is
+            if (version_compare($current_version, $meta_object->version, '<')) {
                 $transient->response[$this->package_slug] = $meta_object;
+            } else {
+                $transient->no_update[$this->package_slug] = $meta_object;
             }
         }
+        // var_dump(json_encode($transient));
         return $transient;
     }
     /**
