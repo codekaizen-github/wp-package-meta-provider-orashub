@@ -19,7 +19,7 @@ class V1
      * Whether to delete transients for testing
      * @var bool
      */
-    public $delete_transients = false;
+    public $delete_transients;
     /**
      * Package Slug (plugin_directory/package_file.php or theme_directory)
      * @var string
@@ -42,6 +42,18 @@ class V1
     protected $meta_annotation_key;
 
     /**
+     * Whether to log debug information
+     * @var bool
+     */
+    protected $enable_logging;
+
+    /**
+     * Log prefix for identifying log entries
+     * @var string
+     */
+    protected $log_prefix;
+
+    /**
      * Available modes for the updater
      */
     const MODE_PRODUCTION = 'production';
@@ -54,22 +66,27 @@ class V1
      *        string 'mode' - Either 'production' or 'debug' (default: 'production')
      *        string 'meta_annotation_key' - Key for package metadata in ORAS manifest
      *                                     (default: 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata')
+     *        string 'log_prefix' - Prefix for log messages (default: 'ORAS_UPDATER')
      */
     function __construct($package_file, array $args = [])
     {
         // Process arguments with defaults
         $defaults = [
             'mode' => self::MODE_PRODUCTION,
-            'meta_annotation_key' => 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata'
+            'meta_annotation_key' => 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata',
+            'log_prefix' => 'WPPackageAutoupdater'
         ];
 
         $args = array_merge($defaults, $args);
 
-        // Set delete_transients based on mode
-        $this->delete_transients = ($args['mode'] === self::MODE_DEBUG);
+        // Set options based on mode
+        $is_debug_mode = ($args['mode'] === self::MODE_DEBUG);
+        $this->delete_transients = $is_debug_mode;
+        $this->enable_logging = $is_debug_mode;
 
-        // Store the annotation key
+        // Store configuration values
         $this->meta_annotation_key = $args['meta_annotation_key'];
+        $this->log_prefix = $args['log_prefix'];
 
         // Initialize package
         $this->package_file = $package_file;
@@ -205,12 +222,15 @@ class V1
      */
     public function check_update($transient)
     {
+        $this->log("Checking for updates", $this->package_slug);
 
         if (empty($transient->checked)) {
+            $this->log("No checked packages in transient, skipping");
             return $transient;
         }
         $meta = $this->get_remote_metadata();
         if (!is_array($meta)) {
+            $this->log("Failed to get remote metadata or invalid format");
             return $transient;
         }
         $meta_object = (object) $meta;
@@ -256,6 +276,7 @@ class V1
     public function check_info($false, $action, $arg)
     {
         if ($arg->slug && $arg->slug === $this->slug) {
+            $this->log("Providing package info for: " . $arg->slug);
             $meta = $this->get_remote_metadata();
             return $meta ? (object) $meta : false;
         }
@@ -270,28 +291,82 @@ class V1
     {
         static $cached = null;
         if ($cached !== null) {
+            $this->log("Returning cached metadata");
             return $cached;
         }
         $package_data = $this->get_package_data();
         if (!is_array($package_data) || empty($package_data) || empty($package_data['UpdateURI'])) {
+            $this->log("Invalid package data or missing UpdateURI", $package_data);
             return false;
         }
+
+        $this->log("Fetching remote metadata from: " . trailingslashit($package_data['UpdateURI']) . 'manifest');
         $request = wp_remote_get(trailingslashit($package_data['UpdateURI']) . 'manifest');
 
-        if (is_wp_error($request) || wp_remote_retrieve_response_code($request) !== 200) {
+        if (is_wp_error($request)) {
+            $this->log("Error fetching manifest", $request->get_error_message());
             return false;
         }
+
+        $status_code = wp_remote_retrieve_response_code($request);
+        if ($status_code !== 200) {
+            $this->log("Unexpected HTTP status code: " . $status_code);
+            return false;
+        }
+
         $body = wp_remote_retrieve_body($request);
         $json = json_decode($body, true);
-        if (!is_array($json) || !isset($json['annotations'][$this->meta_annotation_key])) {
+        if (!is_array($json)) {
+            $this->log("Invalid JSON response");
+            return false;
+        }
+
+        if (!isset($json['annotations'][$this->meta_annotation_key])) {
+            $this->log("Missing annotation key in response", $this->meta_annotation_key);
             return false;
         }
         $meta_json = $json['annotations'][$this->meta_annotation_key];
         $meta = json_decode($meta_json, true);
         if (!is_array($meta)) {
+            $this->log("Failed to decode metadata JSON");
             return false;
         }
+
+        $this->log("Successfully retrieved metadata", array(
+            'version' => isset($meta['version']) ? $meta['version'] : 'not set',
+            'slug' => $this->slug,
+            'package_type' => $this->package_type
+        ));
+
         $cached = $meta;
         return $meta;
+    }
+
+    /**
+     * Log a debug message if logging is enabled
+     * @param string $message The message to log
+     * @param mixed $data Optional data to include in the log
+     * @return void
+     */
+    protected function log($message, $data = null)
+    {
+        if (!$this->enable_logging) {
+            return;
+        }
+
+        $log_message = "[{$this->log_prefix}] {$message}";
+
+        if ($data !== null) {
+            if (is_array($data) || is_object($data)) {
+                $log_message .= " - " . print_r($data, true);
+            } else {
+                $log_message .= " - {$data}";
+            }
+        }
+
+        // Use WordPress logging if available, otherwise use error_log
+        if (function_exists('error_log')) {
+            error_log($log_message);
+        }
     }
 }
