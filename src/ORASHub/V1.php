@@ -291,7 +291,6 @@ class V1
 
         // Use the override if provided, otherwise use the URI from metadata
         $update_uri = $this->update_uri !== null ? $this->update_uri : $meta_object->update_uri;
-        $meta_object->url = $update_uri;
 
         // Set package URL - use full URL if provided, otherwise append 'download' to UpdateURI
         if ($this->download_endpoint !== null) {
@@ -304,18 +303,19 @@ class V1
         // Format response appropriately for plugins vs themes
         if ($this->package_type === 'theme') {
             // Themes require a specific format
-            $theme_response = array(
+            $override_theme_response = array(
                 'theme' => $this->slug,
                 'new_version' => $meta_object->version,
-                'url' => $meta_object->url,
-                'package' => $meta_object->package,
+                'url' => $meta_object->theme_uri,
             );
+            $theme_response = array_merge((array) $meta_object, $override_theme_response);
             if (version_compare($current_version, $meta_object->version, '<')) {
                 $transient->response[$this->package_slug] = $theme_response;
             } else {
                 $transient->no_update[$this->package_slug] = $theme_response;
             }
         } else {
+            $meta_object->url = $update_uri;
             // Plugins can use the object as is
             if (version_compare($current_version, $meta_object->version, '<')) {
                 $transient->response[$this->package_slug] = $meta_object;
