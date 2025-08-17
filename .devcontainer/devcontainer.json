@@ -9,7 +9,10 @@
                 "bmewburn.vscode-intelephense-client",
                 "xdebug.php-debug",
                 "neilbrayfield.php-docblocker",
-                "johnbillion.vscode-wordpress-hooks"
+                "johnbillion.vscode-wordpress-hooks",
+                "SanderRonde.phpstan-vscode",
+                "valeryanm.vscode-phpsab",
+                "wongjn.php-sniffer"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash"
