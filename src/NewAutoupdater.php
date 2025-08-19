@@ -658,7 +658,7 @@ class PackageMetaUnwrapper implements PackageMetaUnwrapperInterface
         return $packageMeta->getFullSlug();
     }
 }
-class PackageMetaForUpdateCheckProviderRemotePlugin implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForUpdateCheckProviderPluginRemote implements PackageMetaForUpdateCheckProviderInterface
 {
     private RemoteClientPlugin $remoteClient;
     private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
@@ -680,7 +680,7 @@ class PackageMetaForUpdateCheckProviderRemotePlugin implements PackageMetaForUpd
         return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
     }
 }
-class PackageMetaForUpdateCheckProviderRemoteTheme implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForUpdateCheckProviderThemeRemote implements PackageMetaForUpdateCheckProviderInterface
 {
     private RemoteClientTheme $remoteClient;
     private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
