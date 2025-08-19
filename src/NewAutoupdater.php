@@ -2,6 +2,7 @@
 
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
+use Respect\Validation\Rules\Core\Simple;
 
 interface PreSetSiteTransientUpdateHookProviderInterface
 {
@@ -97,7 +98,7 @@ interface PackageMetaForDetailsProviderInterface extends PackageMetaForUpdateChe
     public function getRequiresPHPVersion(): ?string;
     public function getTextDomain(): ?string;
     public function getDomainPath(): ?string;
-    /** @return string */
+    /** @return string[] */
     public function getRequiresPlugins(): array;
 }
 interface PackageMetaForDetailsProviderThemeInterface extends PackageMetaForDetailsProviderInterface {}
@@ -207,7 +208,7 @@ class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpda
      */
     public function getVersion(): string
     {
-        $packageData = $this->getPackageData();
+        $packageData = $this->getPackageMeta();
         $value = $packageData['Version'] ?? null;
         Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
         // After validation, we can assert the type
@@ -232,7 +233,7 @@ class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpda
     {
         return $this->shortSlug;
     }
-    protected function getPackageData()
+    protected function getPackageMeta()
     {
         if (! function_exists('get_plugin_data')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -264,7 +265,7 @@ class PackageMetaForUpdateCheckProviderThemeLocal implements PackageMetaForUpdat
      */
     public function getVersion(): string
     {
-        $packageData = $this->getPackageData();
+        $packageData = $this->getPackageMeta();
         $value = $packageData['Version'] ?? null;
         Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
         // After validation, we can assert the type
@@ -289,7 +290,7 @@ class PackageMetaForUpdateCheckProviderThemeLocal implements PackageMetaForUpdat
     {
         return $this->shortSlug;
     }
-    protected function getPackageData()
+    protected function getPackageMeta()
     {
         if (! function_exists('wp_get_theme')) {
             require_once ABSPATH . 'wp-includes/theme.php';
@@ -327,5 +328,377 @@ class PackageMetaForUpdateCheckProviderThemeLocal implements PackageMetaForUpdat
         }
 
         return $result;
+    }
+}
+
+interface RemoteClientPlugin
+{
+    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface;
+}
+interface RemoteClientTheme
+{
+    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface;
+}
+class ORASHubClientPlugin implements RemoteClientPlugin
+{
+    private string $baseURL;
+    private string $metaAnnotationKey;
+    public function __construct(string $baseURL, string $metaAnnotationKey)
+    {
+        Validator::create(new Rules\Url())->check($baseURL);
+        $this->baseURL = $baseURL;
+        $this->metaAnnotationKey = $metaAnnotationKey;
+    }
+    protected function getMetaURL()
+    {
+        return $this->baseURL . 'manifest';
+    }
+    // todo - format the data and return it as an interface which is loose enough to be interpreted by Themes and Plugins alike
+    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface
+    {
+        $request = wp_remote_get($this->getMetaURL());
+
+        if (is_wp_error($request)) {
+            throw new \Exception('Request to ' . $this->getMetaURL() . ' failed with error ' . $request->get_error_message());
+        }
+
+        $status_code = wp_remote_retrieve_response_code($request);
+        if ($status_code !== 200) {
+            throw new Exception('Request to ' . $this->getMetaURL() . ' failed with status code ' . $status_code);
+        }
+
+        $body = wp_remote_retrieve_body($request);
+        $json = json_decode($body, true);
+        if (!is_array($json)) {
+            throw new Exception('Invalid JSON returned by request to ' . $this->getMetaURL());
+        }
+        if (!isset($json['annotations'][$this->metaAnnotationKey])) {
+            throw new Exception('Meta annotation key is unset' . $this->metaAnnotationKey);
+        }
+        $meta_json = $json['annotations'][$this->metaAnnotationKey];
+        $meta = json_decode($meta_json, false);
+        return new PackageMetaORASHubFromObjectPlugin($meta);
+    }
+}
+class ORASHubClientTheme implements RemoteClientTheme
+{
+    private string $baseURL;
+    private string $metaAnnotationKey;
+    public function __construct(string $baseURL, string $metaAnnotationKey)
+    {
+        Validator::create(new Rules\Url())->check($baseURL);
+        $this->baseURL = $baseURL;
+        $this->metaAnnotationKey = $metaAnnotationKey;
+    }
+    protected function getMetaURL()
+    {
+        return $this->baseURL . 'manifest';
+    }
+    // todo - format the data and return it as an interface which is loose enough to be interpreted by Themes and Plugins alike
+    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface
+    {
+        $request = wp_remote_get($this->getMetaURL());
+
+        if (is_wp_error($request)) {
+            throw new \Exception('Request to ' . $this->getMetaURL() . ' failed with error ' . $request->get_error_message());
+        }
+
+        $status_code = wp_remote_retrieve_response_code($request);
+        if ($status_code !== 200) {
+            throw new Exception('Request to ' . $this->getMetaURL() . ' failed with status code ' . $status_code);
+        }
+
+        $body = wp_remote_retrieve_body($request);
+        $json = json_decode($body, true);
+        if (!is_array($json)) {
+            throw new Exception('Invalid JSON returned by request to ' . $this->getMetaURL());
+        }
+        if (!isset($json['annotations'][$this->metaAnnotationKey])) {
+            throw new Exception('Meta annotation key is unset' . $this->metaAnnotationKey);
+        }
+        $meta_json = $json['annotations'][$this->metaAnnotationKey];
+        $meta = json_decode($meta_json, false);
+        return new PackageMetaORASHubFromObjectTheme($meta);
+    }
+}
+class PackageMetaPluginORASHubRule extends Simple
+{
+    public function isValid(mixed $input): bool
+    {
+        if (!is_object($input)) {
+            return false;
+        }
+
+        return Validator::create(new Rules\Attribute('version', new Rules\Version(), true))
+            ->create(new Rules\Attribute('shortSlug', new Rules\StringType(), true))
+            ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
+    }
+}
+class PackageMetaThemeORASHubRule extends Simple
+{
+    public function isValid(mixed $input): bool
+    {
+        if (!is_object($input)) {
+            return false;
+        }
+
+        return Validator::create(new Rules\Attribute('version', new Rules\Version(), true))
+            ->create(new Rules\Attribute('shortSlug', new Rules\StringType(), true))
+            ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
+    }
+}
+class PackageMetaORASHubFromObjectPlugin implements PackageMetaForDetailsProviderPluginInterface
+{
+    private object $stdObj;
+    public function __construct(object $stdObj)
+    {
+        Validator::create(new PackageMetaPluginORASHubRule())->check($stdObj);
+        $this->stdObj = $stdObj;
+    }
+    public function getShortSlug(): string
+    {
+        return $this->stdObj->shortSlug;
+    }
+    public function getFullSlug(): string
+    {
+        return $this->stdObj->fullSlug;
+    }
+    public function getVersion(): string
+    {
+        return $this->stdObj->version;
+    }
+    public function getDownloadURL(): string
+    {
+        return $this->stdObj->downloadURL;
+    }
+    public function getName(): ?string
+    {
+        return $this->stdObj->name;
+    }
+    public function getViewURL(): ?string
+    {
+        return $this->stdObj->viewURL;
+    }
+    public function getTested(): ?string
+    {
+        return $this->stdObj->tested;
+    }
+    public function getStable(): ?string
+    {
+        return $this->stdObj->stable;
+    }
+    public function getTags(): array
+    {
+        return $this->stdObj->tags;
+    }
+    public function getAuthor(): ?string
+    {
+        return $this->stdObj->author;
+    }
+    public function getAuthorURL(): ?string
+    {
+        return $this->stdObj->authorURL;
+    }
+    public function getLicense(): ?string
+    {
+        return $this->stdObj->license;
+    }
+    public function getLicenseURL(): ?string
+    {
+        return $this->stdObj->licenseURL;
+    }
+    public function getShortDescription(): ?string
+    {
+        return $this->stdObj->shortDescription;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->stdObj->description;
+    }
+    public function getRequiresWordPressVersion(): ?string
+    {
+        return $this->stdObj->requiresWordPressVersion;
+    }
+    public function getRequiresPHPVersion(): ?string
+    {
+        return $this->stdObj->requiresPHPVersion;
+    }
+    public function getTextDomain(): ?string
+    {
+        return $this->stdObj->textDomain;
+    }
+    public function getDomainPath(): ?string
+    {
+        return $this->stdObj->domainPath;
+    }
+    public function getRequiresPlugins(): array
+    {
+        return $this->stdObj->requiresPlugins;
+    }
+    public function getPluginFile(): string
+    {
+        return $this->stdObj->pluginFile;
+    }
+    public function getSections(): array
+    {
+        return $this->stdObj->sections;
+    }
+    public function getNetwork(): bool
+    {
+        return $this->stdObj->network;
+    }
+}
+class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProviderThemeInterface
+{
+    private object $stdObj;
+    public function __construct(object $stdObj)
+    {
+        Validator::create(new PackageMetaThemeORASHubRule())->check($stdObj);
+        $this->stdObj = $stdObj;
+    }
+    public function getShortSlug(): string
+    {
+        return $this->stdObj->shortSlug;
+    }
+    public function getFullSlug(): string
+    {
+        return $this->stdObj->fullSlug;
+    }
+    public function getVersion(): string
+    {
+        return $this->stdObj->version;
+    }
+    public function getDownloadURL(): string
+    {
+        return $this->stdObj->downloadURL;
+    }
+    public function getName(): ?string
+    {
+        return $this->stdObj->name;
+    }
+    public function getViewURL(): ?string
+    {
+        return $this->stdObj->viewURL;
+    }
+    public function getTested(): ?string
+    {
+        return $this->stdObj->tested;
+    }
+    public function getStable(): ?string
+    {
+        return $this->stdObj->stable;
+    }
+    public function getTags(): array
+    {
+        return $this->stdObj->tags;
+    }
+    public function getAuthor(): ?string
+    {
+        return $this->stdObj->author;
+    }
+    public function getAuthorURL(): ?string
+    {
+        return $this->stdObj->authorURL;
+    }
+    public function getLicense(): ?string
+    {
+        return $this->stdObj->license;
+    }
+    public function getLicenseURL(): ?string
+    {
+        return $this->stdObj->licenseURL;
+    }
+    public function getShortDescription(): ?string
+    {
+        return $this->stdObj->shortDescription;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->stdObj->description;
+    }
+    public function getRequiresWordPressVersion(): ?string
+    {
+        return $this->stdObj->requiresWordPressVersion;
+    }
+    public function getRequiresPHPVersion(): ?string
+    {
+        return $this->stdObj->requiresPHPVersion;
+    }
+    public function getTextDomain(): ?string
+    {
+        return $this->stdObj->textDomain;
+    }
+    public function getDomainPath(): ?string
+    {
+        return $this->stdObj->domainPath;
+    }
+    public function getRequiresPlugins(): array
+    {
+        return $this->stdObj->requiresPlugins;
+    }
+}
+interface PackageMetaUnwrapperInterface
+{
+    public function getVersion(PackageMetaForDetailsProviderInterface $packageMeta): string;
+    public function getShortSlug(PackageMetaForDetailsProviderInterface $packageMeta): string;
+    public function getFullSlug(PackageMetaForDetailsProviderInterface $packageMeta): string;
+}
+class PackageMetaUnwrapper implements PackageMetaUnwrapperInterface
+{
+    public function getVersion(PackageMetaForDetailsProviderInterface $packageMeta): string
+    {
+        return $packageMeta->getVersion();
+    }
+    public function getShortSlug(PackageMetaForDetailsProviderInterface $packageMeta): string
+    {
+        return $packageMeta->getShortSlug();
+    }
+    public function getFullSlug(PackageMetaForDetailsProviderInterface $packageMeta): string
+    {
+        return $packageMeta->getFullSlug();
+    }
+}
+class PackageMetaForUpdateCheckProviderRemotePlugin implements PackageMetaForUpdateCheckProviderInterface
+{
+    private RemoteClientPlugin $remoteClient;
+    private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
+    public function __construct(RemoteClientPlugin $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
+    {
+        $this->remoteClient = $remoteClient;
+        $this->packageMetaUnwrapper = $packageMetaUnwrapper;
+    }
+    public function getVersion(): string
+    {
+        return $this->packageMetaUnwrapper->getVersion($this->remoteClient->getPackageMeta());
+    }
+    public function getShortSlug(): string
+    {
+        return $this->packageMetaUnwrapper->getShortSlug($this->remoteClient->getPackageMeta());
+    }
+    public function getFullSlug(): string
+    {
+        return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
+    }
+}
+class PackageMetaForUpdateCheckProviderRemoteTheme implements PackageMetaForUpdateCheckProviderInterface
+{
+    private RemoteClientTheme $remoteClient;
+    private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
+    public function __construct(RemoteClientTheme $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
+    {
+        $this->remoteClient = $remoteClient;
+        $this->packageMetaUnwrapper = $packageMetaUnwrapper;
+    }
+    public function getVersion(): string
+    {
+        return $this->packageMetaUnwrapper->getVersion($this->remoteClient->getPackageMeta());
+    }
+    public function getShortSlug(): string
+    {
+        return $this->packageMetaUnwrapper->getShortSlug($this->remoteClient->getPackageMeta());
+    }
+    public function getFullSlug(): string
+    {
+        return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
     }
 }
