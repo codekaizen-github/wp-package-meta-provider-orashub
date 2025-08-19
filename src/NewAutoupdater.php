@@ -180,7 +180,7 @@ class FormatMetaForTransientProviderThemeV1 implements FormatMetaForTransientPro
         return $metaObject;
     }
 }
-class PackageMetaForUpdateCheckProviderPlugin implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpdateCheckProviderInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -240,7 +240,7 @@ class PackageMetaForUpdateCheckProviderPlugin implements PackageMetaForUpdateChe
         return get_plugin_data($this->filePath, false, false);
     }
 }
-class PackageMetaForUpdateCheckProviderTheme implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForUpdateCheckProviderThemeLocal implements PackageMetaForUpdateCheckProviderInterface
 {
     protected string $filePath;
     protected string $fullSlug;
