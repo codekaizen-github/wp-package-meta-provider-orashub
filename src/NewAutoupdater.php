@@ -4,18 +4,17 @@ use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Rules\Core\Simple;
 
-interface PreSetSiteTransientUpdateHookProviderInterface
+interface PreSetSiteTransientUpdateHookProviderInterface extends FormatMetaForTransientProviderInterface
 {
     public function getLocalPackageSlug(): string;
     public function getLocalPackageVersion(): string;
     public function getRemotePackageVersion(): string;
-    public function formatMetaForTransient(): object;
 }
 interface PreSetSiteTransientUpdateHookInterface
 {
     public function handle(object $transient): object;
 }
-class PreSetSiteTransientPluginUpdateHookV1 implements PreSetSiteTransientUpdateHookInterface
+class PreSetSiteTransientUpdateHookV1 implements PreSetSiteTransientUpdateHookInterface
 {
     private PreSetSiteTransientUpdateHookProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
@@ -33,38 +32,9 @@ class PreSetSiteTransientPluginUpdateHookV1 implements PreSetSiteTransientUpdate
         }
         try {
             if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
-                $transient->response[$this->provider->getLocalPackageSlug()] = $this->provider->formatMetaForTransient();
+                $transient->response = $this->provider->formatMetaForTransient($transient->response, $this->provider->getLocalPackageSlug());
             } else {
-                $transient->no_update[$this->provider->getLocalPackageSlug()] = $this->provider->formatMetaForTransient();
-            }
-        } catch (Exception $e) {
-            $this->logger->error('Unable to get remote package version: ' . $e);
-            return $transient;
-        }
-        return $transient;
-    }
-}
-class PreSetSiteTransientThemeUpdateHookV1 implements PreSetSiteTransientUpdateHookInterface
-{
-    private PreSetSiteTransientUpdateHookProviderInterface $provider;
-    private Psr\Log\LoggerInterface $logger;
-    function __construct(PreSetSiteTransientUpdateHookProviderInterface $provider, Psr\Log\LoggerInterface $logger)
-    {
-        $this->provider = $provider;
-        $this->logger = $logger;
-    }
-    public function handle(object $transient): object
-    {
-        $this->logger->debug("Checking for updates " . $this->provider->getLocalPackageSlug());
-        if (empty($transient->checked)) {
-            $this->logger->debug("No checked packages in transient, skipping");
-            return $transient;
-        }
-        try {
-            if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
-                $transient->response[$this->provider->getLocalPackageSlug()] = (array) $this->provider->formatMetaForTransient();
-            } else {
-                $transient->no_update[$this->provider->getLocalPackageSlug()] = (array) $this->provider->formatMetaForTransient();
+                $transient->no_update = $this->provider->formatMetaForTransient($transient->no_update, $this->provider->getLocalPackageSlug());
             }
         } catch (Exception $e) {
             $this->logger->error('Unable to get remote package version: ' . $e);
@@ -112,9 +82,9 @@ interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDet
 interface PackageMetaProviderInterface extends PackageMetaProviderInterface {}
 interface FormatMetaForTransientProviderInterface
 {
-    public function formatMetaForTransient(): object;
+    public function formatMetaForTransient(array $response, string $key): array;
 }
-class PreSetSiteTransientUpdateHookProviderV1 implements PreSetSiteTransientUpdateHookProviderInterface
+class PreSetSiteTransientUpdateHookPluginProviderV1 implements PreSetSiteTransientUpdateHookProviderInterface, FormatMetaForTransientProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider;
@@ -137,10 +107,9 @@ class PreSetSiteTransientUpdateHookProviderV1 implements PreSetSiteTransientUpda
     {
         return $this->remotePackageMetaProvider->getVersion();
     }
-    public function formatMetaForTransient(): object
+    public function formatMetaForTransient(array $response, string $key): array
     {
-        // formatter will also have joint access to localPackageMetaProvider and remotePackageMetaProvider
-        return $this->formatMetaForTransientProvider->formatMetaForTransient();
+        return $this->formatMetaForTransientProvider->formatMetaForTransient($response, $key);
     }
 }
 class FormatMetaForTransientProviderPluginV1 implements FormatMetaForTransientProviderInterface
@@ -152,14 +121,15 @@ class FormatMetaForTransientProviderPluginV1 implements FormatMetaForTransientPr
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForTransient(): object
+    public function formatMetaForTransient(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
         $metaObject->new_version = $this->remotePackageMetaProvider->getVersion();
         $metaObject->package = $this->remotePackageMetaProvider->getDownloadURL();
         $metaObject->url = $this->remotePackageMetaProvider->getViewURL();
-        return $metaObject;
+        $response[$key] = $metaObject;
+        return $response;
     }
 }
 class FormatMetaForTransientProviderThemeV1 implements FormatMetaForTransientProviderInterface
@@ -171,14 +141,15 @@ class FormatMetaForTransientProviderThemeV1 implements FormatMetaForTransientPro
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForTransient(): object
+    public function formatMetaForTransient(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
         $metaObject->new_version = $this->remotePackageMetaProvider->getVersion();
         $metaObject->package = $this->remotePackageMetaProvider->getDownloadURL();
         $metaObject->url = $this->remotePackageMetaProvider->getViewURL();
-        return $metaObject;
+        $response[$key] = (array) $metaObject;
+        return $response;
     }
 }
 class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpdateCheckProviderInterface
