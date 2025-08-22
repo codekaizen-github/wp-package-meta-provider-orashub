@@ -84,7 +84,7 @@ interface FormatMetaForTransientProviderInterface
 {
     public function formatMetaForTransient(array $response, string $key): array;
 }
-class PreSetSiteTransientUpdateHookPluginProviderV1 implements PreSetSiteTransientUpdateHookProviderInterface, FormatMetaForTransientProviderInterface
+class PreSetSiteTransientUpdateHookProviderV1 implements PreSetSiteTransientUpdateHookProviderInterface, FormatMetaForTransientProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider;
