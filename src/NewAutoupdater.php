@@ -4,7 +4,7 @@ use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Rules\Core\Simple;
 
-interface PreSetSiteTransientUpdateHookProviderInterface extends FormatMetaForTransientProviderInterface
+interface UpdateCheckProviderInterface extends FormatMetaForTransientProviderInterface
 {
     public function getLocalPackageSlug(): string;
     public function getLocalPackageVersion(): string;
@@ -14,16 +14,53 @@ interface PreSetSiteTransientUpdateHookInterface
 {
     public function handle(object $transient): object;
 }
-class PreSetSiteTransientUpdateHookV1 implements PreSetSiteTransientUpdateHookInterface
+class PreSetSiteTransientUpdateHookPlugin implements PreSetSiteTransientUpdateHookInterface
 {
-    private PreSetSiteTransientUpdateHookProviderInterface $provider;
+    protected string $filePath;
+    protected RemoteClientPlugin $remoteClient;
     private Psr\Log\LoggerInterface $logger;
-    function __construct(PreSetSiteTransientUpdateHookProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClientPlugin $remoteClient, Psr\Log\LoggerInterface $logger)
+    {
+        $this->filePath = $filePath;
+        $this->remoteClient = $remoteClient;
+        $this->logger = $logger;
+    }
+    public function handle(object $transient): object
+    {
+        $updateCheck = (new UpdateCheckFactory($this->filePath, $this->remoteClient, $this->logger))->getUpdateCheck();
+        return $updateCheck->checkUpdate($transient);
+    }
+}
+class UpdateCheckFactory
+{
+    protected string $filePath;
+    protected RemoteClientPlugin $remoteClient;
+    private Psr\Log\LoggerInterface $logger;
+    public function __construct(string $filePath, RemoteClientPlugin $remoteClient, Psr\Log\LoggerInterface $logger)
+    {
+        $this->filePath = $filePath;
+        $this->remoteClient = $remoteClient;
+        $this->logger = $logger;
+    }
+    public function getUpdateCheck(): UpdateCheckInterface
+    {
+        return new UpdateCheck((new UpdateCheckProviderFactoryPlugin($this->filePath, $this->remoteClient))->getUpdateCheckProvider(), $this->logger);
+    }
+}
+interface UpdateCheckInterface
+{
+    public function checkUpdate(object $transient): object;
+}
+class UpdateCheck implements UpdateCheckInterface
+{
+    private UpdateCheckProviderInterface $provider;
+    private Psr\Log\LoggerInterface $logger;
+    function __construct(UpdateCheckProviderInterface $provider, Psr\Log\LoggerInterface $logger)
     {
         $this->provider = $provider;
         $this->logger = $logger;
     }
-    public function handle(object $transient): object
+    public function checkUpdate(object $transient): object
     {
         $this->logger->debug("Checking for updates " . $this->provider->getLocalPackageSlug());
         if (empty($transient->checked)) {
@@ -84,7 +121,7 @@ interface FormatMetaForTransientProviderInterface
 {
     public function formatMetaForTransient(array $response, string $key): array;
 }
-class PreSetSiteTransientUpdateHookProviderV1 implements PreSetSiteTransientUpdateHookProviderInterface, FormatMetaForTransientProviderInterface
+class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaForTransientProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider;
@@ -671,5 +708,40 @@ class PackageMetaForUpdateCheckProviderThemeRemote implements PackageMetaForUpda
     public function getFullSlug(): string
     {
         return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
+    }
+}
+// class PreSetSiteTransientUpdateHookInterfaceFactoryTheme {
+//     private \Psr\Log\LoggerInterface $logger;
+//     public function __construct(\Psr\Log\LoggerInterface $logger)
+//     {
+//         $this->logger = $logger;
+//     }
+//     public function getPreSetSiteTransientUpdateHook(): PreSetSiteTransientUpdateHookInterface {
+//         new UpdateCheckProvider
+//         return new PreSetSiteTransientUpdateHookV1($logger);
+//     }
+// }
+class UpdateCheckProviderFactoryPlugin
+{
+    protected string $filePath;
+    protected RemoteClientPlugin $remoteClient;
+    public function __construct(string $filePath, RemoteClientPlugin $remoteClient)
+    {
+        $this->filePath = $filePath;
+        $this->remoteClient = $remoteClient;
+    }
+    public function getUpdateCheckProvider(): UpdateCheckProviderInterface
+    {
+        return new UpdateCheckProviderV1(
+            new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
+            new PackageMetaForUpdateCheckProviderPluginRemote(
+                $this->remoteClient,
+                new PackageMetaUnwrapper()
+            ),
+            new FormatMetaForTransientProviderPluginV1(
+                new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
+                $this->remoteClient->getPackageMeta()
+            )
+        );
     }
 }
