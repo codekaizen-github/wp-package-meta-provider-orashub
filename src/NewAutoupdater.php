@@ -12,67 +12,113 @@ interface Initable
     public function init(): void;
 }
 
-class AutoUpdaterPluginV1 implements Initable
+class AutoUpdatePluginV1 implements Initable
 {
-    private Initable $updateCheckHook;
+    private Initable $checkUpdateHook;
     private Initable $checkInfoHook;
     public function __construct()
     {
-        $this->updateCheckHook = new UpdateCheckerPluginV1();
-        $this->checkInfoHook = new CheckInfoHookPlugin;
+        $filePath = 'filepath here';
+        $baseURL = 'baseUrl here';
+        $metaKey = 'metakey here';
+        $loggerName = 'WPPackageAutoUpdate';
+        $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
+        $client = new ORASHubClientPlugin($baseURL, $metaKey);
+        $this->checkUpdateHook = new CheckUpdatePluginV1($filePath, $client, $logger);
+        $this->checkInfoHook = new CheckInfoHookPlugin($filePath, $client, $logger);
     }
     public function init(): void
     {
-        $this->updateCheckHook->init();
+        $this->checkUpdateHook->init();
         $this->checkInfoHook->init();
     }
 }
-class UpdateCheckerPluginV1 implements Initable
+class CheckUpdatePluginV1 implements Initable
 {
-    private UpdateCheckInterface $updateCheck;
-    private UpdateCheckProviderInterface $provider;
-    private Psr\Log\LoggerInterface $logger;
-    private RemoteClientPlugin $client;
-    private string $filePath;
-    private string $baseURL;
-    private string $metaKey;
-    private string $loggerName;
-    public function __construct()
+    private CheckUpdateInterface $checkUpdate;
+    public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
     {
-        $this->filePath = 'filepath here';
-        $this->baseURL = 'baseUrl here';
-        $this->metaKey = 'metakey here';
-        $this->loggerName = 'WPPackageAutoUpdater';
-        $this->logger = new Logger($this->loggerName, [new ErrorLogHandler(3, Level::Debug)]);
-        $this->client = new ORASHubClientPlugin($this->baseURL, $this->metaKey);
-        $this->provider = new UpdateCheckProviderV1(
-            new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
-            new PackageMetaForUpdateCheckProviderPluginRemote($this->client, new PackageMetaUnwrapper()),
-            new FormatMetaForUpdateCheckProviderPluginV1(new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+        $provider = new CheckUpdateProviderV1(
+            new PackageMetaForCheckUpdateProviderPluginLocal($filePath),
+            new PackageMetaForCheckUpdateProviderPluginRemote($client, new PackageMetaUnwrapper()),
+            new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($filePath), new PackageMetaForDetailsProviderPluginRemoteV1($client))
         );
-        $this->updateCheck = new UpdateCheckV1($this->provider, $this->logger);
+        $this->checkUpdate = new CheckUpdateV1($provider, $logger);
     }
     public function init(): void
     {
-        add_filter('pre_set_site_transient_update_plugins', array($this->updateCheck, 'checkUpdate'));
+        add_filter('pre_set_site_transient_update_plugins', array($this->checkUpdate, 'checkUpdate'));
     }
 }
 class CheckInfoHookPlugin implements Initable
 {
+    private CheckInfoInterface $checkInfo;
+    public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
+    {
+        $provider = new CheckInfoProviderV1(
+            new PackageMetaForCheckInfoProviderInterface($filePath),
+            new FormatMetaForCheckInfoProviderPluginV1(new PackageMetaForDetailsProviderPluginRemoteV1($client))
+        );
+        $this->checkInfo = new CheckInfoV1($provider, $logger);
+    }
     public function init(): void
     {
-        add_filter('plugins_api', array(&$this, 'check_info'), 10, 3);
+        add_filter('plugins_api', array($this->checkInfo, 'checkInfo'), 10, 3);
     }
 }
-interface UpdateCheckInterface
+interface CheckInfoInterface
+{
+    /**
+     * Add our self-hosted description to the filter
+     * This method is called by WordPress when displaying the plugin/theme information
+     * in the admin UI (plugin details popup or theme details screen)
+     *
+     * @param bool $false
+     * @param array $action The type of information being requested
+     * @param object $arg The arguments passed to the API request
+     * @return bool|object
+     */
+    public function checkInfo(bool $false, array $action, object $arg): bool|object;
+}
+class CheckInfoV1 implements CheckInfoInterface
+{
+    private CheckInfoProviderInterface $provider;
+    private Psr\Log\LoggerInterface $logger;
+    public function __construct(CheckInfoProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    {
+        $this->provider = $provider;
+        $this->logger = $logger;
+    }
+    public function checkInfo(bool $false, array $action, object $arg): bool|object
+    {
+        // Check if this is for our package
+        if (!$arg->slug || $arg->slug !== $this->provider->getLocalPackageSlug()) {
+            return $false;
+        }
+
+        $this->logger->log(Level::Debug, "Providing package info for: " . $arg->slug);
+
+        // Get metadata from remote source
+        $meta = $this->provider->formatMetaForCheckInfo();
+        if (!$meta) {
+            $this->logger->log(Level::Debug, "Failed to get metadata for package info");
+            return $false;
+        }
+
+        $this->logger->log(Level::Debug, "Returning package info with properties: " . implode(', ', array_keys((array)$meta)));
+
+        return $meta;
+    }
+}
+interface CheckUpdateInterface
 {
     public function checkUpdate(object $transient): object;
 }
-class UpdateCheckV1 implements UpdateCheckInterface
+class CheckUpdateV1 implements CheckUpdateInterface
 {
-    private UpdateCheckProviderInterface $provider;
+    private CheckUpdateProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
-    function __construct(UpdateCheckProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    function __construct(CheckUpdateProviderInterface $provider, Psr\Log\LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->provider = $provider;
@@ -86,9 +132,9 @@ class UpdateCheckV1 implements UpdateCheckInterface
         }
         try {
             if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
-                $transient->response = $this->provider->formatMetaForUpdateCheck($transient->response, $this->provider->getLocalPackageSlug());
+                $transient->response = $this->provider->formatMetaForCheckUpdate($transient->response, $this->provider->getLocalPackageSlug());
             } else {
-                $transient->no_update = $this->provider->formatMetaForUpdateCheck($transient->no_update, $this->provider->getLocalPackageSlug());
+                $transient->no_update = $this->provider->formatMetaForCheckUpdate($transient->no_update, $this->provider->getLocalPackageSlug());
             }
         } catch (Exception $e) {
             $this->logger->error('Unable to get remote package version: ' . $e);
@@ -97,25 +143,30 @@ class UpdateCheckV1 implements UpdateCheckInterface
         return $transient;
     }
 }
-
-interface UpdateCheckProviderInterface extends FormatMetaForUpdateCheckProviderInterface
+interface CheckUpdateProviderInterface extends FormatMetaForCheckUpdateProviderInterface
 {
     public function getLocalPackageSlug(): string;
     public function getLocalPackageVersion(): string;
     public function getRemotePackageVersion(): string;
 }
+interface CheckInfoProviderInterface extends FormatMetaForCheckInfoProviderInterface
+{
+    public function getLocalPackageSlug(): string;
+}
 interface PreSetSiteTransientUpdateHookInterface
 {
     public function handle(object $transient): object;
 }
-
-interface PackageMetaForUpdateCheckProviderInterface
+interface PackageMetaForCheckInfoProviderInterface
+{
+    public function getFullSlug(): string;
+}
+interface PackageMetaForCheckUpdateProviderInterface extends PackageMetaForCheckInfoProviderInterface
 {
     public function getShortSlug(): string;
-    public function getFullSlug(): string;
     public function getVersion(): string;
 }
-interface PackageMetaForDetailsProviderInterface extends PackageMetaForUpdateCheckProviderInterface
+interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateProviderInterface
 {
     public function getDownloadURL(): string;
     public function getName(): ?string;
@@ -146,20 +197,79 @@ interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDet
     public function getNetwork(): bool;
 }
 interface PackageMetaProviderInterface extends PackageMetaProviderInterface {}
-interface FormatMetaForUpdateCheckProviderInterface
+interface FormatMetaForCheckInfoProviderInterface
 {
-    public function formatMetaForUpdateCheck(array $response, string $key): array;
+    public function formatMetaForCheckInfo(): object;
 }
-class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaForUpdateCheckProviderInterface
+class FormatMetaForCheckInfoProviderPluginV1 implements FormatMetaForCheckInfoProviderInterface
 {
-    private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
-    private PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider;
-    private FormatMetaForUpdateCheckProviderInterface $formatMetaForUpdateCheckProvider;
-    public function __construct(PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider, PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider, FormatMetaForUpdateCheckProviderInterface $formatMetaForUpdateCheckProvider)
+    private PackageMetaForDetailsProviderPluginInterface $provider;
+    public function __construct(PackageMetaForDetailsProviderPluginInterface $provider)
+    {
+        $this->provider = $provider;
+    }
+    public function formatMetaForCheckInfo(): object
+    {
+        $stdObj = new stdClass();
+        $stdObj->name = $this->provider->getName();
+        $stdObj->slug = $this->provider->getShortSlug();
+        $stdObj->version = $this->provider->getVersion();
+        $stdObj->author = $this->provider->getAuthor();
+        // $stdObj->author_profile
+        $stdObj->requires = $this->provider->getRequiresWordPressVersion();
+        $stdObj->tested = $this->provider->getTested();
+        $stdObj->requires_php = $this->provider->getRequiresPHPVersion();
+        $stdObj->homepage = $this->provider->getViewURL();
+        $stdObj->download_link = $this->provider->getDownloadURL();
+        $stdObj->update_uri = $this->provider->getDownloadURL();
+        // $stdObj->last_updated
+        $stdObj->sections = $this->provider->getSections();
+        $stdObj->tags = $this->provider->getTags();
+        // WordPress expects these properties for plugin information
+        $stdObj->external = true; // indicates this is an external package
+        return $stdObj;
+    }
+}
+class FormatMetaForCheckInfoProviderThemeV1 implements FormatMetaForCheckInfoProviderInterface
+{
+    private PackageMetaForDetailsProviderThemeInterface $provider;
+    public function __construct(PackageMetaForDetailsProviderThemeInterface $provider)
+    {
+        $this->provider = $provider;
+    }
+    public function formatMetaForCheckInfo(): object
+    {
+        $stdObj = new stdClass();
+        $stdObj->name = $this->provider->getName();
+        $stdObj->slug = $this->provider->getShortSlug();
+        $stdObj->version = $this->provider->getVersion();
+        $stdObj->author = $this->provider->getAuthor();
+        // $stdObj->author_profile
+        $stdObj->requires = $this->provider->getRequiresWordPressVersion();
+        $stdObj->tested = $this->provider->getTested();
+        $stdObj->requires_php = $this->provider->getRequiresPHPVersion();
+        $stdObj->homepage = $this->provider->getViewURL();
+        $stdObj->download_link = $this->provider->getDownloadURL();
+        $stdObj->update_uri = $this->provider->getDownloadURL();
+        // $stdObj->last_updated
+        $stdObj->tags = $this->provider->getTags();
+        return $stdObj;
+    }
+}
+interface FormatMetaForCheckUpdateProviderInterface
+{
+    public function formatMetaForCheckUpdate(array $response, string $key): array;
+}
+class CheckUpdateProviderV1 implements CheckUpdateProviderInterface, FormatMetaForCheckUpdateProviderInterface
+{
+    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
+    private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
+    private FormatMetaForCheckUpdateProviderInterface $formatMetaForCheckUpdateProvider;
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider, FormatMetaForCheckUpdateProviderInterface $formatMetaForCheckUpdateProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-        $this->formatMetaForUpdateCheckProvider = $formatMetaForUpdateCheckProvider;
+        $this->formatMetaForCheckUpdateProvider = $formatMetaForCheckUpdateProvider;
     }
     public function getLocalPackageSlug(): string
     {
@@ -173,21 +283,40 @@ class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaF
     {
         return $this->remotePackageMetaProvider->getVersion();
     }
-    public function formatMetaForUpdateCheck(array $response, string $key): array
+    public function formatMetaForCheckUpdate(array $response, string $key): array
     {
-        return $this->formatMetaForUpdateCheckProvider->formatMetaForUpdateCheck($response, $key);
+        return $this->formatMetaForCheckUpdateProvider->formatMetaForCheckUpdate($response, $key);
     }
 }
-class FormatMetaForUpdateCheckProviderPluginV1 implements FormatMetaForUpdateCheckProviderInterface
+class CheckInfoProviderV1 implements CheckInfoProviderInterface
 {
-    private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
+    private PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider;
+    private FormatMetaForCheckInfoProviderInterface $formatMetaForCheckInfoProvider;
+
+    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, FormatMetaForCheckInfoProviderInterface $formatMetaForCheckInfoProvider)
+    {
+        $this->localPackageMetaProvider = $localPackageMetaProvider;
+        $this->formatMetaForCheckInfoProvider = $formatMetaForCheckInfoProvider;
+    }
+    public function getLocalPackageSlug(): string
+    {
+        return $this->localPackageMetaProvider->getFullSlug();
+    }
+    public function formatMetaForCheckInfo(): object
+    {
+        return $this->formatMetaForCheckInfoProvider->formatMetaForCheckInfo();
+    }
+}
+class FormatMetaForCheckUpdateProviderPluginV1 implements FormatMetaForCheckUpdateProviderInterface
+{
+    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
     private PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider)
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForUpdateCheck(array $response, string $key): array
+    public function formatMetaForCheckUpdate(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
@@ -198,16 +327,16 @@ class FormatMetaForUpdateCheckProviderPluginV1 implements FormatMetaForUpdateChe
         return $response;
     }
 }
-class FormatMetaForUpdateCheckProviderThemeV1 implements FormatMetaForUpdateCheckProviderInterface
+class FormatMetaForCheckUpdateProviderThemeV1 implements FormatMetaForCheckUpdateProviderInterface
 {
-    private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
+    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
     private PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider)
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForUpdateCheck(array $response, string $key): array
+    public function formatMetaForCheckUpdate(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
@@ -218,7 +347,7 @@ class FormatMetaForUpdateCheckProviderThemeV1 implements FormatMetaForUpdateChec
         return $response;
     }
 }
-class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForCheckUpdateProviderPluginLocal implements PackageMetaForCheckUpdateProviderInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -278,7 +407,7 @@ class PackageMetaForUpdateCheckProviderPluginLocal implements PackageMetaForUpda
         return get_plugin_data($this->filePath, false, false);
     }
 }
-class PackageMetaForUpdateCheckProviderThemeLocal implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForCheckUpdateProviderThemeLocal implements PackageMetaForCheckUpdateProviderInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -903,7 +1032,7 @@ class PackageMetaUnwrapper implements PackageMetaUnwrapperInterface
         return $packageMeta->getFullSlug();
     }
 }
-class PackageMetaForUpdateCheckProviderPluginRemote implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForCheckUpdateProviderPluginRemote implements PackageMetaForCheckUpdateProviderInterface
 {
     private RemoteClientPlugin $remoteClient;
     private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
@@ -925,7 +1054,7 @@ class PackageMetaForUpdateCheckProviderPluginRemote implements PackageMetaForUpd
         return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
     }
 }
-class PackageMetaForUpdateCheckProviderThemeRemote implements PackageMetaForUpdateCheckProviderInterface
+class PackageMetaForCheckUpdateProviderThemeRemote implements PackageMetaForCheckUpdateProviderInterface
 {
     private RemoteClientTheme $remoteClient;
     private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
@@ -947,18 +1076,7 @@ class PackageMetaForUpdateCheckProviderThemeRemote implements PackageMetaForUpda
         return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
     }
 }
-// class PreSetSiteTransientUpdateHookInterfaceFactoryTheme {
-//     private \Psr\Log\LoggerInterface $logger;
-//     public function __construct(\Psr\Log\LoggerInterface $logger)
-//     {
-//         $this->logger = $logger;
-//     }
-//     public function getPreSetSiteTransientUpdateHook(): PreSetSiteTransientUpdateHookInterface {
-//         new UpdateCheckProvider
-//         return new PreSetSiteTransientUpdateHookV1($logger);
-//     }
-// }
-class UpdateCheckProviderFactoryPlugin
+class CheckUpdateProviderFactoryPlugin
 {
     protected string $filePath;
     protected RemoteClientPlugin $remoteClient;
@@ -967,16 +1085,16 @@ class UpdateCheckProviderFactoryPlugin
         $this->filePath = $filePath;
         $this->remoteClient = $remoteClient;
     }
-    public function getUpdateCheckProvider(): UpdateCheckProviderInterface
+    public function getCheckUpdateProvider(): CheckUpdateProviderInterface
     {
-        return new UpdateCheckProviderV1(
-            new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
-            new PackageMetaForUpdateCheckProviderPluginRemote(
+        return new CheckUpdateProviderV1(
+            new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
+            new PackageMetaForCheckUpdateProviderPluginRemote(
                 $this->remoteClient,
                 new PackageMetaUnwrapper()
             ),
-            new FormatMetaForUpdateCheckProviderPluginV1(
-                new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
+            new FormatMetaForCheckUpdateProviderPluginV1(
+                new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
                 $this->remoteClient->getPackageMeta()
             )
         );
