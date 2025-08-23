@@ -3,62 +3,79 @@
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Rules\Core\Simple;
+use Monolog\Logger; // The Logger instance
+use Monolog\Handler\ErrorLogHandler; // The StreamHandler sends log messages to a file on your disk
+use Monolog\Level;
 
-interface UpdateCheckProviderInterface extends FormatMetaForTransientProviderInterface
+interface Initable
 {
-    public function getLocalPackageSlug(): string;
-    public function getLocalPackageVersion(): string;
-    public function getRemotePackageVersion(): string;
+    public function init(): void;
 }
-interface PreSetSiteTransientUpdateHookInterface
+
+class AutoUpdaterPluginV1 implements Initable
 {
-    public function handle(object $transient): object;
+    private Initable $updateCheckHook;
+    private Initable $checkInfoHook;
+    public function __construct()
+    {
+        $this->updateCheckHook = new UpdateCheckerPluginV1();
+        $this->checkInfoHook = new CheckInfoHookPlugin;
+    }
+    public function init(): void
+    {
+        $this->updateCheckHook->init();
+        $this->checkInfoHook->init();
+    }
 }
-class PreSetSiteTransientUpdateHookPlugin implements PreSetSiteTransientUpdateHookInterface
+class UpdateCheckerPluginV1 implements Initable
 {
-    protected string $filePath;
-    protected RemoteClientPlugin $remoteClient;
+    private UpdateCheckInterface $updateCheck;
+    private UpdateCheckProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientPlugin $remoteClient, Psr\Log\LoggerInterface $logger)
+    private RemoteClientPlugin $client;
+    private string $filePath;
+    private string $baseURL;
+    private string $metaKey;
+    private string $loggerName;
+    public function __construct()
     {
-        $this->filePath = $filePath;
-        $this->remoteClient = $remoteClient;
-        $this->logger = $logger;
+        $this->filePath = 'filepath here';
+        $this->baseURL = 'baseUrl here';
+        $this->metaKey = 'metakey here';
+        $this->loggerName = 'WPPackageAutoUpdater';
+        $this->logger = new Logger($this->loggerName, [new ErrorLogHandler(3, Level::Debug)]);
+        $this->client = new ORASHubClientPlugin($this->baseURL, $this->metaKey);
+        $this->provider = new UpdateCheckProviderV1(
+            new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
+            new PackageMetaForUpdateCheckProviderPluginRemote($this->client, new PackageMetaUnwrapper()),
+            new FormatMetaForTransientProviderPluginV1(new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+        );
+        $this->updateCheck = new UpdateCheckV1($this->provider, $this->logger);
     }
-    public function handle(object $transient): object
+    public function init(): void
     {
-        $updateCheck = (new UpdateCheckFactory($this->filePath, $this->remoteClient, $this->logger))->getUpdateCheck();
-        return $updateCheck->checkUpdate($transient);
+        add_filter('pre_set_site_transient_update_plugins', array($this->updateCheck, 'checkUpdate'));
     }
 }
-class UpdateCheckFactory
+class CheckInfoHookPlugin implements Initable
 {
-    protected string $filePath;
-    protected RemoteClientPlugin $remoteClient;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientPlugin $remoteClient, Psr\Log\LoggerInterface $logger)
+    public function init(): void
     {
-        $this->filePath = $filePath;
-        $this->remoteClient = $remoteClient;
-        $this->logger = $logger;
-    }
-    public function getUpdateCheck(): UpdateCheckInterface
-    {
-        return new UpdateCheck((new UpdateCheckProviderFactoryPlugin($this->filePath, $this->remoteClient))->getUpdateCheckProvider(), $this->logger);
+        add_filter('plugins_api', array(&$this, 'check_info'), 10, 3);
     }
 }
 interface UpdateCheckInterface
 {
     public function checkUpdate(object $transient): object;
 }
-class UpdateCheck implements UpdateCheckInterface
+class UpdateCheckV1 implements UpdateCheckInterface
 {
     private UpdateCheckProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
     function __construct(UpdateCheckProviderInterface $provider, Psr\Log\LoggerInterface $logger)
     {
-        $this->provider = $provider;
         $this->logger = $logger;
+        $this->provider = $provider;
     }
     public function checkUpdate(object $transient): object
     {
@@ -80,6 +97,18 @@ class UpdateCheck implements UpdateCheckInterface
         return $transient;
     }
 }
+
+interface UpdateCheckProviderInterface extends FormatMetaForTransientProviderInterface
+{
+    public function getLocalPackageSlug(): string;
+    public function getLocalPackageVersion(): string;
+    public function getRemotePackageVersion(): string;
+}
+interface PreSetSiteTransientUpdateHookInterface
+{
+    public function handle(object $transient): object;
+}
+
 interface PackageMetaForUpdateCheckProviderInterface
 {
     public function getShortSlug(): string;
@@ -386,6 +415,214 @@ class ORASHubClientPlugin implements RemoteClientPlugin
         $meta_json = $json['annotations'][$this->metaAnnotationKey];
         $meta = json_decode($meta_json, false);
         return new PackageMetaORASHubFromObjectPlugin($meta);
+    }
+}
+class PackageMetaForDetailsProviderPluginRemoteV1 implements PackageMetaForDetailsProviderPluginInterface
+{
+    private RemoteClientPlugin $remoteClient;
+    private ?PackageMetaForDetailsProviderPluginInterface $meta;
+    public function __construct(RemoteClientPlugin $remoteClient)
+    {
+        $this->remoteClient = $remoteClient;
+        $this->meta = null;
+    }
+    private function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface
+    {
+        if (null !== $this->meta) {
+            return $this->meta;
+        }
+        $this->meta = $this->remoteClient->getPackageMeta();
+        return $this->meta;
+    }
+    public function getShortSlug(): string
+    {
+        return $this->getPackageMeta()->shortSlug;
+    }
+    public function getFullSlug(): string
+    {
+        return $this->getPackageMeta()->fullSlug;
+    }
+    public function getVersion(): string
+    {
+        return $this->getPackageMeta()->version;
+    }
+    public function getDownloadURL(): string
+    {
+        return $this->getPackageMeta()->downloadURL;
+    }
+    public function getName(): ?string
+    {
+        return $this->getPackageMeta()->name;
+    }
+    public function getViewURL(): ?string
+    {
+        return $this->getPackageMeta()->viewURL;
+    }
+    public function getTested(): ?string
+    {
+        return $this->getPackageMeta()->tested;
+    }
+    public function getStable(): ?string
+    {
+        return $this->getPackageMeta()->stable;
+    }
+    public function getTags(): array
+    {
+        return $this->getPackageMeta()->tags;
+    }
+    public function getAuthor(): ?string
+    {
+        return $this->getPackageMeta()->author;
+    }
+    public function getAuthorURL(): ?string
+    {
+        return $this->getPackageMeta()->authorURL;
+    }
+    public function getLicense(): ?string
+    {
+        return $this->getPackageMeta()->license;
+    }
+    public function getLicenseURL(): ?string
+    {
+        return $this->getPackageMeta()->licenseURL;
+    }
+    public function getShortDescription(): ?string
+    {
+        return $this->getPackageMeta()->shortDescription;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->getPackageMeta()->description;
+    }
+    public function getRequiresWordPressVersion(): ?string
+    {
+        return $this->getPackageMeta()->requiresWordPressVersion;
+    }
+    public function getRequiresPHPVersion(): ?string
+    {
+        return $this->getPackageMeta()->requiresPHPVersion;
+    }
+    public function getTextDomain(): ?string
+    {
+        return $this->getPackageMeta()->textDomain;
+    }
+    public function getDomainPath(): ?string
+    {
+        return $this->getPackageMeta()->domainPath;
+    }
+    public function getRequiresPlugins(): array
+    {
+        return $this->getPackageMeta()->requiresPlugins;
+    }
+    public function getPluginFile(): string
+    {
+        return $this->getPackageMeta()->pluginFile;
+    }
+    public function getSections(): array
+    {
+        return $this->getPackageMeta()->sections;
+    }
+    public function getNetwork(): bool
+    {
+        return $this->getPackageMeta()->network;
+    }
+}
+class PackageMetaForDetailsProviderThemeRemoteV1 implements PackageMetaForDetailsProviderThemeInterface
+{
+    private RemoteClientTheme $remoteClient;
+    private ?PackageMetaForDetailsProviderThemeInterface $meta;
+    public function __construct(RemoteClientTheme $remoteClient)
+    {
+        $this->remoteClient = $remoteClient;
+        $this->meta = null;
+    }
+    private function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface
+    {
+        if (null !== $this->meta) {
+            return $this->meta;
+        }
+        $this->meta = $this->remoteClient->getPackageMeta();
+        return $this->meta;
+    }
+    public function getShortSlug(): string
+    {
+        return $this->getPackageMeta()->shortSlug;
+    }
+    public function getFullSlug(): string
+    {
+        return $this->getPackageMeta()->fullSlug;
+    }
+    public function getVersion(): string
+    {
+        return $this->getPackageMeta()->version;
+    }
+    public function getDownloadURL(): string
+    {
+        return $this->getPackageMeta()->downloadURL;
+    }
+    public function getName(): ?string
+    {
+        return $this->getPackageMeta()->name;
+    }
+    public function getViewURL(): ?string
+    {
+        return $this->getPackageMeta()->viewURL;
+    }
+    public function getTested(): ?string
+    {
+        return $this->getPackageMeta()->tested;
+    }
+    public function getStable(): ?string
+    {
+        return $this->getPackageMeta()->stable;
+    }
+    public function getTags(): array
+    {
+        return $this->getPackageMeta()->tags;
+    }
+    public function getAuthor(): ?string
+    {
+        return $this->getPackageMeta()->author;
+    }
+    public function getAuthorURL(): ?string
+    {
+        return $this->getPackageMeta()->authorURL;
+    }
+    public function getLicense(): ?string
+    {
+        return $this->getPackageMeta()->license;
+    }
+    public function getLicenseURL(): ?string
+    {
+        return $this->getPackageMeta()->licenseURL;
+    }
+    public function getShortDescription(): ?string
+    {
+        return $this->getPackageMeta()->shortDescription;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->getPackageMeta()->description;
+    }
+    public function getRequiresWordPressVersion(): ?string
+    {
+        return $this->getPackageMeta()->requiresWordPressVersion;
+    }
+    public function getRequiresPHPVersion(): ?string
+    {
+        return $this->getPackageMeta()->requiresPHPVersion;
+    }
+    public function getTextDomain(): ?string
+    {
+        return $this->getPackageMeta()->textDomain;
+    }
+    public function getDomainPath(): ?string
+    {
+        return $this->getPackageMeta()->domainPath;
+    }
+    public function getRequiresPlugins(): array
+    {
+        return $this->getPackageMeta()->requiresPlugins;
     }
 }
 class ORASHubClientTheme implements RemoteClientTheme
