@@ -48,7 +48,7 @@ class UpdateCheckerPluginV1 implements Initable
         $this->provider = new UpdateCheckProviderV1(
             new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
             new PackageMetaForUpdateCheckProviderPluginRemote($this->client, new PackageMetaUnwrapper()),
-            new FormatMetaForTransientProviderPluginV1(new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+            new FormatMetaForUpdateCheckProviderPluginV1(new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
         );
         $this->updateCheck = new UpdateCheckV1($this->provider, $this->logger);
     }
@@ -86,9 +86,9 @@ class UpdateCheckV1 implements UpdateCheckInterface
         }
         try {
             if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
-                $transient->response = $this->provider->formatMetaForTransient($transient->response, $this->provider->getLocalPackageSlug());
+                $transient->response = $this->provider->formatMetaForUpdateCheck($transient->response, $this->provider->getLocalPackageSlug());
             } else {
-                $transient->no_update = $this->provider->formatMetaForTransient($transient->no_update, $this->provider->getLocalPackageSlug());
+                $transient->no_update = $this->provider->formatMetaForUpdateCheck($transient->no_update, $this->provider->getLocalPackageSlug());
             }
         } catch (Exception $e) {
             $this->logger->error('Unable to get remote package version: ' . $e);
@@ -98,7 +98,7 @@ class UpdateCheckV1 implements UpdateCheckInterface
     }
 }
 
-interface UpdateCheckProviderInterface extends FormatMetaForTransientProviderInterface
+interface UpdateCheckProviderInterface extends FormatMetaForUpdateCheckProviderInterface
 {
     public function getLocalPackageSlug(): string;
     public function getLocalPackageVersion(): string;
@@ -146,20 +146,20 @@ interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDet
     public function getNetwork(): bool;
 }
 interface PackageMetaProviderInterface extends PackageMetaProviderInterface {}
-interface FormatMetaForTransientProviderInterface
+interface FormatMetaForUpdateCheckProviderInterface
 {
-    public function formatMetaForTransient(array $response, string $key): array;
+    public function formatMetaForUpdateCheck(array $response, string $key): array;
 }
-class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaForTransientProviderInterface
+class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaForUpdateCheckProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider;
-    private FormatMetaForTransientProviderInterface $formatMetaForTransientProvider;
-    public function __construct(PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider, PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider, FormatMetaForTransientProviderInterface $formatMetaForTransientProvider)
+    private FormatMetaForUpdateCheckProviderInterface $formatMetaForUpdateCheckProvider;
+    public function __construct(PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider, PackageMetaForUpdateCheckProviderInterface $remotePackageMetaProvider, FormatMetaForUpdateCheckProviderInterface $formatMetaForUpdateCheckProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-        $this->formatMetaForTransientProvider = $formatMetaForTransientProvider;
+        $this->formatMetaForUpdateCheckProvider = $formatMetaForUpdateCheckProvider;
     }
     public function getLocalPackageSlug(): string
     {
@@ -173,12 +173,12 @@ class UpdateCheckProviderV1 implements UpdateCheckProviderInterface, FormatMetaF
     {
         return $this->remotePackageMetaProvider->getVersion();
     }
-    public function formatMetaForTransient(array $response, string $key): array
+    public function formatMetaForUpdateCheck(array $response, string $key): array
     {
-        return $this->formatMetaForTransientProvider->formatMetaForTransient($response, $key);
+        return $this->formatMetaForUpdateCheckProvider->formatMetaForUpdateCheck($response, $key);
     }
 }
-class FormatMetaForTransientProviderPluginV1 implements FormatMetaForTransientProviderInterface
+class FormatMetaForUpdateCheckProviderPluginV1 implements FormatMetaForUpdateCheckProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider;
@@ -187,7 +187,7 @@ class FormatMetaForTransientProviderPluginV1 implements FormatMetaForTransientPr
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForTransient(array $response, string $key): array
+    public function formatMetaForUpdateCheck(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
@@ -198,7 +198,7 @@ class FormatMetaForTransientProviderPluginV1 implements FormatMetaForTransientPr
         return $response;
     }
 }
-class FormatMetaForTransientProviderThemeV1 implements FormatMetaForTransientProviderInterface
+class FormatMetaForUpdateCheckProviderThemeV1 implements FormatMetaForUpdateCheckProviderInterface
 {
     private PackageMetaForUpdateCheckProviderInterface $localPackageMetaProvider;
     private PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider;
@@ -207,7 +207,7 @@ class FormatMetaForTransientProviderThemeV1 implements FormatMetaForTransientPro
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
-    public function formatMetaForTransient(array $response, string $key): array
+    public function formatMetaForUpdateCheck(array $response, string $key): array
     {
         $metaObject = new stdClass();
         $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
@@ -975,7 +975,7 @@ class UpdateCheckProviderFactoryPlugin
                 $this->remoteClient,
                 new PackageMetaUnwrapper()
             ),
-            new FormatMetaForTransientProviderPluginV1(
+            new FormatMetaForUpdateCheckProviderPluginV1(
                 new PackageMetaForUpdateCheckProviderPluginLocal($this->filePath),
                 $this->remoteClient->getPackageMeta()
             )
