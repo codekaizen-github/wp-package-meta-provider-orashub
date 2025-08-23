@@ -16,16 +16,12 @@ class AutoUpdatePluginV1 implements Initable
 {
     private Initable $checkUpdateHook;
     private Initable $checkInfoHook;
-    public function __construct()
+    public function __construct(string $filePath, string $baseURL, $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', $loggerName = 'WPPackageAutoUpdate')
     {
-        $filePath = 'filepath here';
-        $baseURL = 'baseUrl here';
-        $metaKey = 'metakey here';
-        $loggerName = 'WPPackageAutoUpdate';
         $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
         $client = new ORASHubClientPlugin($baseURL, $metaKey);
         $this->checkUpdateHook = new CheckUpdatePluginV1($filePath, $client, $logger);
-        $this->checkInfoHook = new CheckInfoHookPlugin($filePath, $client, $logger);
+        $this->checkInfoHook = new CheckInfoHookPluginV1($filePath, $client, $logger);
     }
     public function init(): void
     {
@@ -33,37 +29,55 @@ class AutoUpdatePluginV1 implements Initable
         $this->checkInfoHook->init();
     }
 }
-class CheckUpdatePluginV1 implements Initable
+class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
 {
-    private CheckUpdateInterface $checkUpdate;
+    private string $filePath;
+    private ORASHubClientPlugin $client;
+    private Psr\Log\LoggerInterface $logger;
     public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
+    {
+        $this->filePath = $filePath;
+        $this->client = $client;
+        $this->logger = $logger;
+    }
+    public function init(): void
+    {
+        add_filter('pre_set_site_transient_update_plugins', array($this, 'checkUpdate'));
+    }
+    public function checkUpdate(object $transient): object
     {
         $provider = new CheckUpdateProviderV1(
-            new PackageMetaForCheckUpdateProviderPluginLocal($filePath),
-            new PackageMetaForCheckUpdateProviderPluginRemote($client, new PackageMetaUnwrapper()),
-            new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($filePath), new PackageMetaForDetailsProviderPluginRemoteV1($client))
+            new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
+            new PackageMetaForCheckUpdateProviderPluginRemote($this->client, new PackageMetaUnwrapper()),
+            new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
         );
-        $this->checkUpdate = new CheckUpdateV1($provider, $logger);
-    }
-    public function init(): void
-    {
-        add_filter('pre_set_site_transient_update_plugins', array($this->checkUpdate, 'checkUpdate'));
+        $checkUpdate = new CheckUpdateV1($provider, $this->logger);
+        return $checkUpdate->checkUpdate($transient);
     }
 }
-class CheckInfoHookPlugin implements Initable
+class CheckInfoHookPluginV1 implements Initable, CheckInfoInterface
 {
-    private CheckInfoInterface $checkInfo;
+    private string $filePath;
+    private ORASHubClientPlugin $client;
+    private Psr\Log\LoggerInterface $logger;
     public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
     {
-        $provider = new CheckInfoProviderV1(
-            new PackageMetaForCheckInfoProviderInterface($filePath),
-            new FormatMetaForCheckInfoProviderPluginV1(new PackageMetaForDetailsProviderPluginRemoteV1($client))
-        );
-        $this->checkInfo = new CheckInfoV1($provider, $logger);
+        $this->filePath = $filePath;
+        $this->client = $client;
+        $this->logger = $logger;
     }
     public function init(): void
     {
-        add_filter('plugins_api', array($this->checkInfo, 'checkInfo'), 10, 3);
+        add_filter('plugins_api', array($this, 'checkInfo'), 10, 3);
+    }
+    public function checkInfo(bool $false, array $action, object $arg): bool|object
+    {
+        $provider = new CheckInfoProviderV1(
+            new PackageMetaForCheckInfoProviderInterface($this->filePath),
+            new FormatMetaForCheckInfoProviderPluginV1(new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+        );
+        $checkInfo = new CheckInfoV1($provider, $this->logger);
+        return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
 interface CheckInfoInterface
