@@ -99,7 +99,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateFormatterTheme(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForDetailsProviderThemeRemoteV1($this->client)))
+            new FormatMetaForCheckUpdateFormatterTheme(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForCheckUpdateProviderRemote($this->client)))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
