@@ -45,10 +45,9 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
     }
     public function checkUpdate(object $transient): object
     {
-        $provider = new CheckUpdateProviderV1(
+        $provider = new CheckUpdateProviderPlugin(
             new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateFormatterPlugin(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForCheckUpdateProviderRemote($this->client)))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -96,10 +95,9 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
     }
     public function checkUpdate(object $transient): object
     {
-        $provider = new CheckUpdateProviderV1(
+        $provider = new CheckUpdateProviderTheme(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateFormatterTheme(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForCheckUpdateProviderRemote($this->client)))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -322,16 +320,14 @@ interface FormatMetaForCheckUpdateFormatterInterface
 {
     public function formatMetaForCheckUpdate(array $response, string $key): array;
 }
-class CheckUpdateProviderV1 implements CheckUpdateProviderInterface
+class CheckUpdateProviderPlugin implements CheckUpdateProviderInterface
 {
     private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
     private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
-    private FormatMetaForCheckUpdateFormatterInterface $formatMetaForCheckUpdateFormatter;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider, FormatMetaForCheckUpdateFormatterInterface $formatMetaForCheckUpdateFormatter)
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-        $this->formatMetaForCheckUpdateFormatter = $formatMetaForCheckUpdateFormatter;
     }
     public function getLocalPackageSlug(): string
     {
@@ -347,7 +343,35 @@ class CheckUpdateProviderV1 implements CheckUpdateProviderInterface
     }
     public function formatMetaForCheckUpdate(array $response, string $key): array
     {
-        return $this->formatMetaForCheckUpdateFormatter->formatMetaForCheckUpdate($response, $key);
+        $formatter = new FormatMetaForCheckUpdateFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        return $formatter->formatMetaForCheckUpdate($response, $key);
+    }
+}
+class CheckUpdateProviderTheme implements CheckUpdateProviderInterface
+{
+    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
+    private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    {
+        $this->localPackageMetaProvider = $localPackageMetaProvider;
+        $this->remotePackageMetaProvider = $remotePackageMetaProvider;
+    }
+    public function getLocalPackageSlug(): string
+    {
+        return $this->localPackageMetaProvider->getFullSlug();
+    }
+    public function getLocalPackageVersion(): string
+    {
+        return $this->localPackageMetaProvider->getVersion();
+    }
+    public function getRemotePackageVersion(): string
+    {
+        return $this->remotePackageMetaProvider->getVersion();
+    }
+    public function formatMetaForCheckUpdate(array $response, string $key): array
+    {
+        $formatter = new FormatMetaForCheckUpdateFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        return $formatter->formatMetaForCheckUpdate($response, $key);
     }
 }
 class CheckInfoProviderV1 implements CheckInfoProviderInterface
