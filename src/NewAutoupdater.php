@@ -663,7 +663,7 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClient
         }
         $meta_json = $json['annotations'][$this->metaAnnotationKey];
         $meta = json_decode($meta_json, false);
-        return new PackageMetaORASHubFromObjectPlugin($meta);
+        return new ORASHubPackageMetaFromObjectPlugin($meta);
     }
 }
 class ORASHubClientTheme implements RemoteClientTheme, RemoteClient
@@ -703,10 +703,10 @@ class ORASHubClientTheme implements RemoteClientTheme, RemoteClient
         }
         $meta_json = $json['annotations'][$this->metaAnnotationKey];
         $meta = json_decode($meta_json, false);
-        return new PackageMetaORASHubFromObjectTheme($meta);
+        return new ORASHubPackageMetaFromObjectTheme($meta);
     }
 }
-class PackageMetaORASHubRulePlugin extends Simple
+class ORASHubPackageMetaRulePlugin extends Simple
 {
     public function isValid(mixed $input): bool
     {
@@ -719,7 +719,7 @@ class PackageMetaORASHubRulePlugin extends Simple
             ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
     }
 }
-class PackageMetaORASHubRuleTheme extends Simple
+class ORASHubPackageMetaRuleTheme extends Simple
 {
     public function isValid(mixed $input): bool
     {
@@ -732,12 +732,12 @@ class PackageMetaORASHubRuleTheme extends Simple
             ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
     }
 }
-class PackageMetaORASHubFromObjectPlugin implements PackageMetaDetailsPluginInterface
+class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInterface
 {
     private object $stdObj;
     public function __construct(object $stdObj)
     {
-        Validator::create(new PackageMetaORASHubRulePlugin())->check($stdObj);
+        Validator::create(new ORASHubPackageMetaRulePlugin())->check($stdObj);
         $this->stdObj = $stdObj;
     }
     public function getShortSlug(): string
@@ -833,12 +833,12 @@ class PackageMetaORASHubFromObjectPlugin implements PackageMetaDetailsPluginInte
         return $this->stdObj->network;
     }
 }
-class PackageMetaORASHubFromObjectTheme implements PackageMetaDetailsThemeInterface
+class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterface
 {
     private object $stdObj;
     public function __construct(object $stdObj)
     {
-        Validator::create(new PackageMetaORASHubRuleTheme())->check($stdObj);
+        Validator::create(new ORASHubPackageMetaRuleTheme())->check($stdObj);
         $this->stdObj = $stdObj;
     }
     public function getShortSlug(): string
