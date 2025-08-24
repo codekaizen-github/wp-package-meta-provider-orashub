@@ -7,14 +7,14 @@ use Monolog\Logger; // The Logger instance
 use Monolog\Handler\ErrorLogHandler; // The StreamHandler sends log messages to a file on your disk
 use Monolog\Level;
 
-interface Initable
+interface InitializerInterface
 {
     public function init(): void;
 }
-class AutoUpdaterThemeORASHubV1 implements Initable
+class AutoUpdaterThemeORASHubV1 implements InitializerInterface
 {
-    private Initable $checkUpdateHook;
-    private Initable $checkInfoHook;
+    private InitializerInterface $checkUpdateHook;
+    private InitializerInterface $checkInfoHook;
     public function __construct(string $filePath, string $baseURL, $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', $loggerName = 'WPPackageAutoUpdate')
     {
         $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
@@ -28,7 +28,7 @@ class AutoUpdaterThemeORASHubV1 implements Initable
         $this->checkInfoHook->init();
     }
 }
-class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
+class CheckUpdatePluginV1 implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
     private RemoteClientForPackageUpdate $client;
@@ -53,7 +53,7 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
         return $checkUpdate->checkUpdate($transient);
     }
 }
-class CheckInfoHookPluginV1 implements Initable, CheckInfoInterface
+class CheckInfoHookPluginV1 implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientPlugin $client;
@@ -78,7 +78,7 @@ class CheckInfoHookPluginV1 implements Initable, CheckInfoInterface
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
-class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
+class CheckUpdateThemeV1 implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
     private RemoteClientForPackageUpdate $client;
@@ -103,7 +103,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
         return $checkUpdate->checkUpdate($transient);
     }
 }
-class CheckInfoHookThemeV1 implements Initable, CheckInfoInterface
+class CheckInfoHookThemeV1 implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientTheme $client;
