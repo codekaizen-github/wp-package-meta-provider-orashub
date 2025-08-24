@@ -6,6 +6,7 @@ use Respect\Validation\Rules\Core\Simple;
 use Monolog\Logger; // The Logger instance
 use Monolog\Handler\ErrorLogHandler; // The StreamHandler sends log messages to a file on your disk
 use Monolog\Level;
+use Psr\Log\LoggerInterface;
 
 interface InitializerInterface
 {
@@ -139,8 +140,8 @@ class CheckUpdateHookPlugin implements InitializerInterface, CheckUpdateInterfac
 {
     private string $filePath;
     private RemoteClientInterface $client;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientInterface $client, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    public function __construct(string $filePath, RemoteClientInterface $client, LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -164,8 +165,8 @@ class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientPlugin $client;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    public function __construct(string $filePath, ORASHubClientPlugin $client, LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -189,8 +190,8 @@ class CheckUpdateHookTheme implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
     private RemoteClientInterface $client;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientInterface $client, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    public function __construct(string $filePath, RemoteClientInterface $client, LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -214,8 +215,8 @@ class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientTheme $client;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, ORASHubClientTheme $client, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    public function __construct(string $filePath, ORASHubClientTheme $client, LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -238,8 +239,8 @@ class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
 class CheckUpdate implements CheckUpdateInterface
 {
     private CheckUpdateProviderInterface $provider;
-    private Psr\Log\LoggerInterface $logger;
-    function __construct(CheckUpdateProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    function __construct(CheckUpdateProviderInterface $provider, LoggerInterface $logger)
     {
         $this->provider = $provider;
         $this->logger = $logger;
@@ -267,8 +268,8 @@ class CheckUpdate implements CheckUpdateInterface
 class CheckInfo implements CheckInfoInterface
 {
     private CheckInfoProviderInterface $provider;
-    private Psr\Log\LoggerInterface $logger;
-    public function __construct(CheckInfoProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    private LoggerInterface $logger;
+    public function __construct(CheckInfoProviderInterface $provider, LoggerInterface $logger)
     {
         $this->provider = $provider;
         $this->logger = $logger;
