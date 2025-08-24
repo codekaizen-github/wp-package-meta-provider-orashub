@@ -48,7 +48,7 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+            new FormatMetaForCheckUpdateProvider(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -99,7 +99,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateProviderThemeV1(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForDetailsProviderThemeRemoteV1($this->client))
+            new FormatMetaForCheckUpdateProvider(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForDetailsProviderThemeRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -226,11 +226,14 @@ interface PackageMetaForCheckUpdateProviderInterface extends PackageMetaForCheck
     public function getShortSlug(): string;
     public function getVersion(): string;
 }
-interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateProviderInterface
+interface PackageMetaForCheckUpdateWithRemoteProviderInterface extends PackageMetaForCheckUpdateProviderInterface
 {
     public function getDownloadURL(): string;
-    public function getName(): ?string;
     public function getViewURL(): ?string;
+}
+interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateWithRemoteProviderInterface
+{
+    public function getName(): ?string;
     public function getTested(): ?string;
     public function getStable(): ?string;
     /** @return string[] */
@@ -366,31 +369,11 @@ class CheckInfoProviderV1 implements CheckInfoProviderInterface
         return $this->formatMetaForCheckInfoProvider->formatMetaForCheckInfo();
     }
 }
-class FormatMetaForCheckUpdateProviderPluginV1 implements FormatMetaForCheckUpdateProviderInterface
+class FormatMetaForCheckUpdateProvider implements FormatMetaForCheckUpdateProviderInterface
 {
     private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
-    private PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderPluginInterface $remotePackageMetaProvider)
-    {
-        $this->localPackageMetaProvider = $localPackageMetaProvider;
-        $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-    }
-    public function formatMetaForCheckUpdate(array $response, string $key): array
-    {
-        $metaObject = new stdClass();
-        $metaObject->slug = $this->localPackageMetaProvider->getShortSlug();
-        $metaObject->new_version = $this->remotePackageMetaProvider->getVersion();
-        $metaObject->package = $this->remotePackageMetaProvider->getDownloadURL();
-        $metaObject->url = $this->remotePackageMetaProvider->getViewURL();
-        $response[$key] = $metaObject;
-        return $response;
-    }
-}
-class FormatMetaForCheckUpdateProviderThemeV1 implements FormatMetaForCheckUpdateProviderInterface
-{
-    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
-    private PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForDetailsProviderThemeInterface $remotePackageMetaProvider)
+    private PackageMetaForCheckUpdateWithRemoteProviderInterface $remotePackageMetaProvider;
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateWithRemoteProviderInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
