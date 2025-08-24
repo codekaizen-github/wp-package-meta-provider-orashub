@@ -48,7 +48,7 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
             new PackageMetaForCheckUpdateProviderRemote($this->client),
-            new FormatMetaForCheckUpdateFormatterPlugin(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client)))
+            new FormatMetaForCheckUpdateFormatterPlugin(new FormatMetaForFormatMetaForCheckUpdateFormatterProvider(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForCheckUpdateProviderRemote($this->client)))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -322,7 +322,7 @@ interface FormatMetaForCheckUpdateFormatterInterface
 {
     public function formatMetaForCheckUpdate(array $response, string $key): array;
 }
-class CheckUpdateProviderV1 implements CheckUpdateProviderInterface, FormatMetaForCheckUpdateFormatterInterface
+class CheckUpdateProviderV1 implements CheckUpdateProviderInterface
 {
     private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
     private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
@@ -586,7 +586,7 @@ class PackageMetaForCheckUpdateProviderThemeLocal implements PackageMetaForCheck
 }
 interface RemoteClientForPackageUpdate
 {
-    public function getPackageMeta(): PackageMetaForCheckUpdateProviderInterface;
+    public function getPackageMeta(): PackageMetaForCheckUpdateWithRemoteProviderInterface;
 }
 interface RemoteClientPlugin
 {
@@ -1102,7 +1102,7 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
         return $this->stdObj->requiresPlugins;
     }
 }
-class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpdateProviderInterface
+class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface
 {
     private RemoteClientForPackageUpdate $remoteClient;
     public function __construct(RemoteClientForPackageUpdate $remoteClient)
@@ -1120,5 +1120,13 @@ class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpda
     public function getFullSlug(): string
     {
         return $this->remoteClient->getPackageMeta()->getFullSlug();
+    }
+    public function getDownloadURL(): string
+    {
+        return $this->remoteClient->getPackageMeta()->getDownloadURL();
+    }
+    public function getViewURL(): ?string
+    {
+        return $this->remoteClient->getPackageMeta()->getViewURL();
     }
 }
