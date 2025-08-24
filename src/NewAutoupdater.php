@@ -326,12 +326,12 @@ class CheckUpdateProviderV1 implements CheckUpdateProviderInterface, FormatMetaF
 {
     private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
     private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
-    private FormatMetaForCheckUpdateFormatterInterface $FormatMetaForCheckUpdateFormatter;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider, FormatMetaForCheckUpdateFormatterInterface $FormatMetaForCheckUpdateFormatter)
+    private FormatMetaForCheckUpdateFormatterInterface $formatMetaForCheckUpdateFormatter;
+    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider, FormatMetaForCheckUpdateFormatterInterface $formatMetaForCheckUpdateFormatter)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-        $this->FormatMetaForCheckUpdateFormatter = $FormatMetaForCheckUpdateFormatter;
+        $this->formatMetaForCheckUpdateFormatter = $formatMetaForCheckUpdateFormatter;
     }
     public function getLocalPackageSlug(): string
     {
@@ -347,7 +347,7 @@ class CheckUpdateProviderV1 implements CheckUpdateProviderInterface, FormatMetaF
     }
     public function formatMetaForCheckUpdate(array $response, string $key): array
     {
-        return $this->FormatMetaForCheckUpdateFormatter->formatMetaForCheckUpdate($response, $key);
+        return $this->formatMetaForCheckUpdateFormatter->formatMetaForCheckUpdate($response, $key);
     }
 }
 class CheckInfoProviderV1 implements CheckInfoProviderInterface
