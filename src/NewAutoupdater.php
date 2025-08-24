@@ -11,6 +11,23 @@ interface InitializerInterface
 {
     public function init(): void;
 }
+class AutoUpdaterPluginORASHubV1 implements InitializerInterface
+{
+    private InitializerInterface $checkUpdateHook;
+    private InitializerInterface $checkInfoHook;
+    public function __construct(string $filePath, string $baseURL, $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', $loggerName = 'WPPackageAutoUpdate')
+    {
+        $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
+        $client = new ORASHubClientPlugin($baseURL, $metaKey);
+        $this->checkUpdateHook = new CheckUpdateHookPlugin($filePath, $client, $logger);
+        $this->checkInfoHook = new CheckInfoHookPlugin($filePath, $client, $logger);
+    }
+    public function init(): void
+    {
+        $this->checkUpdateHook->init();
+        $this->checkInfoHook->init();
+    }
+}
 class AutoUpdaterThemeORASHubV1 implements InitializerInterface
 {
     private InitializerInterface $checkUpdateHook;
@@ -19,8 +36,8 @@ class AutoUpdaterThemeORASHubV1 implements InitializerInterface
     {
         $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
         $client = new ORASHubClientTheme($baseURL, $metaKey);
-        $this->checkUpdateHook = new CheckUpdateThemeV1($filePath, $client, $logger);
-        $this->checkInfoHook = new CheckInfoHookThemeV1($filePath, $client, $logger);
+        $this->checkUpdateHook = new CheckUpdateHookTheme($filePath, $client, $logger);
+        $this->checkInfoHook = new CheckInfoHookTheme($filePath, $client, $logger);
     }
     public function init(): void
     {
@@ -28,7 +45,7 @@ class AutoUpdaterThemeORASHubV1 implements InitializerInterface
         $this->checkInfoHook->init();
     }
 }
-class CheckUpdatePluginV1 implements InitializerInterface, CheckUpdateInterface
+class CheckUpdateHookPlugin implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
     private RemoteClientForPackageUpdate $client;
@@ -46,14 +63,14 @@ class CheckUpdatePluginV1 implements InitializerInterface, CheckUpdateInterface
     public function checkUpdate(object $transient): object
     {
         $provider = new CheckUpdateProviderPlugin(
-            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderLocalPlugin($this->filePath),
             new PackageMetaProviderRemote($this->client),
         );
-        $checkUpdate = new CheckUpdateV1($provider, $this->logger);
+        $checkUpdate = new CheckUpdate($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
     }
 }
-class CheckInfoHookPluginV1 implements InitializerInterface, CheckInfoInterface
+class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientPlugin $client;
@@ -71,14 +88,14 @@ class CheckInfoHookPluginV1 implements InitializerInterface, CheckInfoInterface
     public function checkInfo(bool $false, array $action, object $arg): bool|object
     {
         $provider = new CheckInfoProviderPlugin(
-            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderLocalPlugin($this->filePath),
             new PackageMetaProviderRemote($this->client),
         );
-        $checkInfo = new CheckInfoV1($provider, $this->logger);
+        $checkInfo = new CheckInfo($provider, $this->logger);
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
-class CheckUpdateThemeV1 implements InitializerInterface, CheckUpdateInterface
+class CheckUpdateHookTheme implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
     private RemoteClientForPackageUpdate $client;
@@ -96,14 +113,14 @@ class CheckUpdateThemeV1 implements InitializerInterface, CheckUpdateInterface
     public function checkUpdate(object $transient): object
     {
         $provider = new CheckUpdateProviderTheme(
-            new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
+            new PackageMetaProviderLocalTheme($this->filePath),
             new PackageMetaProviderRemote($this->client),
         );
-        $checkUpdate = new CheckUpdateV1($provider, $this->logger);
+        $checkUpdate = new CheckUpdate($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
     }
 }
-class CheckInfoHookThemeV1 implements InitializerInterface, CheckInfoInterface
+class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private ORASHubClientTheme $client;
@@ -121,10 +138,10 @@ class CheckInfoHookThemeV1 implements InitializerInterface, CheckInfoInterface
     public function checkInfo(bool $false, array $action, object $arg): bool|object
     {
         $provider = new CheckInfoProviderTheme(
-            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderLocalTheme($this->filePath),
             new PackageMetaProviderRemote($this->client),
         );
-        $checkInfo = new CheckInfoV1($provider, $this->logger);
+        $checkInfo = new CheckInfo($provider, $this->logger);
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
@@ -142,7 +159,7 @@ interface CheckInfoInterface
      */
     public function checkInfo(bool $false, array $action, object $arg): bool|object;
 }
-class CheckInfoV1 implements CheckInfoInterface
+class CheckInfo implements CheckInfoInterface
 {
     private CheckInfoProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
@@ -176,7 +193,7 @@ interface CheckUpdateInterface
 {
     public function checkUpdate(object $transient): object;
 }
-class CheckUpdateV1 implements CheckUpdateInterface
+class CheckUpdate implements CheckUpdateInterface
 {
     private CheckUpdateProviderInterface $provider;
     private Psr\Log\LoggerInterface $logger;
@@ -476,95 +493,6 @@ class FormatMetaForCheckUpdateFormatterTheme implements FormatMetaForCheckUpdate
         $metaObject->url = $this->packageMetaProvider->getViewURL();
         $response[$key] = (array) $metaObject;
         return $response;
-    }
-}
-class PackageMetaForCheckUpdateProviderThemeLocal implements PackageMetaForCheckUpdateProviderInterface
-{
-    protected string $filePath;
-    protected string $fullSlug;
-    protected string $shortSlug;
-    /**
-     * @param string $filePath Path to the plugin file
-     * @throws \InvalidArgumentException If the file path is invalid
-     */
-    public function __construct(string $filePath)
-    {
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
-        }
-        $this->filePath = $filePath;
-        $this->fullSlug = basename(dirname($this->filePath));
-        $this->shortSlug = $this->fullSlug;
-    }
-    /**
-     * @return string
-     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
-     */
-    public function getVersion(): string
-    {
-        $packageData = $this->getPackageMeta();
-        $value = $packageData['Version'] ?? null;
-        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
-        // After validation, we can assert the type
-        /** @var string $value Type is guaranteed to be string after validation */
-        return $value;
-    }
-    /**
-     * Slug including any prefix - may contain a "/".
-     *
-     * @return string
-     */
-    public function getFullSlug(): string
-    {
-        return $this->fullSlug;
-    }
-    /**
-     * Slug minus any prefix. Should not contain a "/".
-     *
-     * @return string
-     */
-    public function getShortSlug(): string
-    {
-        return $this->shortSlug;
-    }
-    protected function getPackageMeta()
-    {
-        if (! function_exists('wp_get_theme')) {
-            require_once ABSPATH . 'wp-includes/theme.php';
-        }
-        $theme_data = wp_get_theme($this->fullSlug);
-
-        // Define all possible theme headers
-        $headers = array(
-            'Name' => 'Theme Name',
-            'ThemeURI' => 'Theme URI',
-            'Author' => 'Author',
-            'AuthorURI' => 'Author URI',
-            'Description' => 'Description',
-            'Version' => 'Version',
-            'RequiresWP' => 'Requires at least',
-            'TestedWP' => 'Tested up to',
-            'RequiresPHP' => 'Requires PHP',
-            'License' => 'License',
-            'LicenseURI' => 'License URI',
-            'TextDomain' => 'Text Domain',
-            'Tags' => 'Tags',
-            'DomainPath' => 'Domain Path',
-            'UpdateURI' => 'Update URI',
-            'Template' => 'Template',
-            'Status' => 'Status'
-        );
-
-        // Convert WP_Theme object to array for consistency
-        $result = array();
-        foreach ($headers as $key => $header) {
-            $value = $theme_data->get($key);
-            if ($value) {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
     }
 }
 interface RemoteClientForPackageUpdate
@@ -869,7 +797,7 @@ class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpd
         return new PackageMetaORASHubFromObjectTheme($meta);
     }
 }
-class PackageMetaPluginORASHubRule extends Simple
+class PackageMetaORASHubRulePlugin extends Simple
 {
     public function isValid(mixed $input): bool
     {
@@ -882,7 +810,7 @@ class PackageMetaPluginORASHubRule extends Simple
             ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
     }
 }
-class PackageMetaThemeORASHubRule extends Simple
+class PackageMetaORASHubRuleTheme extends Simple
 {
     public function isValid(mixed $input): bool
     {
@@ -900,7 +828,7 @@ class PackageMetaORASHubFromObjectPlugin implements PackageMetaForDetailsProvide
     private object $stdObj;
     public function __construct(object $stdObj)
     {
-        Validator::create(new PackageMetaPluginORASHubRule())->check($stdObj);
+        Validator::create(new PackageMetaORASHubRulePlugin())->check($stdObj);
         $this->stdObj = $stdObj;
     }
     public function getShortSlug(): string
@@ -1001,7 +929,7 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
     private object $stdObj;
     public function __construct(object $stdObj)
     {
-        Validator::create(new PackageMetaThemeORASHubRule())->check($stdObj);
+        Validator::create(new PackageMetaORASHubRuleTheme())->check($stdObj);
         $this->stdObj = $stdObj;
     }
     public function getShortSlug(): string
@@ -1085,7 +1013,7 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
         return $this->stdObj->requiresPlugins;
     }
 }
-class PackageMetaProviderLocal implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
+class PackageMetaProviderLocalPlugin implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -1143,6 +1071,95 @@ class PackageMetaProviderLocal implements PackageMetaForCheckUpdateProviderInter
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
         return get_plugin_data($this->filePath, false, false);
+    }
+}
+class PackageMetaProviderLocalTheme implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
+{
+    protected string $filePath;
+    protected string $fullSlug;
+    protected string $shortSlug;
+    /**
+     * @param string $filePath Path to the plugin file
+     * @throws \InvalidArgumentException If the file path is invalid
+     */
+    public function __construct(string $filePath)
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
+        }
+        $this->filePath = $filePath;
+        $this->fullSlug = basename(dirname($this->filePath));
+        $this->shortSlug = $this->fullSlug;
+    }
+    /**
+     * @return string
+     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
+     */
+    public function getVersion(): string
+    {
+        $packageData = $this->getPackageMeta();
+        $value = $packageData['Version'] ?? null;
+        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
+        // After validation, we can assert the type
+        /** @var string $value Type is guaranteed to be string after validation */
+        return $value;
+    }
+    /**
+     * Slug including any prefix - may contain a "/".
+     *
+     * @return string
+     */
+    public function getFullSlug(): string
+    {
+        return $this->fullSlug;
+    }
+    /**
+     * Slug minus any prefix. Should not contain a "/".
+     *
+     * @return string
+     */
+    public function getShortSlug(): string
+    {
+        return $this->shortSlug;
+    }
+    protected function getPackageMeta()
+    {
+        if (! function_exists('wp_get_theme')) {
+            require_once ABSPATH . 'wp-includes/theme.php';
+        }
+        $theme_data = wp_get_theme($this->fullSlug);
+
+        // Define all possible theme headers
+        $headers = array(
+            'Name' => 'Theme Name',
+            'ThemeURI' => 'Theme URI',
+            'Author' => 'Author',
+            'AuthorURI' => 'Author URI',
+            'Description' => 'Description',
+            'Version' => 'Version',
+            'RequiresWP' => 'Requires at least',
+            'TestedWP' => 'Tested up to',
+            'RequiresPHP' => 'Requires PHP',
+            'License' => 'License',
+            'LicenseURI' => 'License URI',
+            'TextDomain' => 'Text Domain',
+            'Tags' => 'Tags',
+            'DomainPath' => 'Domain Path',
+            'UpdateURI' => 'Update URI',
+            'Template' => 'Template',
+            'Status' => 'Status'
+        );
+
+        // Convert WP_Theme object to array for consistency
+        $result = array();
+        foreach ($headers as $key => $header) {
+            $value = $theme_data->get($key);
+            if ($value) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 }
 class PackageMetaProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface, PackageMetaForCheckInfoProviderInterface
