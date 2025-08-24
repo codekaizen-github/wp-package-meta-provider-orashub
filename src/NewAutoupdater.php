@@ -11,24 +11,7 @@ interface Initable
 {
     public function init(): void;
 }
-class AutoUpdatePluginORASHubV1 implements Initable
-{
-    private Initable $checkUpdateHook;
-    private Initable $checkInfoHook;
-    public function __construct(string $filePath, string $baseURL, $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', $loggerName = 'WPPackageAutoUpdate')
-    {
-        $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
-        $client = new ORASHubClientPlugin($baseURL, $metaKey);
-        $this->checkUpdateHook = new CheckUpdatePluginV1($filePath, $client, $logger);
-        $this->checkInfoHook = new CheckInfoHookPluginV1($filePath, $client, $logger);
-    }
-    public function init(): void
-    {
-        $this->checkUpdateHook->init();
-        $this->checkInfoHook->init();
-    }
-}
-class AutoUpdateThemeORASHubV1 implements Initable
+class AutoUpdaterThemeORASHubV1 implements Initable
 {
     private Initable $checkUpdateHook;
     private Initable $checkInfoHook;
@@ -64,7 +47,7 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
     {
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderPluginRemote($this->client, new PackageMetaUnwrapper()),
+            new PackageMetaForCheckUpdateProviderRemote($this->client, new PackageMetaUnwrapper()),
             new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
@@ -115,7 +98,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
     {
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderThemeRemote($this->client, new PackageMetaUnwrapper()),
+            new PackageMetaForCheckUpdateProviderRemote($this->client, new PackageMetaUnwrapper()),
             new FormatMetaForCheckUpdateProviderThemeV1(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForDetailsProviderThemeRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
@@ -572,7 +555,10 @@ class PackageMetaForCheckUpdateProviderThemeLocal implements PackageMetaForCheck
         return $result;
     }
 }
-
+interface RemoteClientForPackageUpdate
+{
+    public function getPackageMeta(): PackageMetaForCheckUpdateProviderInterface;
+}
 interface RemoteClientPlugin
 {
     public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface;
@@ -581,7 +567,7 @@ interface RemoteClientTheme
 {
     public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface;
 }
-class ORASHubClientPlugin implements RemoteClientPlugin
+class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageUpdate
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -830,7 +816,7 @@ class PackageMetaForDetailsProviderThemeRemoteV1 implements PackageMetaForDetail
         return $this->getPackageMeta()->requiresPlugins;
     }
 }
-class ORASHubClientTheme implements RemoteClientTheme
+class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpdate
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -1108,33 +1094,11 @@ class PackageMetaUnwrapper implements PackageMetaUnwrapperInterface
         return $packageMeta->getFullSlug();
     }
 }
-class PackageMetaForCheckUpdateProviderPluginRemote implements PackageMetaForCheckUpdateProviderInterface
+class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpdateProviderInterface
 {
-    private RemoteClientPlugin $remoteClient;
+    private RemoteClientForPackageUpdate $remoteClient;
     private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
-    public function __construct(RemoteClientPlugin $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
-    {
-        $this->remoteClient = $remoteClient;
-        $this->packageMetaUnwrapper = $packageMetaUnwrapper;
-    }
-    public function getVersion(): string
-    {
-        return $this->packageMetaUnwrapper->getVersion($this->remoteClient->getPackageMeta());
-    }
-    public function getShortSlug(): string
-    {
-        return $this->packageMetaUnwrapper->getShortSlug($this->remoteClient->getPackageMeta());
-    }
-    public function getFullSlug(): string
-    {
-        return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
-    }
-}
-class PackageMetaForCheckUpdateProviderThemeRemote implements PackageMetaForCheckUpdateProviderInterface
-{
-    private RemoteClientTheme $remoteClient;
-    private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
-    public function __construct(RemoteClientTheme $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
+    public function __construct(RemoteClientForPackageUpdate $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
     {
         $this->remoteClient = $remoteClient;
         $this->packageMetaUnwrapper = $packageMetaUnwrapper;
