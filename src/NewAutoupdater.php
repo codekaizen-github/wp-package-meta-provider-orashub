@@ -47,7 +47,7 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
     {
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderRemote($this->client, new PackageMetaUnwrapper()),
+            new PackageMetaForCheckUpdateProviderRemote($this->client),
             new FormatMetaForCheckUpdateProviderPluginV1(new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath), new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
@@ -98,7 +98,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
     {
         $provider = new CheckUpdateProviderV1(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderRemote($this->client, new PackageMetaUnwrapper()),
+            new PackageMetaForCheckUpdateProviderRemote($this->client),
             new FormatMetaForCheckUpdateProviderThemeV1(new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath), new PackageMetaForDetailsProviderThemeRemoteV1($this->client))
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
@@ -1073,46 +1073,23 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
         return $this->stdObj->requiresPlugins;
     }
 }
-interface PackageMetaUnwrapperInterface
-{
-    public function getVersion(PackageMetaForDetailsProviderInterface $packageMeta): string;
-    public function getShortSlug(PackageMetaForDetailsProviderInterface $packageMeta): string;
-    public function getFullSlug(PackageMetaForDetailsProviderInterface $packageMeta): string;
-}
-class PackageMetaUnwrapper implements PackageMetaUnwrapperInterface
-{
-    public function getVersion(PackageMetaForDetailsProviderInterface $packageMeta): string
-    {
-        return $packageMeta->getVersion();
-    }
-    public function getShortSlug(PackageMetaForDetailsProviderInterface $packageMeta): string
-    {
-        return $packageMeta->getShortSlug();
-    }
-    public function getFullSlug(PackageMetaForDetailsProviderInterface $packageMeta): string
-    {
-        return $packageMeta->getFullSlug();
-    }
-}
 class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpdateProviderInterface
 {
     private RemoteClientForPackageUpdate $remoteClient;
-    private PackageMetaUnwrapperInterface $packageMetaUnwrapper;
-    public function __construct(RemoteClientForPackageUpdate $remoteClient, PackageMetaUnwrapperInterface $packageMetaUnwrapper)
+    public function __construct(RemoteClientForPackageUpdate $remoteClient)
     {
         $this->remoteClient = $remoteClient;
-        $this->packageMetaUnwrapper = $packageMetaUnwrapper;
     }
     public function getVersion(): string
     {
-        return $this->packageMetaUnwrapper->getVersion($this->remoteClient->getPackageMeta());
+        return $this->remoteClient->getPackageMeta()->getVersion();
     }
     public function getShortSlug(): string
     {
-        return $this->packageMetaUnwrapper->getShortSlug($this->remoteClient->getPackageMeta());
+        return $this->remoteClient->getPackageMeta()->getShortSlug();
     }
     public function getFullSlug(): string
     {
-        return $this->packageMetaUnwrapper->getFullSlug($this->remoteClient->getPackageMeta());
+        return $this->remoteClient->getPackageMeta()->getFullSlug();
     }
 }
