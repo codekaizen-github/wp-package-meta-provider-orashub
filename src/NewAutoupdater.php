@@ -29,39 +29,39 @@ interface CheckInfoInterface
      */
     public function checkInfo(bool $false, array $action, object $arg): bool|object;
 }
-interface FormatMetaForCheckUpdateFormatterInterface
+interface CheckUpdateMetaFormatterInterface
 {
     public function formatMetaForCheckUpdate(array $response, string $key): array;
 }
-interface CheckUpdateProviderInterface extends FormatMetaForCheckUpdateFormatterInterface
+interface CheckUpdateProviderInterface extends CheckUpdateMetaFormatterInterface
 {
     public function getLocalPackageSlug(): string;
     public function getLocalPackageVersion(): string;
     public function getRemotePackageVersion(): string;
 }
-interface FormatMetaForCheckInfoProviderInterface
+interface CheckInfoMetaFormatterInterface
 {
     public function formatMetaForCheckInfo(): object;
 }
-interface CheckInfoProviderInterface extends FormatMetaForCheckInfoProviderInterface
+interface CheckInfoProviderInterface extends CheckInfoMetaFormatterInterface
 {
     public function getLocalPackageSlug(): string;
 }
-interface PackageMetaForCheckInfoProviderInterface
+interface CheckInfoProviderPackageMetaInterface
 {
     public function getFullSlug(): string;
 }
-interface PackageMetaForCheckUpdateProviderInterface extends PackageMetaForCheckInfoProviderInterface
+interface CheckUpdateProviderPackageMetaInterface extends CheckInfoProviderPackageMetaInterface
 {
     public function getShortSlug(): string;
     public function getVersion(): string;
 }
-interface PackageMetaForCheckUpdateWithRemoteProviderInterface extends PackageMetaForCheckUpdateProviderInterface
+interface CheckUpdateProviderRemotePackageMetaInterface extends CheckUpdateProviderPackageMetaInterface
 {
     public function getDownloadURL(): string;
     public function getViewURL(): ?string;
 }
-interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateWithRemoteProviderInterface
+interface PackageMetaDetailsInterface extends CheckUpdateProviderRemotePackageMetaInterface
 {
     public function getName(): ?string;
     public function getTested(): ?string;
@@ -81,25 +81,25 @@ interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpda
     /** @return string[] */
     public function getRequiresPlugins(): array;
 }
-interface PackageMetaForDetailsProviderThemeInterface extends PackageMetaForDetailsProviderInterface {}
-interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDetailsProviderInterface
+interface PackageMetaDetailsThemeInterface extends PackageMetaDetailsInterface {}
+interface PackageMetaDetailsPluginInterface extends PackageMetaDetailsInterface
 {
     public function getPluginFile(): string;
     public function getSections(): array;
     /** @return array<string,string> */
     public function getNetwork(): bool;
 }
-interface RemoteClientForPackageUpdate
+interface RemoteClient
 {
-    public function getPackageMeta(): PackageMetaForCheckUpdateWithRemoteProviderInterface;
+    public function getPackageMeta(): CheckUpdateProviderRemotePackageMetaInterface;
 }
 interface RemoteClientPlugin
 {
-    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface;
+    public function getPackageMeta(): PackageMetaDetailsPluginInterface;
 }
 interface RemoteClientTheme
 {
-    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface;
+    public function getPackageMeta(): PackageMetaDetailsThemeInterface;
 }
 class AutoUpdaterPluginORASHubV1 implements InitializerInterface
 {
@@ -138,9 +138,9 @@ class AutoUpdaterThemeORASHubV1 implements InitializerInterface
 class CheckUpdateHookPlugin implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
-    private RemoteClientForPackageUpdate $client;
+    private RemoteClient $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientForPackageUpdate $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClient $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -188,9 +188,9 @@ class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
 class CheckUpdateHookTheme implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
-    private RemoteClientForPackageUpdate $client;
+    private RemoteClient $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClientForPackageUpdate $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClient $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -235,7 +235,6 @@ class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
-
 class CheckUpdate implements CheckUpdateInterface
 {
     private CheckUpdateProviderInterface $provider;
@@ -265,7 +264,6 @@ class CheckUpdate implements CheckUpdateInterface
         return $transient;
     }
 }
-
 class CheckInfo implements CheckInfoInterface
 {
     private CheckInfoProviderInterface $provider;
@@ -296,11 +294,10 @@ class CheckInfo implements CheckInfoInterface
         return $meta;
     }
 }
-
-class FormatMetaForCheckInfoFormatterPlugin implements FormatMetaForCheckInfoProviderInterface
+class CheckInfoMetaFormatterPlugin implements CheckInfoMetaFormatterInterface
 {
-    private PackageMetaForDetailsProviderPluginInterface $provider;
-    public function __construct(PackageMetaForDetailsProviderPluginInterface $provider)
+    private PackageMetaDetailsPluginInterface $provider;
+    public function __construct(PackageMetaDetailsPluginInterface $provider)
     {
         $this->provider = $provider;
     }
@@ -326,10 +323,10 @@ class FormatMetaForCheckInfoFormatterPlugin implements FormatMetaForCheckInfoPro
         return $stdObj;
     }
 }
-class FormatMetaForCheckInfoFormatterTheme implements FormatMetaForCheckInfoProviderInterface
+class CheckInfoMetaFormatterTheme implements CheckInfoMetaFormatterInterface
 {
-    private PackageMetaForDetailsProviderThemeInterface $provider;
-    public function __construct(PackageMetaForDetailsProviderThemeInterface $provider)
+    private PackageMetaDetailsThemeInterface $provider;
+    public function __construct(PackageMetaDetailsThemeInterface $provider)
     {
         $this->provider = $provider;
     }
@@ -354,9 +351,9 @@ class FormatMetaForCheckInfoFormatterTheme implements FormatMetaForCheckInfoProv
 }
 class CheckUpdateProviderPlugin implements CheckUpdateProviderInterface
 {
-    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
-    private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    private CheckUpdateProviderPackageMetaInterface $localPackageMetaProvider;
+    private CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider;
+    public function __construct(CheckUpdateProviderPackageMetaInterface $localPackageMetaProvider, CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
@@ -375,15 +372,15 @@ class CheckUpdateProviderPlugin implements CheckUpdateProviderInterface
     }
     public function formatMetaForCheckUpdate(array $response, string $key): array
     {
-        $formatter = new FormatMetaForCheckUpdateFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        $formatter = new CheckUpdateMetaFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
         return $formatter->formatMetaForCheckUpdate($response, $key);
     }
 }
 class CheckUpdateProviderTheme implements CheckUpdateProviderInterface
 {
-    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
-    private PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    private CheckUpdateProviderPackageMetaInterface $localPackageMetaProvider;
+    private CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider;
+    public function __construct(CheckUpdateProviderPackageMetaInterface $localPackageMetaProvider, CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
@@ -402,15 +399,15 @@ class CheckUpdateProviderTheme implements CheckUpdateProviderInterface
     }
     public function formatMetaForCheckUpdate(array $response, string $key): array
     {
-        $formatter = new FormatMetaForCheckUpdateFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        $formatter = new CheckUpdateMetaFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
         return $formatter->formatMetaForCheckUpdate($response, $key);
     }
 }
 class CheckInfoProviderPlugin implements CheckInfoProviderInterface
 {
-    private PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider;
-    private PackageMetaForCheckInfoProviderInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    private CheckInfoProviderPackageMetaInterface $localPackageMetaProvider;
+    private CheckInfoProviderPackageMetaInterface $remotePackageMetaProvider;
+    public function __construct(CheckInfoProviderPackageMetaInterface $localPackageMetaProvider, CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
@@ -421,15 +418,15 @@ class CheckInfoProviderPlugin implements CheckInfoProviderInterface
     }
     public function formatMetaForCheckInfo(): object
     {
-        $formatter = new FormatMetaForCheckInfoFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        $formatter = new CheckInfoMetaFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
         return $formatter->formatMetaForCheckInfo();
     }
 }
 class CheckInfoProviderTheme implements CheckInfoProviderInterface
 {
-    private PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider;
-    private PackageMetaForCheckInfoProviderInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    private CheckInfoProviderPackageMetaInterface $localPackageMetaProvider;
+    private CheckInfoProviderPackageMetaInterface $remotePackageMetaProvider;
+    public function __construct(CheckInfoProviderPackageMetaInterface $localPackageMetaProvider, CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
@@ -440,14 +437,14 @@ class CheckInfoProviderTheme implements CheckInfoProviderInterface
     }
     public function formatMetaForCheckInfo(): object
     {
-        $formatter = new FormatMetaForCheckInfoFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        $formatter = new CheckInfoMetaFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
         return $formatter->formatMetaForCheckInfo();
     }
 }
-class FormatMetaForCheckUpdateFormatterPlugin implements FormatMetaForCheckUpdateFormatterInterface
+class CheckUpdateMetaFormatterPlugin implements CheckUpdateMetaFormatterInterface
 {
-    private PackageMetaForCheckUpdateWithRemoteProviderInterface $packageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateWithRemoteProviderInterface $packageMetaProvider)
+    private CheckUpdateProviderRemotePackageMetaInterface $packageMetaProvider;
+    public function __construct(CheckUpdateProviderRemotePackageMetaInterface $packageMetaProvider)
     {
         $this->packageMetaProvider = $packageMetaProvider;
     }
@@ -462,10 +459,10 @@ class FormatMetaForCheckUpdateFormatterPlugin implements FormatMetaForCheckUpdat
         return $response;
     }
 }
-class FormatMetaForCheckUpdateFormatterTheme implements FormatMetaForCheckUpdateFormatterInterface
+class CheckUpdateMetaFormatterTheme implements CheckUpdateMetaFormatterInterface
 {
-    private PackageMetaForCheckUpdateWithRemoteProviderInterface $packageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateWithRemoteProviderInterface $packageMetaProvider)
+    private CheckUpdateProviderRemotePackageMetaInterface $packageMetaProvider;
+    public function __construct(CheckUpdateProviderRemotePackageMetaInterface $packageMetaProvider)
     {
         $this->packageMetaProvider = $packageMetaProvider;
     }
@@ -480,7 +477,7 @@ class FormatMetaForCheckUpdateFormatterTheme implements FormatMetaForCheckUpdate
         return $response;
     }
 }
-class PackageMetaProviderLocalPlugin implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
+class PackageMetaProviderLocalPlugin implements CheckUpdateProviderPackageMetaInterface, CheckInfoProviderPackageMetaInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -540,7 +537,7 @@ class PackageMetaProviderLocalPlugin implements PackageMetaForCheckUpdateProvide
         return get_plugin_data($this->filePath, false, false);
     }
 }
-class PackageMetaProviderLocalTheme implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
+class PackageMetaProviderLocalTheme implements CheckUpdateProviderPackageMetaInterface, CheckInfoProviderPackageMetaInterface
 {
     protected string $filePath;
     protected string $fullSlug;
@@ -629,7 +626,7 @@ class PackageMetaProviderLocalTheme implements PackageMetaForCheckUpdateProvider
         return $result;
     }
 }
-class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageUpdate
+class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClient
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -643,7 +640,7 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageU
     {
         return $this->baseURL . 'manifest';
     }
-    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface
+    public function getPackageMeta(): PackageMetaDetailsPluginInterface
     {
         $request = wp_remote_get($this->getMetaURL());
 
@@ -669,7 +666,7 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageU
         return new PackageMetaORASHubFromObjectPlugin($meta);
     }
 }
-class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpdate
+class ORASHubClientTheme implements RemoteClientTheme, RemoteClient
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -683,7 +680,7 @@ class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpd
     {
         return $this->baseURL . 'manifest';
     }
-    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface
+    public function getPackageMeta(): PackageMetaDetailsThemeInterface
     {
         $request = wp_remote_get($this->getMetaURL());
 
@@ -735,7 +732,7 @@ class PackageMetaORASHubRuleTheme extends Simple
             ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))->isValid($input);
     }
 }
-class PackageMetaORASHubFromObjectPlugin implements PackageMetaForDetailsProviderPluginInterface
+class PackageMetaORASHubFromObjectPlugin implements PackageMetaDetailsPluginInterface
 {
     private object $stdObj;
     public function __construct(object $stdObj)
@@ -836,7 +833,7 @@ class PackageMetaORASHubFromObjectPlugin implements PackageMetaForDetailsProvide
         return $this->stdObj->network;
     }
 }
-class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProviderThemeInterface
+class PackageMetaORASHubFromObjectTheme implements PackageMetaDetailsThemeInterface
 {
     private object $stdObj;
     public function __construct(object $stdObj)
@@ -925,10 +922,10 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
         return $this->stdObj->requiresPlugins;
     }
 }
-class PackageMetaProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface, PackageMetaForCheckInfoProviderInterface
+class PackageMetaProviderRemote implements CheckUpdateProviderRemotePackageMetaInterface, CheckInfoProviderPackageMetaInterface
 {
-    private RemoteClientForPackageUpdate $remoteClient;
-    public function __construct(RemoteClientForPackageUpdate $remoteClient)
+    private RemoteClient $remoteClient;
+    public function __construct(RemoteClient $remoteClient)
     {
         $this->remoteClient = $remoteClient;
     }
