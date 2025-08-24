@@ -46,8 +46,8 @@ class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
     public function checkUpdate(object $transient): object
     {
         $provider = new CheckUpdateProviderPlugin(
-            new PackageMetaForCheckUpdateProviderPluginLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderRemote($this->client),
+            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderRemote($this->client),
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -70,9 +70,9 @@ class CheckInfoHookPluginV1 implements Initable, CheckInfoInterface
     }
     public function checkInfo(bool $false, array $action, object $arg): bool|object
     {
-        $provider = new CheckInfoProviderV1(
-            new PackageMetaForCheckInfoProviderInterface($this->filePath),
-            new FormatMetaForCheckInfoProviderPluginV1(new PackageMetaForDetailsProviderPluginRemoteV1($this->client))
+        $provider = new CheckInfoProviderPlugin(
+            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderRemote($this->client),
         );
         $checkInfo = new CheckInfoV1($provider, $this->logger);
         return $checkInfo->checkInfo($false, $action, $arg);
@@ -97,7 +97,7 @@ class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
     {
         $provider = new CheckUpdateProviderTheme(
             new PackageMetaForCheckUpdateProviderThemeLocal($this->filePath),
-            new PackageMetaForCheckUpdateProviderRemote($this->client),
+            new PackageMetaProviderRemote($this->client),
         );
         $checkUpdate = new CheckUpdateV1($provider, $this->logger);
         return $checkUpdate->checkUpdate($transient);
@@ -120,9 +120,9 @@ class CheckInfoHookThemeV1 implements Initable, CheckInfoInterface
     }
     public function checkInfo(bool $false, array $action, object $arg): bool|object
     {
-        $provider = new CheckInfoProviderV1(
-            new PackageMetaForCheckInfoProviderInterface($this->filePath),
-            new FormatMetaForCheckInfoProviderThemeV1(new PackageMetaForDetailsProviderThemeRemoteV1($this->client))
+        $provider = new CheckInfoProviderTheme(
+            new PackageMetaProviderLocal($this->filePath),
+            new PackageMetaProviderRemote($this->client),
         );
         $checkInfo = new CheckInfoV1($provider, $this->logger);
         return $checkInfo->checkInfo($false, $action, $arg);
@@ -182,8 +182,8 @@ class CheckUpdateV1 implements CheckUpdateInterface
     private Psr\Log\LoggerInterface $logger;
     function __construct(CheckUpdateProviderInterface $provider, Psr\Log\LoggerInterface $logger)
     {
-        $this->logger = $logger;
         $this->provider = $provider;
+        $this->logger = $logger;
     }
     public function checkUpdate(object $transient): object
     {
@@ -261,7 +261,7 @@ interface FormatMetaForCheckInfoProviderInterface
 {
     public function formatMetaForCheckInfo(): object;
 }
-class FormatMetaForCheckInfoProviderPluginV1 implements FormatMetaForCheckInfoProviderInterface
+class FormatMetaForCheckInfoFormatterPlugin implements FormatMetaForCheckInfoProviderInterface
 {
     private PackageMetaForDetailsProviderPluginInterface $provider;
     public function __construct(PackageMetaForDetailsProviderPluginInterface $provider)
@@ -290,7 +290,7 @@ class FormatMetaForCheckInfoProviderPluginV1 implements FormatMetaForCheckInfoPr
         return $stdObj;
     }
 }
-class FormatMetaForCheckInfoProviderThemeV1 implements FormatMetaForCheckInfoProviderInterface
+class FormatMetaForCheckInfoFormatterTheme implements FormatMetaForCheckInfoProviderInterface
 {
     private PackageMetaForDetailsProviderThemeInterface $provider;
     public function __construct(PackageMetaForDetailsProviderThemeInterface $provider)
@@ -374,15 +374,14 @@ class CheckUpdateProviderTheme implements CheckUpdateProviderInterface
         return $formatter->formatMetaForCheckUpdate($response, $key);
     }
 }
-class CheckInfoProviderV1 implements CheckInfoProviderInterface
+class CheckInfoProviderPlugin implements CheckInfoProviderInterface
 {
     private PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider;
-    private FormatMetaForCheckInfoProviderInterface $formatMetaForCheckInfoProvider;
-
-    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, FormatMetaForCheckInfoProviderInterface $formatMetaForCheckInfoProvider)
+    private PackageMetaForCheckInfoProviderInterface $remotePackageMetaProvider;
+    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
-        $this->formatMetaForCheckInfoProvider = $formatMetaForCheckInfoProvider;
+        $this->remotePackageMetaProvider = $remotePackageMetaProvider;
     }
     public function getLocalPackageSlug(): string
     {
@@ -390,7 +389,27 @@ class CheckInfoProviderV1 implements CheckInfoProviderInterface
     }
     public function formatMetaForCheckInfo(): object
     {
-        return $this->formatMetaForCheckInfoProvider->formatMetaForCheckInfo();
+        $formatter = new FormatMetaForCheckInfoFormatterPlugin($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        return $formatter->formatMetaForCheckInfo();
+    }
+}
+class CheckInfoProviderTheme implements CheckInfoProviderInterface
+{
+    private PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider;
+    private PackageMetaForCheckInfoProviderInterface $remotePackageMetaProvider;
+    public function __construct(PackageMetaForCheckInfoProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateProviderInterface $remotePackageMetaProvider)
+    {
+        $this->localPackageMetaProvider = $localPackageMetaProvider;
+        $this->remotePackageMetaProvider = $remotePackageMetaProvider;
+    }
+    public function getLocalPackageSlug(): string
+    {
+        return $this->localPackageMetaProvider->getFullSlug();
+    }
+    public function formatMetaForCheckInfo(): object
+    {
+        $formatter = new FormatMetaForCheckInfoFormatterTheme($this->localPackageMetaProvider, $this->remotePackageMetaProvider);
+        return $formatter->formatMetaForCheckInfo();
     }
 }
 class FormatMetaForFormatMetaForCheckUpdateFormatterProvider implements PackageMetaForCheckUpdateWithRemoteProviderInterface
@@ -457,66 +476,6 @@ class FormatMetaForCheckUpdateFormatterTheme implements FormatMetaForCheckUpdate
         $metaObject->url = $this->packageMetaProvider->getViewURL();
         $response[$key] = (array) $metaObject;
         return $response;
-    }
-}
-class PackageMetaForCheckUpdateProviderPluginLocal implements PackageMetaForCheckUpdateProviderInterface
-{
-    protected string $filePath;
-    protected string $fullSlug;
-    protected string $shortSlug;
-    /**
-     * @param string $filePath Path to the plugin file
-     * @throws \InvalidArgumentException If the file path is invalid
-     */
-    public function __construct(string $filePath)
-    {
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
-        }
-        $this->filePath = $filePath;
-        $this->fullSlug = plugin_basename($this->filePath);
-        // Get the last segment after any slash
-        $lastSegment = basename($this->fullSlug);
-        // Remove extension (if any) to get just the filename
-        $this->shortSlug = pathinfo($lastSegment, PATHINFO_FILENAME);
-    }
-    /**
-     * @return string
-     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
-     */
-    public function getVersion(): string
-    {
-        $packageData = $this->getPackageMeta();
-        $value = $packageData['Version'] ?? null;
-        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
-        // After validation, we can assert the type
-        /** @var string $value Type is guaranteed to be string after validation */
-        return $value;
-    }
-    /**
-     * Slug including any prefix - may contain a "/".
-     *
-     * @return string
-     */
-    public function getFullSlug(): string
-    {
-        return $this->fullSlug;
-    }
-    /**
-     * Slug minus any prefix. Should not contain a "/".
-     *
-     * @return string
-     */
-    public function getShortSlug(): string
-    {
-        return $this->shortSlug;
-    }
-    protected function getPackageMeta()
-    {
-        if (! function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        return get_plugin_data($this->filePath, false, false);
     }
 }
 class PackageMetaForCheckUpdateProviderThemeLocal implements PackageMetaForCheckUpdateProviderInterface
@@ -1126,7 +1085,67 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
         return $this->stdObj->requiresPlugins;
     }
 }
-class PackageMetaForCheckUpdateProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface
+class PackageMetaProviderLocal implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
+{
+    protected string $filePath;
+    protected string $fullSlug;
+    protected string $shortSlug;
+    /**
+     * @param string $filePath Path to the plugin file
+     * @throws \InvalidArgumentException If the file path is invalid
+     */
+    public function __construct(string $filePath)
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
+        }
+        $this->filePath = $filePath;
+        $this->fullSlug = plugin_basename($this->filePath);
+        // Get the last segment after any slash
+        $lastSegment = basename($this->fullSlug);
+        // Remove extension (if any) to get just the filename
+        $this->shortSlug = pathinfo($lastSegment, PATHINFO_FILENAME);
+    }
+    /**
+     * @return string
+     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
+     */
+    public function getVersion(): string
+    {
+        $packageData = $this->getPackageMeta();
+        $value = $packageData['Version'] ?? null;
+        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
+        // After validation, we can assert the type
+        /** @var string $value Type is guaranteed to be string after validation */
+        return $value;
+    }
+    /**
+     * Slug including any prefix - may contain a "/".
+     *
+     * @return string
+     */
+    public function getFullSlug(): string
+    {
+        return $this->fullSlug;
+    }
+    /**
+     * Slug minus any prefix. Should not contain a "/".
+     *
+     * @return string
+     */
+    public function getShortSlug(): string
+    {
+        return $this->shortSlug;
+    }
+    protected function getPackageMeta()
+    {
+        if (! function_exists('get_plugin_data')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        return get_plugin_data($this->filePath, false, false);
+    }
+}
+class PackageMetaProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface, PackageMetaForCheckInfoProviderInterface
 {
     private RemoteClientForPackageUpdate $remoteClient;
     public function __construct(RemoteClientForPackageUpdate $remoteClient)
