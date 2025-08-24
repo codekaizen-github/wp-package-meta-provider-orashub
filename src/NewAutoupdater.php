@@ -89,15 +89,15 @@ interface PackageMetaDetailsPluginInterface extends PackageMetaDetailsInterface
     /** @return array<string,string> */
     public function getNetwork(): bool;
 }
-interface RemoteClient
+interface RemoteClientInterface
 {
     public function getPackageMeta(): CheckUpdateProviderRemotePackageMetaInterface;
 }
-interface RemoteClientPlugin
+interface RemoteClientPluginInterface
 {
     public function getPackageMeta(): PackageMetaDetailsPluginInterface;
 }
-interface RemoteClientTheme
+interface RemoteClientThemeInterface
 {
     public function getPackageMeta(): PackageMetaDetailsThemeInterface;
 }
@@ -138,9 +138,9 @@ class AutoUpdaterThemeORASHubV1 implements InitializerInterface
 class CheckUpdateHookPlugin implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
-    private RemoteClient $client;
+    private RemoteClientInterface $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClient $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClientInterface $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -188,9 +188,9 @@ class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
 class CheckUpdateHookTheme implements InitializerInterface, CheckUpdateInterface
 {
     private string $filePath;
-    private RemoteClient $client;
+    private RemoteClientInterface $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, RemoteClient $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClientInterface $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -626,7 +626,7 @@ class PackageMetaProviderLocalTheme implements CheckUpdateProviderPackageMetaInt
         return $result;
     }
 }
-class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClient
+class ORASHubClientPlugin implements RemoteClientPluginInterface, RemoteClientInterface
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -666,7 +666,7 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClient
         return new ORASHubPackageMetaFromObjectPlugin($meta);
     }
 }
-class ORASHubClientTheme implements RemoteClientTheme, RemoteClient
+class ORASHubClientTheme implements RemoteClientThemeInterface, RemoteClientInterface
 {
     private string $baseURL;
     private string $metaAnnotationKey;
@@ -924,8 +924,8 @@ class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterf
 }
 class PackageMetaProviderRemote implements CheckUpdateProviderRemotePackageMetaInterface, CheckInfoProviderPackageMetaInterface
 {
-    private RemoteClient $remoteClient;
-    public function __construct(RemoteClient $remoteClient)
+    private RemoteClientInterface $remoteClient;
+    public function __construct(RemoteClientInterface $remoteClient)
     {
         $this->remoteClient = $remoteClient;
     }
