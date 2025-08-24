@@ -145,6 +145,39 @@ class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
+interface CheckUpdateInterface
+{
+    public function checkUpdate(object $transient): object;
+}
+class CheckUpdate implements CheckUpdateInterface
+{
+    private CheckUpdateProviderInterface $provider;
+    private Psr\Log\LoggerInterface $logger;
+    function __construct(CheckUpdateProviderInterface $provider, Psr\Log\LoggerInterface $logger)
+    {
+        $this->provider = $provider;
+        $this->logger = $logger;
+    }
+    public function checkUpdate(object $transient): object
+    {
+        $this->logger->debug("Checking for updates " . $this->provider->getLocalPackageSlug());
+        if (empty($transient->checked)) {
+            $this->logger->debug("No checked packages in transient, skipping");
+            return $transient;
+        }
+        try {
+            if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
+                $transient->response = $this->provider->formatMetaForCheckUpdate($transient->response, $this->provider->getLocalPackageSlug());
+            } else {
+                $transient->no_update = $this->provider->formatMetaForCheckUpdate($transient->no_update, $this->provider->getLocalPackageSlug());
+            }
+        } catch (Exception $e) {
+            $this->logger->error('Unable to get remote package version: ' . $e);
+            return $transient;
+        }
+        return $transient;
+    }
+}
 interface CheckInfoInterface
 {
     /**
@@ -187,39 +220,6 @@ class CheckInfo implements CheckInfoInterface
         $this->logger->log(Level::Debug, "Returning package info with properties: " . implode(', ', array_keys((array)$meta)));
 
         return $meta;
-    }
-}
-interface CheckUpdateInterface
-{
-    public function checkUpdate(object $transient): object;
-}
-class CheckUpdate implements CheckUpdateInterface
-{
-    private CheckUpdateProviderInterface $provider;
-    private Psr\Log\LoggerInterface $logger;
-    function __construct(CheckUpdateProviderInterface $provider, Psr\Log\LoggerInterface $logger)
-    {
-        $this->provider = $provider;
-        $this->logger = $logger;
-    }
-    public function checkUpdate(object $transient): object
-    {
-        $this->logger->debug("Checking for updates " . $this->provider->getLocalPackageSlug());
-        if (empty($transient->checked)) {
-            $this->logger->debug("No checked packages in transient, skipping");
-            return $transient;
-        }
-        try {
-            if (version_compare($this->provider->getLocalPackageVersion(), $this->provider->getRemotePackageVersion(), '<')) {
-                $transient->response = $this->provider->formatMetaForCheckUpdate($transient->response, $this->provider->getLocalPackageSlug());
-            } else {
-                $transient->no_update = $this->provider->formatMetaForCheckUpdate($transient->no_update, $this->provider->getLocalPackageSlug());
-            }
-        } catch (Exception $e) {
-            $this->logger->error('Unable to get remote package version: ' . $e);
-            return $transient;
-        }
-        return $transient;
     }
 }
 interface CheckUpdateProviderInterface extends FormatMetaForCheckUpdateFormatterInterface
@@ -429,36 +429,6 @@ class CheckInfoProviderTheme implements CheckInfoProviderInterface
         return $formatter->formatMetaForCheckInfo();
     }
 }
-class FormatMetaForFormatMetaForCheckUpdateFormatterProvider implements PackageMetaForCheckUpdateWithRemoteProviderInterface
-{
-    private PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider;
-    private PackageMetaForCheckUpdateWithRemoteProviderInterface $remotePackageMetaProvider;
-    public function __construct(PackageMetaForCheckUpdateProviderInterface $localPackageMetaProvider, PackageMetaForCheckUpdateWithRemoteProviderInterface $remotePackageMetaProvider)
-    {
-        $this->localPackageMetaProvider = $localPackageMetaProvider;
-        $this->remotePackageMetaProvider = $remotePackageMetaProvider;
-    }
-    public function getFullSlug(): string
-    {
-        return $this->localPackageMetaProvider->getFullSlug();
-    }
-    public function getShortSlug(): string
-    {
-        return $this->localPackageMetaProvider->getShortSlug();
-    }
-    public function getVersion(): string
-    {
-        return $this->remotePackageMetaProvider->getVersion();
-    }
-    public function getDownloadURL(): string
-    {
-        return $this->remotePackageMetaProvider->getDownloadURL();
-    }
-    public function getViewURL(): ?string
-    {
-        return $this->remotePackageMetaProvider->getViewURL();
-    }
-}
 class FormatMetaForCheckUpdateFormatterPlugin implements FormatMetaForCheckUpdateFormatterInterface
 {
     private PackageMetaForCheckUpdateWithRemoteProviderInterface $packageMetaProvider;
@@ -546,214 +516,6 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageU
         $meta_json = $json['annotations'][$this->metaAnnotationKey];
         $meta = json_decode($meta_json, false);
         return new PackageMetaORASHubFromObjectPlugin($meta);
-    }
-}
-class PackageMetaForDetailsProviderPluginRemoteV1 implements PackageMetaForDetailsProviderPluginInterface
-{
-    private RemoteClientPlugin $remoteClient;
-    private ?PackageMetaForDetailsProviderPluginInterface $meta;
-    public function __construct(RemoteClientPlugin $remoteClient)
-    {
-        $this->remoteClient = $remoteClient;
-        $this->meta = null;
-    }
-    private function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface
-    {
-        if (null !== $this->meta) {
-            return $this->meta;
-        }
-        $this->meta = $this->remoteClient->getPackageMeta();
-        return $this->meta;
-    }
-    public function getShortSlug(): string
-    {
-        return $this->getPackageMeta()->shortSlug;
-    }
-    public function getFullSlug(): string
-    {
-        return $this->getPackageMeta()->fullSlug;
-    }
-    public function getVersion(): string
-    {
-        return $this->getPackageMeta()->version;
-    }
-    public function getDownloadURL(): string
-    {
-        return $this->getPackageMeta()->downloadURL;
-    }
-    public function getName(): ?string
-    {
-        return $this->getPackageMeta()->name;
-    }
-    public function getViewURL(): ?string
-    {
-        return $this->getPackageMeta()->viewURL;
-    }
-    public function getTested(): ?string
-    {
-        return $this->getPackageMeta()->tested;
-    }
-    public function getStable(): ?string
-    {
-        return $this->getPackageMeta()->stable;
-    }
-    public function getTags(): array
-    {
-        return $this->getPackageMeta()->tags;
-    }
-    public function getAuthor(): ?string
-    {
-        return $this->getPackageMeta()->author;
-    }
-    public function getAuthorURL(): ?string
-    {
-        return $this->getPackageMeta()->authorURL;
-    }
-    public function getLicense(): ?string
-    {
-        return $this->getPackageMeta()->license;
-    }
-    public function getLicenseURL(): ?string
-    {
-        return $this->getPackageMeta()->licenseURL;
-    }
-    public function getShortDescription(): ?string
-    {
-        return $this->getPackageMeta()->shortDescription;
-    }
-    public function getDescription(): ?string
-    {
-        return $this->getPackageMeta()->description;
-    }
-    public function getRequiresWordPressVersion(): ?string
-    {
-        return $this->getPackageMeta()->requiresWordPressVersion;
-    }
-    public function getRequiresPHPVersion(): ?string
-    {
-        return $this->getPackageMeta()->requiresPHPVersion;
-    }
-    public function getTextDomain(): ?string
-    {
-        return $this->getPackageMeta()->textDomain;
-    }
-    public function getDomainPath(): ?string
-    {
-        return $this->getPackageMeta()->domainPath;
-    }
-    public function getRequiresPlugins(): array
-    {
-        return $this->getPackageMeta()->requiresPlugins;
-    }
-    public function getPluginFile(): string
-    {
-        return $this->getPackageMeta()->pluginFile;
-    }
-    public function getSections(): array
-    {
-        return $this->getPackageMeta()->sections;
-    }
-    public function getNetwork(): bool
-    {
-        return $this->getPackageMeta()->network;
-    }
-}
-class PackageMetaForDetailsProviderThemeRemoteV1 implements PackageMetaForDetailsProviderThemeInterface
-{
-    private RemoteClientTheme $remoteClient;
-    private ?PackageMetaForDetailsProviderThemeInterface $meta;
-    public function __construct(RemoteClientTheme $remoteClient)
-    {
-        $this->remoteClient = $remoteClient;
-        $this->meta = null;
-    }
-    private function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface
-    {
-        if (null !== $this->meta) {
-            return $this->meta;
-        }
-        $this->meta = $this->remoteClient->getPackageMeta();
-        return $this->meta;
-    }
-    public function getShortSlug(): string
-    {
-        return $this->getPackageMeta()->shortSlug;
-    }
-    public function getFullSlug(): string
-    {
-        return $this->getPackageMeta()->fullSlug;
-    }
-    public function getVersion(): string
-    {
-        return $this->getPackageMeta()->version;
-    }
-    public function getDownloadURL(): string
-    {
-        return $this->getPackageMeta()->downloadURL;
-    }
-    public function getName(): ?string
-    {
-        return $this->getPackageMeta()->name;
-    }
-    public function getViewURL(): ?string
-    {
-        return $this->getPackageMeta()->viewURL;
-    }
-    public function getTested(): ?string
-    {
-        return $this->getPackageMeta()->tested;
-    }
-    public function getStable(): ?string
-    {
-        return $this->getPackageMeta()->stable;
-    }
-    public function getTags(): array
-    {
-        return $this->getPackageMeta()->tags;
-    }
-    public function getAuthor(): ?string
-    {
-        return $this->getPackageMeta()->author;
-    }
-    public function getAuthorURL(): ?string
-    {
-        return $this->getPackageMeta()->authorURL;
-    }
-    public function getLicense(): ?string
-    {
-        return $this->getPackageMeta()->license;
-    }
-    public function getLicenseURL(): ?string
-    {
-        return $this->getPackageMeta()->licenseURL;
-    }
-    public function getShortDescription(): ?string
-    {
-        return $this->getPackageMeta()->shortDescription;
-    }
-    public function getDescription(): ?string
-    {
-        return $this->getPackageMeta()->description;
-    }
-    public function getRequiresWordPressVersion(): ?string
-    {
-        return $this->getPackageMeta()->requiresWordPressVersion;
-    }
-    public function getRequiresPHPVersion(): ?string
-    {
-        return $this->getPackageMeta()->requiresPHPVersion;
-    }
-    public function getTextDomain(): ?string
-    {
-        return $this->getPackageMeta()->textDomain;
-    }
-    public function getDomainPath(): ?string
-    {
-        return $this->getPackageMeta()->domainPath;
-    }
-    public function getRequiresPlugins(): array
-    {
-        return $this->getPackageMeta()->requiresPlugins;
     }
 }
 class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpdate
