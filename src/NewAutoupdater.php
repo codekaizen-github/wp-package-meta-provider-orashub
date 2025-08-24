@@ -31,9 +31,9 @@ class AutoUpdaterThemeORASHubV1 implements Initable
 class CheckUpdatePluginV1 implements Initable, CheckUpdateInterface
 {
     private string $filePath;
-    private ORASHubClientPlugin $client;
+    private RemoteClientForPackageUpdate $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, ORASHubClientPlugin $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClientForPackageUpdate $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
@@ -81,9 +81,9 @@ class CheckInfoHookPluginV1 implements Initable, CheckInfoInterface
 class CheckUpdateThemeV1 implements Initable, CheckUpdateInterface
 {
     private string $filePath;
-    private ORASHubClientTheme $client;
+    private RemoteClientForPackageUpdate $client;
     private Psr\Log\LoggerInterface $logger;
-    public function __construct(string $filePath, ORASHubClientTheme $client, Psr\Log\LoggerInterface $logger)
+    public function __construct(string $filePath, RemoteClientForPackageUpdate $client, Psr\Log\LoggerInterface $logger)
     {
         $this->filePath = $filePath;
         $this->client = $client;
