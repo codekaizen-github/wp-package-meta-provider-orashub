@@ -11,6 +11,96 @@ interface InitializerInterface
 {
     public function init(): void;
 }
+interface CheckUpdateInterface
+{
+    public function checkUpdate(object $transient): object;
+}
+interface CheckInfoInterface
+{
+    /**
+     * Add our self-hosted description to the filter
+     * This method is called by WordPress when displaying the plugin/theme information
+     * in the admin UI (plugin details popup or theme details screen)
+     *
+     * @param bool $false
+     * @param array $action The type of information being requested
+     * @param object $arg The arguments passed to the API request
+     * @return bool|object
+     */
+    public function checkInfo(bool $false, array $action, object $arg): bool|object;
+}
+interface FormatMetaForCheckUpdateFormatterInterface
+{
+    public function formatMetaForCheckUpdate(array $response, string $key): array;
+}
+interface CheckUpdateProviderInterface extends FormatMetaForCheckUpdateFormatterInterface
+{
+    public function getLocalPackageSlug(): string;
+    public function getLocalPackageVersion(): string;
+    public function getRemotePackageVersion(): string;
+}
+interface FormatMetaForCheckInfoProviderInterface
+{
+    public function formatMetaForCheckInfo(): object;
+}
+interface CheckInfoProviderInterface extends FormatMetaForCheckInfoProviderInterface
+{
+    public function getLocalPackageSlug(): string;
+}
+interface PackageMetaForCheckInfoProviderInterface
+{
+    public function getFullSlug(): string;
+}
+interface PackageMetaForCheckUpdateProviderInterface extends PackageMetaForCheckInfoProviderInterface
+{
+    public function getShortSlug(): string;
+    public function getVersion(): string;
+}
+interface PackageMetaForCheckUpdateWithRemoteProviderInterface extends PackageMetaForCheckUpdateProviderInterface
+{
+    public function getDownloadURL(): string;
+    public function getViewURL(): ?string;
+}
+interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateWithRemoteProviderInterface
+{
+    public function getName(): ?string;
+    public function getTested(): ?string;
+    public function getStable(): ?string;
+    /** @return string[] */
+    public function getTags(): array;
+    public function getAuthor(): ?string;
+    public function getAuthorURL(): ?string;
+    public function getLicense(): ?string;
+    public function getLicenseURL(): ?string;
+    public function getShortDescription(): ?string;
+    public function getDescription(): ?string;
+    public function getRequiresWordPressVersion(): ?string;
+    public function getRequiresPHPVersion(): ?string;
+    public function getTextDomain(): ?string;
+    public function getDomainPath(): ?string;
+    /** @return string[] */
+    public function getRequiresPlugins(): array;
+}
+interface PackageMetaForDetailsProviderThemeInterface extends PackageMetaForDetailsProviderInterface {}
+interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDetailsProviderInterface
+{
+    public function getPluginFile(): string;
+    public function getSections(): array;
+    /** @return array<string,string> */
+    public function getNetwork(): bool;
+}
+interface RemoteClientForPackageUpdate
+{
+    public function getPackageMeta(): PackageMetaForCheckUpdateWithRemoteProviderInterface;
+}
+interface RemoteClientPlugin
+{
+    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface;
+}
+interface RemoteClientTheme
+{
+    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface;
+}
 class AutoUpdaterPluginORASHubV1 implements InitializerInterface
 {
     private InitializerInterface $checkUpdateHook;
@@ -145,10 +235,7 @@ class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
         return $checkInfo->checkInfo($false, $action, $arg);
     }
 }
-interface CheckUpdateInterface
-{
-    public function checkUpdate(object $transient): object;
-}
+
 class CheckUpdate implements CheckUpdateInterface
 {
     private CheckUpdateProviderInterface $provider;
@@ -178,20 +265,7 @@ class CheckUpdate implements CheckUpdateInterface
         return $transient;
     }
 }
-interface CheckInfoInterface
-{
-    /**
-     * Add our self-hosted description to the filter
-     * This method is called by WordPress when displaying the plugin/theme information
-     * in the admin UI (plugin details popup or theme details screen)
-     *
-     * @param bool $false
-     * @param array $action The type of information being requested
-     * @param object $arg The arguments passed to the API request
-     * @return bool|object
-     */
-    public function checkInfo(bool $false, array $action, object $arg): bool|object;
-}
+
 class CheckInfo implements CheckInfoInterface
 {
     private CheckInfoProviderInterface $provider;
@@ -222,62 +296,7 @@ class CheckInfo implements CheckInfoInterface
         return $meta;
     }
 }
-interface CheckUpdateProviderInterface extends FormatMetaForCheckUpdateFormatterInterface
-{
-    public function getLocalPackageSlug(): string;
-    public function getLocalPackageVersion(): string;
-    public function getRemotePackageVersion(): string;
-}
-interface CheckInfoProviderInterface extends FormatMetaForCheckInfoProviderInterface
-{
-    public function getLocalPackageSlug(): string;
-}
-interface PackageMetaForCheckInfoProviderInterface
-{
-    public function getFullSlug(): string;
-}
-interface PackageMetaForCheckUpdateProviderInterface extends PackageMetaForCheckInfoProviderInterface
-{
-    public function getShortSlug(): string;
-    public function getVersion(): string;
-}
-interface PackageMetaForCheckUpdateWithRemoteProviderInterface extends PackageMetaForCheckUpdateProviderInterface
-{
-    public function getDownloadURL(): string;
-    public function getViewURL(): ?string;
-}
-interface PackageMetaForDetailsProviderInterface extends PackageMetaForCheckUpdateWithRemoteProviderInterface
-{
-    public function getName(): ?string;
-    public function getTested(): ?string;
-    public function getStable(): ?string;
-    /** @return string[] */
-    public function getTags(): array;
-    public function getAuthor(): ?string;
-    public function getAuthorURL(): ?string;
-    public function getLicense(): ?string;
-    public function getLicenseURL(): ?string;
-    public function getShortDescription(): ?string;
-    public function getDescription(): ?string;
-    public function getRequiresWordPressVersion(): ?string;
-    public function getRequiresPHPVersion(): ?string;
-    public function getTextDomain(): ?string;
-    public function getDomainPath(): ?string;
-    /** @return string[] */
-    public function getRequiresPlugins(): array;
-}
-interface PackageMetaForDetailsProviderThemeInterface extends PackageMetaForDetailsProviderInterface {}
-interface PackageMetaForDetailsProviderPluginInterface extends PackageMetaForDetailsProviderInterface
-{
-    public function getPluginFile(): string;
-    public function getSections(): array;
-    /** @return array<string,string> */
-    public function getNetwork(): bool;
-}
-interface FormatMetaForCheckInfoProviderInterface
-{
-    public function formatMetaForCheckInfo(): object;
-}
+
 class FormatMetaForCheckInfoFormatterPlugin implements FormatMetaForCheckInfoProviderInterface
 {
     private PackageMetaForDetailsProviderPluginInterface $provider;
@@ -332,10 +351,6 @@ class FormatMetaForCheckInfoFormatterTheme implements FormatMetaForCheckInfoProv
         $stdObj->tags = $this->provider->getTags();
         return $stdObj;
     }
-}
-interface FormatMetaForCheckUpdateFormatterInterface
-{
-    public function formatMetaForCheckUpdate(array $response, string $key): array;
 }
 class CheckUpdateProviderPlugin implements CheckUpdateProviderInterface
 {
@@ -465,17 +480,154 @@ class FormatMetaForCheckUpdateFormatterTheme implements FormatMetaForCheckUpdate
         return $response;
     }
 }
-interface RemoteClientForPackageUpdate
+class PackageMetaProviderLocalPlugin implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
 {
-    public function getPackageMeta(): PackageMetaForCheckUpdateWithRemoteProviderInterface;
+    protected string $filePath;
+    protected string $fullSlug;
+    protected string $shortSlug;
+    /**
+     * @param string $filePath Path to the plugin file
+     * @throws \InvalidArgumentException If the file path is invalid
+     */
+    public function __construct(string $filePath)
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
+        }
+        $this->filePath = $filePath;
+        $this->fullSlug = plugin_basename($this->filePath);
+        // Get the last segment after any slash
+        $lastSegment = basename($this->fullSlug);
+        // Remove extension (if any) to get just the filename
+        $this->shortSlug = pathinfo($lastSegment, PATHINFO_FILENAME);
+    }
+    /**
+     * @return string
+     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
+     */
+    public function getVersion(): string
+    {
+        $packageData = $this->getPackageMeta();
+        $value = $packageData['Version'] ?? null;
+        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
+        // After validation, we can assert the type
+        /** @var string $value Type is guaranteed to be string after validation */
+        return $value;
+    }
+    /**
+     * Slug including any prefix - may contain a "/".
+     *
+     * @return string
+     */
+    public function getFullSlug(): string
+    {
+        return $this->fullSlug;
+    }
+    /**
+     * Slug minus any prefix. Should not contain a "/".
+     *
+     * @return string
+     */
+    public function getShortSlug(): string
+    {
+        return $this->shortSlug;
+    }
+    protected function getPackageMeta()
+    {
+        if (! function_exists('get_plugin_data')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        return get_plugin_data($this->filePath, false, false);
+    }
 }
-interface RemoteClientPlugin
+class PackageMetaProviderLocalTheme implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
 {
-    public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface;
-}
-interface RemoteClientTheme
-{
-    public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface;
+    protected string $filePath;
+    protected string $fullSlug;
+    protected string $shortSlug;
+    /**
+     * @param string $filePath Path to the plugin file
+     * @throws \InvalidArgumentException If the file path is invalid
+     */
+    public function __construct(string $filePath)
+    {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
+        }
+        $this->filePath = $filePath;
+        $this->fullSlug = basename(dirname($this->filePath));
+        $this->shortSlug = $this->fullSlug;
+    }
+    /**
+     * @return string
+     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
+     */
+    public function getVersion(): string
+    {
+        $packageData = $this->getPackageMeta();
+        $value = $packageData['Version'] ?? null;
+        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
+        // After validation, we can assert the type
+        /** @var string $value Type is guaranteed to be string after validation */
+        return $value;
+    }
+    /**
+     * Slug including any prefix - may contain a "/".
+     *
+     * @return string
+     */
+    public function getFullSlug(): string
+    {
+        return $this->fullSlug;
+    }
+    /**
+     * Slug minus any prefix. Should not contain a "/".
+     *
+     * @return string
+     */
+    public function getShortSlug(): string
+    {
+        return $this->shortSlug;
+    }
+    protected function getPackageMeta()
+    {
+        if (! function_exists('wp_get_theme')) {
+            require_once ABSPATH . 'wp-includes/theme.php';
+        }
+        $theme_data = wp_get_theme($this->fullSlug);
+
+        // Define all possible theme headers
+        $headers = array(
+            'Name' => 'Theme Name',
+            'ThemeURI' => 'Theme URI',
+            'Author' => 'Author',
+            'AuthorURI' => 'Author URI',
+            'Description' => 'Description',
+            'Version' => 'Version',
+            'RequiresWP' => 'Requires at least',
+            'TestedWP' => 'Tested up to',
+            'RequiresPHP' => 'Requires PHP',
+            'License' => 'License',
+            'LicenseURI' => 'License URI',
+            'TextDomain' => 'Text Domain',
+            'Tags' => 'Tags',
+            'DomainPath' => 'Domain Path',
+            'UpdateURI' => 'Update URI',
+            'Template' => 'Template',
+            'Status' => 'Status'
+        );
+
+        // Convert WP_Theme object to array for consistency
+        $result = array();
+        foreach ($headers as $key => $header) {
+            $value = $theme_data->get($key);
+            if ($value) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
 }
 class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageUpdate
 {
@@ -491,7 +643,6 @@ class ORASHubClientPlugin implements RemoteClientPlugin, RemoteClientForPackageU
     {
         return $this->baseURL . 'manifest';
     }
-    // todo - format the data and return it as an interface which is loose enough to be interpreted by Themes and Plugins alike
     public function getPackageMeta(): PackageMetaForDetailsProviderPluginInterface
     {
         $request = wp_remote_get($this->getMetaURL());
@@ -532,7 +683,6 @@ class ORASHubClientTheme implements RemoteClientTheme, RemoteClientForPackageUpd
     {
         return $this->baseURL . 'manifest';
     }
-    // todo - format the data and return it as an interface which is loose enough to be interpreted by Themes and Plugins alike
     public function getPackageMeta(): PackageMetaForDetailsProviderThemeInterface
     {
         $request = wp_remote_get($this->getMetaURL());
@@ -773,155 +923,6 @@ class PackageMetaORASHubFromObjectTheme implements PackageMetaForDetailsProvider
     public function getRequiresPlugins(): array
     {
         return $this->stdObj->requiresPlugins;
-    }
-}
-class PackageMetaProviderLocalPlugin implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
-{
-    protected string $filePath;
-    protected string $fullSlug;
-    protected string $shortSlug;
-    /**
-     * @param string $filePath Path to the plugin file
-     * @throws \InvalidArgumentException If the file path is invalid
-     */
-    public function __construct(string $filePath)
-    {
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
-        }
-        $this->filePath = $filePath;
-        $this->fullSlug = plugin_basename($this->filePath);
-        // Get the last segment after any slash
-        $lastSegment = basename($this->fullSlug);
-        // Remove extension (if any) to get just the filename
-        $this->shortSlug = pathinfo($lastSegment, PATHINFO_FILENAME);
-    }
-    /**
-     * @return string
-     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
-     */
-    public function getVersion(): string
-    {
-        $packageData = $this->getPackageMeta();
-        $value = $packageData['Version'] ?? null;
-        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
-        // After validation, we can assert the type
-        /** @var string $value Type is guaranteed to be string after validation */
-        return $value;
-    }
-    /**
-     * Slug including any prefix - may contain a "/".
-     *
-     * @return string
-     */
-    public function getFullSlug(): string
-    {
-        return $this->fullSlug;
-    }
-    /**
-     * Slug minus any prefix. Should not contain a "/".
-     *
-     * @return string
-     */
-    public function getShortSlug(): string
-    {
-        return $this->shortSlug;
-    }
-    protected function getPackageMeta()
-    {
-        if (! function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        return get_plugin_data($this->filePath, false, false);
-    }
-}
-class PackageMetaProviderLocalTheme implements PackageMetaForCheckUpdateProviderInterface, PackageMetaForCheckInfoProviderInterface
-{
-    protected string $filePath;
-    protected string $fullSlug;
-    protected string $shortSlug;
-    /**
-     * @param string $filePath Path to the plugin file
-     * @throws \InvalidArgumentException If the file path is invalid
-     */
-    public function __construct(string $filePath)
-    {
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
-        }
-        $this->filePath = $filePath;
-        $this->fullSlug = basename(dirname($this->filePath));
-        $this->shortSlug = $this->fullSlug;
-    }
-    /**
-     * @return string
-     * @throws Respect\Validation\Exceptions\ValidationException If the package version number does not exist or is not semver.
-     */
-    public function getVersion(): string
-    {
-        $packageData = $this->getPackageMeta();
-        $value = $packageData['Version'] ?? null;
-        Validator::create(new Rules\StringType(), new Rules\Version())->check($packageData['Version'] ?? null);
-        // After validation, we can assert the type
-        /** @var string $value Type is guaranteed to be string after validation */
-        return $value;
-    }
-    /**
-     * Slug including any prefix - may contain a "/".
-     *
-     * @return string
-     */
-    public function getFullSlug(): string
-    {
-        return $this->fullSlug;
-    }
-    /**
-     * Slug minus any prefix. Should not contain a "/".
-     *
-     * @return string
-     */
-    public function getShortSlug(): string
-    {
-        return $this->shortSlug;
-    }
-    protected function getPackageMeta()
-    {
-        if (! function_exists('wp_get_theme')) {
-            require_once ABSPATH . 'wp-includes/theme.php';
-        }
-        $theme_data = wp_get_theme($this->fullSlug);
-
-        // Define all possible theme headers
-        $headers = array(
-            'Name' => 'Theme Name',
-            'ThemeURI' => 'Theme URI',
-            'Author' => 'Author',
-            'AuthorURI' => 'Author URI',
-            'Description' => 'Description',
-            'Version' => 'Version',
-            'RequiresWP' => 'Requires at least',
-            'TestedWP' => 'Tested up to',
-            'RequiresPHP' => 'Requires PHP',
-            'License' => 'License',
-            'LicenseURI' => 'License URI',
-            'TextDomain' => 'Text Domain',
-            'Tags' => 'Tags',
-            'DomainPath' => 'Domain Path',
-            'UpdateURI' => 'Update URI',
-            'Template' => 'Template',
-            'Status' => 'Status'
-        );
-
-        // Convert WP_Theme object to array for consistency
-        $result = array();
-        foreach ($headers as $key => $header) {
-            $value = $theme_data->get($key);
-            if ($value) {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
     }
 }
 class PackageMetaProviderRemote implements PackageMetaForCheckUpdateWithRemoteProviderInterface, PackageMetaForCheckInfoProviderInterface
