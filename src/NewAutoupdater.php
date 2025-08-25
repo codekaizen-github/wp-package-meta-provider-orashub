@@ -280,17 +280,16 @@ class CheckInfo implements CheckInfoInterface
         if (!$arg->slug || $arg->slug !== $this->provider->getLocalPackageSlug()) {
             return $false;
         }
-
-        $this->logger->log(Level::Debug, "Providing package info for: " . $arg->slug);
+        $this->logger->debug("Providing package info for: " . $arg->slug);
 
         // Get metadata from remote source
         $meta = $this->provider->formatMetaForCheckInfo();
         if (!$meta) {
-            $this->logger->log(Level::Debug, "Failed to get metadata for package info");
+            $this->logger->debug("Failed to get metadata for package info");
             return $false;
         }
 
-        $this->logger->log(Level::Debug, "Returning package info with properties: " . implode(', ', array_keys((array)$meta)));
+        $this->logger->debug("Returning package info with properties: " . implode(', ', array_keys((array)$meta)));
 
         return $meta;
     }
