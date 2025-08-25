@@ -408,7 +408,7 @@ class CheckInfoProviderPlugin implements CheckInfoProviderInterface
 {
     private CheckInfoProviderPackageMetaInterface $localPackageMetaProvider;
     private CheckInfoProviderPackageMetaInterface $remotePackageMetaProvider;
-    public function __construct(CheckInfoProviderPackageMetaInterface $localPackageMetaProvider, CheckUpdateProviderPackageMetaInterface $remotePackageMetaProvider)
+    public function __construct(CheckInfoProviderPackageMetaInterface $localPackageMetaProvider, CheckInfoProviderPackageMetaInterface $remotePackageMetaProvider)
     {
         $this->localPackageMetaProvider = $localPackageMetaProvider;
         $this->remotePackageMetaProvider = $remotePackageMetaProvider;
