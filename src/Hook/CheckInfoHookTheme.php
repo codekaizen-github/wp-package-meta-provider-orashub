@@ -4,14 +4,15 @@ namespace CodeKaizen\WPPackageAutoupdater\Hook;
 
 use CodeKaizen\WPPackageAutoupdater\Contract\InitializerInterface;
 use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoInterface;
-use Psr\Log\LoggerInterface;
-use CodeKaizen\WPPackageAutoupdater\Provider\CheckInfoProviderPlugin\CheckInfoProviderPlugin;
-use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderLocalPlugin;
+use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageAutoupdater\Provider\CheckInfoProvider\CheckInfoProviderTheme;
+use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderLocalTheme;
 use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderRemote;
 use CodeKaizen\WPPackageAutoupdater\Hook\Strategy\CheckInfo;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
 
-class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
+use Psr\Log\LoggerInterface;
+
+class CheckInfoHookTheme implements InitializerInterface, CheckInfoInterface
 {
     private string $filePath;
     private RemoteClientInterface $client;
@@ -28,8 +29,8 @@ class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
     }
     public function checkInfo(bool $false, array $action, object $arg): bool|object
     {
-        $provider = new CheckInfoProviderPlugin(
-            new PackageMetaProviderLocalPlugin($this->filePath),
+        $provider = new CheckInfoProviderTheme(
+            new PackageMetaProviderLocalTheme($this->filePath),
             new PackageMetaProviderRemote($this->client),
         );
         $checkInfo = new CheckInfo($provider, $this->logger);
