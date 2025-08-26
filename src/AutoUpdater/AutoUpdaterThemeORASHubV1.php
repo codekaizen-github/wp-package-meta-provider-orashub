@@ -15,9 +15,9 @@ class AutoUpdaterThemeORASHubV1 implements InitializerInterface
 {
     private InitializerInterface $checkUpdateHook;
     private InitializerInterface $checkInfoHook;
-    public function __construct(string $filePath, string $baseURL, $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', $loggerName = 'WPPackageAutoUpdate')
+    public function __construct(string $filePath, string $baseURL, string $metaKey = 'org.codekaizen-github.wp-package-deploy-oras.wp-package-metadata', string $loggerName = 'WPPackageAutoUpdate', int|string|Level $logLevel = Level::Debug)
     {
-        $logger = new Logger($loggerName, [new ErrorLogHandler(3, Level::Debug)]);
+        $logger = new Logger($loggerName, [new ErrorLogHandler(3, $logLevel)]);
         $client = new ORASHubClientTheme($baseURL, $metaKey);
         $this->checkUpdateHook = new CheckUpdateHookTheme($filePath, $client, $logger);
         $this->checkInfoHook = new CheckInfoHookTheme($filePath, $client, $logger);
