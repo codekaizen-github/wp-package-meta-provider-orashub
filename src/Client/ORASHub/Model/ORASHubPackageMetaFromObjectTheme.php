@@ -5,8 +5,9 @@ namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model;
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRuleTheme;
 use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsThemeInterface;
+use JsonSerializable;
 
-class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterface
+class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterface, JsonSerializable
 {
     private object $stdObj;
     public function __construct(object $stdObj)
@@ -93,5 +94,9 @@ class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterf
     public function getRequiresPlugins(): array
     {
         return $this->stdObj->requiresPlugins;
+    }
+    public function jsonSerialize(): mixed
+    {
+        return $this->stdObj;
     }
 }

@@ -5,8 +5,9 @@ namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model;
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsPluginInterface;
 use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRulePlugin;
+use JsonSerializable;
 
-class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInterface
+class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInterface, JsonSerializable
 {
     private object $stdObj;
     public function __construct(object $stdObj)
@@ -105,5 +106,9 @@ class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInte
     public function getNetwork(): bool
     {
         return $this->stdObj->network;
+    }
+    public function jsonSerialize(): mixed
+    {
+        return $this->stdObj;
     }
 }
