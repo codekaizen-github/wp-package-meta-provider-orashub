@@ -49,7 +49,7 @@ class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInte
     }
     public function getTags(): array
     {
-        return $this->stdObj->tags;
+        return $this->stdObj->tags ?? [];
     }
     public function getAuthor(): ?string
     {
@@ -93,7 +93,7 @@ class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInte
     }
     public function getRequiresPlugins(): array
     {
-        return $this->stdObj->requiresPlugins;
+        return $this->stdObj->requiresPlugins ?? [];
     }
     public function getPluginFile(): string
     {
@@ -101,7 +101,7 @@ class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInte
     }
     public function getSections(): array
     {
-        return $this->stdObj->sections;
+        return $this->stdObj->sections ?? [];
     }
     public function getNetwork(): bool
     {

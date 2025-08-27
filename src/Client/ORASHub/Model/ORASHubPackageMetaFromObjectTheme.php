@@ -49,7 +49,7 @@ class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterf
     }
     public function getTags(): array
     {
-        return $this->stdObj->tags;
+        return $this->stdObj->tags ?? [];
     }
     public function getAuthor(): ?string
     {
@@ -93,7 +93,7 @@ class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterf
     }
     public function getRequiresPlugins(): array
     {
-        return $this->stdObj->requiresPlugins;
+        return $this->stdObj->requiresPlugins ?? [];
     }
     public function jsonSerialize(): mixed
     {
