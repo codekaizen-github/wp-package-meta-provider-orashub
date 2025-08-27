@@ -15,8 +15,8 @@ class ORASHubPackageMetaRulePlugin extends Simple
         }
 
         return Validator::create(new Rules\Attribute('shortSlug', new Rules\StringType(), true))
-            ->create(new Rules\Attribute('version', new Rules\Version(), true))
             ->create(new Rules\Attribute('fullSlug', new Rules\StringType(), true))
+            ->create(new Rules\Attribute('version', new Rules\Version(), true))
             ->create(new Rules\Attribute('downloadURL', new Rules\Url(), true))
             ->create(new Rules\Attribute('name', new Rules\StringType(), false))
             ->create(new Rules\Attribute('viewURL', new Rules\Url(), false))
