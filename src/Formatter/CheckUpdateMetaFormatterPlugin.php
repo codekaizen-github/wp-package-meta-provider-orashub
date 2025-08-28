@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Formatter;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Formatter;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateMetaFormatterInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderRemotePackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateMetaFormatterInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderRemotePackageMetaInterface;
 use stdClass;
 
 class CheckUpdateMetaFormatterPlugin implements CheckUpdateMetaFormatterInterface

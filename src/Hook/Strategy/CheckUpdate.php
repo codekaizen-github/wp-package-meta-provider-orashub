@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Hook\Strategy;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Hook\Strategy;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderInterface;
 use Psr\Log\LoggerInterface;
 use Exception;
 

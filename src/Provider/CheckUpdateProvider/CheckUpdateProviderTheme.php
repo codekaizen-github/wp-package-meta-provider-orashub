@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Provider\CheckUpdateProvider;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\CheckUpdateProvider;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderPackageMetaInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderInterface;
-use CodeKaizen\WPPackageAutoupdater\Formatter\CheckUpdateMetaFormatterTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderPackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Formatter\CheckUpdateMetaFormatterTheme;
 
 class CheckUpdateProviderTheme implements CheckUpdateProviderInterface
 {

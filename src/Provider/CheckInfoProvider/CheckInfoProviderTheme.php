@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Provider\CheckInfoProvider;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\CheckInfoProvider;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoProviderInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoProviderPackageMetaInterface;
-use CodeKaizen\WPPackageAutoupdater\Formatter\CheckInfoMetaFormatterTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoProviderInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoProviderPackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Formatter\CheckInfoMetaFormatterTheme;
 
 class CheckInfoProviderTheme implements CheckInfoProviderInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Model;
 
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRuleTheme;
-use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsThemeInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRuleTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\PackageMetaDetailsThemeInterface;
 use JsonSerializable;
 
 class ORASHubPackageMetaFromObjectTheme implements PackageMetaDetailsThemeInterface, JsonSerializable

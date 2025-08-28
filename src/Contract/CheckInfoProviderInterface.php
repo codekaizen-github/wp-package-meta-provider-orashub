@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Contract;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Contract;
 
 interface CheckInfoProviderInterface extends CheckInfoMetaFormatterInterface
 {

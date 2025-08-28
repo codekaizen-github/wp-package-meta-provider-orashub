@@ -1,13 +1,13 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub;
 
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
-use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsThemeInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientThemeInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
-use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model\ORASHubPackageMetaFromObjectTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\PackageMetaDetailsThemeInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientThemeInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Model\ORASHubPackageMetaFromObjectTheme;
 use Exception;
 
 class ORASHubClientTheme implements RemoteClientThemeInterface, RemoteClientInterface

@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Hook\Strategy;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Hook\Strategy;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoProviderInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoProviderInterface;
 use Psr\Log\LoggerInterface;
 
 class CheckInfo implements CheckInfoInterface

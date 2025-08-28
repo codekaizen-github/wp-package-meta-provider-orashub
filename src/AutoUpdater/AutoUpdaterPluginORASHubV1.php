@@ -1,14 +1,14 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\AutoUpdater;
+namespace CodeKaizen\WPPackageMetaProviderLocal\AutoUpdater;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\InitializerInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\InitializerInterface;
 use Monolog\Logger; // The Logger instance
 use Monolog\Handler\ErrorLogHandler; // The StreamHandler sends log messages to a file on your disk
 use Monolog\Level;
-use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\ORASHubClientPlugin;
-use CodeKaizen\WPPackageAutoupdater\Hook\CheckUpdateHookPlugin;
-use CodeKaizen\WPPackageAutoupdater\Hook\CheckInfoHookPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\ORASHubClientPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Hook\CheckUpdateHookPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Hook\CheckInfoHookPlugin;
 
 class AutoUpdaterPluginORASHubV1 implements InitializerInterface
 {

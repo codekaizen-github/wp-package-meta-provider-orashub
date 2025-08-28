@@ -1,15 +1,15 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Hook;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Hook;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\InitializerInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\InitializerInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoInterface;
 use Psr\Log\LoggerInterface;
-use CodeKaizen\WPPackageAutoupdater\Provider\CheckInfoProviderPlugin\CheckInfoProviderPlugin;
-use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderLocalPlugin;
-use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderRemote;
-use CodeKaizen\WPPackageAutoupdater\Hook\Strategy\CheckInfo;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\CheckInfoProviderPlugin\CheckInfoProviderPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider\PackageMetaProviderLocalPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider\PackageMetaProviderRemote;
+use CodeKaizen\WPPackageMetaProviderLocal\Hook\Strategy\CheckInfo;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientInterface;
 
 class CheckInfoHookPlugin implements InitializerInterface, CheckInfoInterface
 {

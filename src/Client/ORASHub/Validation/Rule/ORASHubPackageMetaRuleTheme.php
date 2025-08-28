@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Validation\Rule;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Validation\Rule;
 
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;

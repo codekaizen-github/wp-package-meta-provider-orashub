@@ -1,5 +1,5 @@
 {
-    "name": "codekaizen/wp-package-autoupdater",
+    "name": "codekaizen/wp-package-meta-provider-local",
     "authors": [
         {
             "name": "Andrew Dawes",
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeKaizen\\WPPackageAutoupdater\\": "src/"
+            "CodeKaizen\\WPPackageMetaProviderLocal\\": "src/"
         }
     },
     "scripts": {}

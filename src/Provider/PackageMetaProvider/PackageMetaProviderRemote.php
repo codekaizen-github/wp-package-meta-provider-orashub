@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderRemotePackageMetaInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoProviderPackageMetaInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderRemotePackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoProviderPackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientInterface;
 
 class PackageMetaProviderRemote implements CheckUpdateProviderRemotePackageMetaInterface, CheckInfoProviderPackageMetaInterface
 {

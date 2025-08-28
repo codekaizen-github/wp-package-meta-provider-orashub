@@ -1,15 +1,15 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Hook;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Hook;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\InitializerInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\InitializerInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientInterface;
 use Psr\Log\LoggerInterface;
-use CodeKaizen\WPPackageAutoupdater\Provider\CheckUpdateProvider\CheckUpdateProviderTheme;
-use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderLocalTheme;
-use CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider\PackageMetaProviderRemote;
-use CodeKaizen\WPPackageAutoupdater\Hook\Strategy\CheckUpdate;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\CheckUpdateProvider\CheckUpdateProviderTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider\PackageMetaProviderLocalTheme;
+use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider\PackageMetaProviderRemote;
+use CodeKaizen\WPPackageMetaProviderLocal\Hook\Strategy\CheckUpdate;
 
 class CheckUpdateHookTheme implements InitializerInterface, CheckUpdateInterface
 {

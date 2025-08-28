@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Provider\PackageMetaProvider;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMetaProvider;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckUpdateProviderPackageMetaInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoProviderPackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckUpdateProviderPackageMetaInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoProviderPackageMetaInterface;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 

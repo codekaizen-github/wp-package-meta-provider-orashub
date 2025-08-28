@@ -1,9 +1,9 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Formatter;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Formatter;
 
-use CodeKaizen\WPPackageAutoupdater\Contract\CheckInfoMetaFormatterInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsThemeInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\CheckInfoMetaFormatterInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\PackageMetaDetailsThemeInterface;
 use stdClass;
 
 class CheckInfoMetaFormatterTheme implements CheckInfoMetaFormatterInterface

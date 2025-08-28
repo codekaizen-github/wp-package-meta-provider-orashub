@@ -1,10 +1,10 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Model;
 
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsPluginInterface;
-use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRulePlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\PackageMetaDetailsPluginInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Validation\Rule\ORASHubPackageMetaRulePlugin;
 use JsonSerializable;
 
 class ORASHubPackageMetaFromObjectPlugin implements PackageMetaDetailsPluginInterface, JsonSerializable

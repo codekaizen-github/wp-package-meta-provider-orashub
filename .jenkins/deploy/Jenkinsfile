@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Hardcoded package URL as requested
-        PACKAGE_URL = "https://packagist.org/packages/codekaizen/wp-package-autoupdater"
+        PACKAGE_URL = "https://packagist.org/packages/codekaizen/wp-package-meta-provider-local"
         // Define username as a variable
         PACKAGIST_USERNAME = "AndrewJDawes"
         // Define credentials for API token

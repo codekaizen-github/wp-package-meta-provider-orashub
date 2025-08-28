@@ -1,14 +1,14 @@
 <?php
 
-namespace CodeKaizen\WPPackageAutoupdater\Client\ORASHub;
+namespace CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub;
 
 
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\RemoteClientPluginInterface;
-use CodeKaizen\WPPackageAutoupdater\Contract\PackageMetaDetailsPluginInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\RemoteClientPluginInterface;
+use CodeKaizen\WPPackageMetaProviderLocal\Contract\PackageMetaDetailsPluginInterface;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
-use CodeKaizen\WPPackageAutoupdater\Client\ORASHub\Model\ORASHubPackageMetaFromObjectPlugin;
+use CodeKaizen\WPPackageMetaProviderLocal\Client\ORASHub\Model\ORASHubPackageMetaFromObjectPlugin;
 use Exception;
 
 class ORASHubClientPlugin implements RemoteClientInterface, RemoteClientPluginInterface
