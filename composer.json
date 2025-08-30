@@ -11,7 +11,7 @@
         "php": "^8.0",
         "respect/validation": "^2.4",
         "psr/log": "^3.0",
-        "monolog/monolog": "^3.9"
+        "codekaizen/wp-package-meta-provider-contract": "dev-main"
     },
     "autoload": {
         "psr-4": {
