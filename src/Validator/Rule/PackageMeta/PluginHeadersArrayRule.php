@@ -21,6 +21,7 @@ class PluginHeadersArrayRule extends Simple
             ->create(new Rules\Key('Author', new Rules\StringType(), false))
             ->create(new Rules\Key('AuthorURI', new Rules\StringType(), false))
             ->create(new Rules\Key('TextDomain', new Rules\StringType(), false))
+            ->create(new Rules\Key('DomainPath', new Rules\StringType(), false))
             ->create(new Rules\Key('Network', new Rules\BoolVal(), false))
             ->create(new Rules\Key('RequiresWP', new Rules\Version(), false))
             ->create(new Rules\Key('RequiresPHP', new Rules\Version(), false))
