@@ -3,13 +3,12 @@
 namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta;
 
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsPluginContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
 
-class LocalPluginPackageMetaProvider implements PackageMetaDetailsContract, PackageMetaDetailsPluginContract
+class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
 {
     protected string $filePath;
     protected FileContentReaderContract $reader;

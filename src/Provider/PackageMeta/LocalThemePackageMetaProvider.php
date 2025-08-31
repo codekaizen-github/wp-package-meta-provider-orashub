@@ -9,7 +9,7 @@ use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContr
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 
-class LocalThemePackageMetaProvider implements PackageMetaDetailsContract, PackageMetaDetailsThemeContract
+class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
 {
     protected string $filePath;
     protected FileContentReaderContract $reader;
