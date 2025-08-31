@@ -18,5 +18,8 @@
             "CodeKaizen\\WPPackageMetaProviderLocal\\": "src/"
         }
     },
-    "scripts": {}
+    "scripts": {},
+    "require-dev": {
+        "phpstan/phpstan": "^2.1"
+    }
 }
