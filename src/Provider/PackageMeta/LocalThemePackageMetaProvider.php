@@ -7,6 +7,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsThemeCon
 use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
+use InvalidArgumentException;
 
 class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
 {
@@ -16,12 +17,12 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
     protected string $shortSlug;
     /**
      * @param string $filePath Path to the style.css file
-     * @throws \InvalidArgumentException If the file path is invalid
+     * @throws InvalidArgumentException If the file path is invalid
      */
     public function __construct(string $filePath, FileContentReaderContract $reader)
     {
         if (!file_exists($filePath)) {
-            throw new \InvalidArgumentException("Invalid file path: $filePath");
+            throw new InvalidArgumentException("Invalid file path: $filePath");
         }
         $this->filePath = $filePath;
         $this->reader = $reader;
