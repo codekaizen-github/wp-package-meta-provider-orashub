@@ -11,7 +11,8 @@ class FileContentReader implements FileContentReaderContract
         if (!file_exists($filePath) || !is_readable($filePath)) {
             throw new \InvalidArgumentException("Invalid or inaccessible file path: $filePath");
         }
-        $fileData = file_get_contents($filePath, false, null, 0, 8 * KB_IN_BYTES);
+        $kb_in_bytes = 1024;
+        $fileData = file_get_contents($filePath, false, null, 0, 8 * $kb_in_bytes);
         if (false === $fileData) {
             $fileData = '';
         }

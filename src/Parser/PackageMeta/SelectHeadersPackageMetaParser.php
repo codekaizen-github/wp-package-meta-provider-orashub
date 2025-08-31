@@ -3,12 +3,13 @@
 namespace CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderLocal\Contract\Parser\ContentStringToAssociativeArrayParserContract;
+use Exception;
 
 class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayParserContract
 {
+    /** @var array<string,string> */
     private array $headers;
-    /*
-     *
+    /**
      * @param array<string,string> $headers
      */
     public function __construct(array $headers)
@@ -22,8 +23,6 @@ class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayP
      * metadata must be on its own line. For a field spanning multiple lines, it
      * must not have any newlines or only parts of it will be displayed.
      *
-     * @param string $fileContents File contents. Can be safely truncated to 8kiB as that's all WP itself scans.
-     *
      * @return array<string, string>
      */
     public function parse(string $content): array
@@ -31,6 +30,7 @@ class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayP
 
         // Make sure we catch CR-only line endings.
         $content = str_replace("\r", "\n", $content);
+        $all_headers = [];
 
         foreach ($this->headers as $field => $regex) {
             if (preg_match('/^(?:[ \t]*<\?php)?[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $content, $match) && $match[1]) {
@@ -50,6 +50,10 @@ class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayP
      */
     protected function cleanUpHeaderComment($str)
     {
-        return trim(preg_replace('/\s*(?:\*\/|\?>).*/', '', $str));
+        $replaced = preg_replace('/\s*(?:\*\/|\?>).*/', '', $str);
+        if (!is_string($replaced)) {
+            throw new Exception("Invalid header value. Value must be string.");
+        }
+        return trim($replaced);
     }
 }

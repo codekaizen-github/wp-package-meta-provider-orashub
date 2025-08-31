@@ -3,7 +3,6 @@
 namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta;
 
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsThemeContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
@@ -95,7 +94,7 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
         return null;
     }
     /**
-     * @return array
+     * @return string[]
      */
     public function getTags(): array
     {
@@ -185,7 +184,11 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
     {
         return $this->getPackageMeta()['Status'] ?? null;
     }
-    protected function getPackageMeta()
+    /**
+     *
+     * @return array<string,string> $metaArray
+     */
+    protected function getPackageMeta(): array
     {
         $parser = new SelectHeadersPackageMetaParser(
             array(

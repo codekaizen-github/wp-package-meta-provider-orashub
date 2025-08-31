@@ -94,7 +94,7 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
         return null;
     }
     /**
-     * @return array
+     * @return string[]
      */
     public function getTags(): array
     {
@@ -171,7 +171,7 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
         return $this->getPackageMeta()['DomainPath'] ?? null;
     }
     /**
-     * @return array
+     * @return string[]
      */
     public function getRequiresPlugins(): array
     {
@@ -179,7 +179,7 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
     }
     /**
      *
-     * @return array
+     * @return array<string,string>
      */
     public function getSections(): array
     {
@@ -191,9 +191,14 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
      */
     public function getNetwork(): bool
     {
-        return (bool) $this->getPackageMeta()['Network'] ?? false;
+        return (bool) ($this->getPackageMeta()['Network'] ?? false);
     }
-    protected function getPackageMeta()
+
+    /**
+     *
+     * @return array<string,string> $metaArray
+     */
+    protected function getPackageMeta(): array
     {
         $parser = new SelectHeadersPackageMetaParser(
             array(
