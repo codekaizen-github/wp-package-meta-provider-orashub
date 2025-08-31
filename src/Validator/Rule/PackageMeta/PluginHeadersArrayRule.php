@@ -10,7 +10,7 @@ class PluginHeadersArrayRule extends Simple
 {
     public function isValid(mixed $input): bool
     {
-        if (!is_object($input)) {
+        if (!is_array($input)) {
             return false;
         }
 
