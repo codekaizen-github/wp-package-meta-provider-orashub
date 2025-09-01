@@ -3,13 +3,13 @@
 namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta;
 
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\PackageMetaDetailsThemeContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use InvalidArgumentException;
 
-class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
+class LocalThemePackageMetaProvider implements ThemePackageMetaContract
 {
     protected string $filePath;
     protected FileContentReaderContract $reader;
