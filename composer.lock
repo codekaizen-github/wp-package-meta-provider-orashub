@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codekaizen-github/wp-package-meta-provider-contract.git",
-                "reference": "887ba2b78878b6ca622b1e0d557b8d0491e76a7b"
+                "reference": "7788d71e9dc52b2b4eb9a8349a2b533428ea4e21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/887ba2b78878b6ca622b1e0d557b8d0491e76a7b",
-                "reference": "887ba2b78878b6ca622b1e0d557b8d0491e76a7b",
+                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/7788d71e9dc52b2b4eb9a8349a2b533428ea4e21",
+                "reference": "7788d71e9dc52b2b4eb9a8349a2b533428ea4e21",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
                 "issues": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/issues",
                 "source": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/tree/main"
             },
-            "time": "2025-08-31T19:53:38+00:00"
+            "time": "2025-09-01T12:01:32+00:00"
         },
         {
             "name": "psr/log",
