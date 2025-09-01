@@ -29,6 +29,7 @@ pipeline {
                 stages {
                     stage('Run Tests') {
                         steps {
+                            sh "ls -la vendor/bin"
                             sh "composer run test"
                         }
                     }
