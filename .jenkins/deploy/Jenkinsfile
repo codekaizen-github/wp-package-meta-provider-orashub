@@ -29,7 +29,8 @@ pipeline {
                 stages {
                     stage('Run Tests') {
                         steps {
-                            sh "ls -la vendor/bin"
+                            sh "composer update --with-all-dependencies --ignore-platform-reqs"
+                            sh "composer install --ignore-platform-reqs"
                             sh "composer run test"
                         }
                     }
