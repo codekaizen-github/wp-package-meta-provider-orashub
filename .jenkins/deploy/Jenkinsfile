@@ -22,8 +22,7 @@ pipeline {
                     dockerfile {
                         filename 'Dockerfile'
                         dir '.'
-                        args '--target test'
-                        additionalBuildArgs "--build-arg PHP_VERSION=${PHP_VERSION}"
+                        additionalBuildArgs "--target test --build-arg PHP_VERSION=${PHP_VERSION}"
                         reuseNode false
                     }
                 }
