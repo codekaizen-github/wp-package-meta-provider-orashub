@@ -15,6 +15,8 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
     protected FileContentReaderContract $reader;
     protected string $fullSlug;
     protected string $shortSlug;
+    /** @var ?array<string,string> $packageMeta */
+    protected ?array $packageMeta;
     /**
      * @param string $filePath Path to the plugin file
      * @throws InvalidArgumentException If the file path is invalid
@@ -33,6 +35,7 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
         $this->fullSlug = $directoryBasename . '/' . $basename;
         // Remove extension (if any) to get just the filename
         $this->shortSlug = pathinfo($basename, PATHINFO_FILENAME);
+        $this->packageMeta = null;
     }
     /**
      * @return string
@@ -201,6 +204,9 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
      */
     protected function getPackageMeta(): array
     {
+        if (null !== $this->packageMeta) {
+            return $this->packageMeta;
+        }
         $parser = new SelectHeadersPackageMetaParser(
             array(
                 'Name'            => 'Plugin Name',
@@ -222,6 +228,7 @@ class LocalPluginPackageMetaProvider implements PackageMetaDetailsPluginContract
         );
         $metaArray = $parser->parse($this->reader->read($this->filePath));
         Validator::create(new PluginHeadersArrayRule())->check($metaArray);
-        return $metaArray;
+        $this->packageMeta = $metaArray;
+        return $this->packageMeta;
     }
 }

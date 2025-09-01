@@ -15,6 +15,8 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
     protected FileContentReaderContract $reader;
     protected string $fullSlug;
     protected string $shortSlug;
+    /** @var ?array<string,string> $packageMeta */
+    protected ?array $packageMeta;
     /**
      * @param string $filePath Path to the style.css file
      * @throws InvalidArgumentException If the file path is invalid
@@ -33,6 +35,7 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
         $this->fullSlug = $directoryBasename . '/' . $basename;
         // Remove extension (if any) to get just the filename
         $this->shortSlug = pathinfo($basename, PATHINFO_FILENAME);
+        $this->packageMeta = null;
     }
     /**
      * @return string
@@ -191,6 +194,9 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
      */
     protected function getPackageMeta(): array
     {
+        if (null !== $this->packageMeta) {
+            return $this->packageMeta;
+        }
         $parser = new SelectHeadersPackageMetaParser(
             array(
                 'Name'        => 'Theme Name',
@@ -211,6 +217,7 @@ class LocalThemePackageMetaProvider implements PackageMetaDetailsThemeContract
         );
         $metaArray = $parser->parse($this->reader->read($this->filePath));
         Validator::create(new ThemeHeadersArrayRule())->check($metaArray);
-        return $metaArray;
+        $this->packageMeta = $metaArray;
+        return $this->packageMeta;
     }
 }
