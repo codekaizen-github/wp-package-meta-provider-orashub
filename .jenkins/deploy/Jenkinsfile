@@ -29,8 +29,7 @@ pipeline {
                 stages {
                     stage('Run Tests') {
                         steps {
-                            sh "composer update --with-all-dependencies --ignore-platform-reqs"
-                            sh "composer install --ignore-platform-reqs"
+                            sh "composer install"
                             sh "composer run test"
                         }
                     }
