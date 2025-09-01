@@ -14,7 +14,7 @@ FROM dependencies AS test
 
 COPY ./ ./
 
-RUN composer update --with-all-dependencies --ignore-platform-req && composer install
+RUN composer update --with-all-dependencies --ignore-platform-reqs && composer install --ignore-platform-reqs
 
 FROM dependencies AS dev
 
