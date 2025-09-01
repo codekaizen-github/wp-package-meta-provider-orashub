@@ -14,7 +14,7 @@ FROM dependencies AS test
 
 COPY ./ ./
 
-RUN composer update && composer install
+RUN composer update --with-all-dependencies && composer install
 
 FROM dependencies AS dev
 
