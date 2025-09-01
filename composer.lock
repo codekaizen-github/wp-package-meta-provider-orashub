@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36e781ba2030cbdf898318c526cbd8fe",
+    "content-hash": "2c34d258952ba411b700be3bca11581b",
     "packages": [
         {
             "name": "codekaizen/wp-package-meta-provider-contract",
@@ -2128,7 +2128,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0"
+        "php": ">=7.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
