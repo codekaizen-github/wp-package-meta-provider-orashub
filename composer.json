@@ -18,6 +18,11 @@
             "CodeKaizen\\WPPackageMetaProviderLocal\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "CodeKaizen\\WPPackageMetaProviderLocalTests\\": "tests/"
+        }
+    },
     "scripts": {},
     "require-dev": {
         "phpstan/phpstan": "^2.1",
