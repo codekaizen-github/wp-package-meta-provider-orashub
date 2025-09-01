@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     environment {
         // Hardcoded package URL as requested
@@ -10,7 +10,35 @@ pipeline {
     }
 
     stages {
+        stage('Build and Test') {
+            matrix {
+                axes {
+                    axis {
+                        name 'PHP_VERSION'
+                        values '7.4', '8.0', '8.1', '8.2'
+                    }
+                }
+                agent {
+                    dockerfile {
+                        filename 'Dockerfile'
+                        dir '.'
+                        args '--target test'
+                        additionalBuildArgs "--build-arg PHP_VERSION=${PHP_VERSION}"
+                        reuseNode false
+                    }
+                }
+                stages {
+                    stage('Run Tests') {
+                        steps {
+                            sh "composer run test"
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Update Packagist') {
+            agent any
             steps {
                 withCredentials([conjurSecretCredential(credentialsId: 'andrewjdawes-packagist-api-token', variable: 'PACKAGIST_API_TOKEN')]) {
                     script {
