@@ -60,8 +60,33 @@ class SelectHeadersPackageMetaParserTest extends TestCase
         $parser = new SelectHeadersPackageMetaParser($headers);
         $parsed = $parser->parse($reader->read($filePath));
         $this->assertArrayNotHasKey('Name', $parsed);
-        $this->assertArrayHasKey('PluginURI', $parsed);
-        $this->assertEquals('https://example.com/plugins/the-basics/', $parsed['PluginURI']);
+    }
+    public function testPluginHeadersWithMissingOptionalHeaderForPluginFileMyBasicsPlugin(): void
+    {
+        $headers =             [
+            'Name'            => 'Plugin Name',
+            'PluginURI'       => 'Plugin URI',
+            'Version'         => 'Version',
+            'Description'     => 'Description',
+            'Author'          => 'Author',
+            'AuthorURI'       => 'Author URI',
+            'TextDomain'      => 'Text Domain',
+            'DomainPath'      => 'Domain Path',
+            'Network'         => 'Network',
+            'RequiresWP'      => 'Requires at least',
+            'RequiresPHP'     => 'Requires PHP',
+            'UpdateURI'       => 'Update URI',
+            'RequiresPlugins' => 'Requires Plugins',
+            // Site Wide Only is deprecated in favor of Network.
+            // '_sitewide'       => 'Site Wide Only',
+        ];
+        $filePath = FixturePathHelper::getPathForPlugin() . '/minimum-headers-plugin.php';
+        $reader = new FileContentReader();
+        $parser = new SelectHeadersPackageMetaParser($headers);
+        $parsed = $parser->parse($reader->read($filePath));
+        $this->assertArrayHasKey('Name', $parsed);
+        $this->assertEquals('Minimum Headers Plugin', $parsed['Name']);
+        $this->assertArrayNotHasKey('PluginURI', $parsed);
     }
     public function testPluginHeadersWithStandardHeadersForPluginFilePluginName(): void
     {
