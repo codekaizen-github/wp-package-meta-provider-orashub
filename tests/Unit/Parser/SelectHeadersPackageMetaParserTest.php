@@ -5,12 +5,11 @@ namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Parser;
 use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
 use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class SelectHeadersPackageMetaParserTest extends TestCase
 {
-    public function testPluginHeadersWithStandardHeadersForPluginFileMyBasicsPlugin()
+    public function testPluginHeadersWithStandardHeadersForPluginFileMyBasicsPlugin(): void
     {
         $headers =             [
             'Name'            => 'Plugin Name',
@@ -33,13 +32,12 @@ class SelectHeadersPackageMetaParserTest extends TestCase
         $reader = new FileContentReader();
         $parser = new SelectHeadersPackageMetaParser($headers);
         $parsed = $parser->parse($reader->read($filePath));
-        $this->assertIsArray($parsed);
         $this->assertArrayHasKey('Name', $parsed);
         $this->assertEquals('My Basics Plugin', $parsed['Name']);
         $this->assertArrayHasKey('PluginURI', $parsed);
         $this->assertEquals('https://example.com/plugins/the-basics/', $parsed['PluginURI']);
     }
-    public function testPluginHeadersWithoutNameForPluginFileMyBasicsPlugin()
+    public function testPluginHeadersWithoutNameForPluginFileMyBasicsPlugin(): void
     {
         $headers =             [
             'PluginURI'       => 'Plugin URI',
@@ -61,12 +59,11 @@ class SelectHeadersPackageMetaParserTest extends TestCase
         $reader = new FileContentReader();
         $parser = new SelectHeadersPackageMetaParser($headers);
         $parsed = $parser->parse($reader->read($filePath));
-        $this->assertIsArray($parsed);
         $this->assertArrayNotHasKey('Name', $parsed);
         $this->assertArrayHasKey('PluginURI', $parsed);
         $this->assertEquals('https://example.com/plugins/the-basics/', $parsed['PluginURI']);
     }
-    public function testPluginHeadersWithStandardHeadersForPluginFilePluginName()
+    public function testPluginHeadersWithStandardHeadersForPluginFilePluginName(): void
     {
         $headers =             [
             'Name'            => 'Plugin Name',
@@ -89,7 +86,6 @@ class SelectHeadersPackageMetaParserTest extends TestCase
         $reader = new FileContentReader();
         $parser = new SelectHeadersPackageMetaParser($headers);
         $parsed = $parser->parse($reader->read($filePath));
-        $this->assertIsArray($parsed);
         $this->assertArrayHasKey('Name', $parsed);
         $this->assertEquals('Plugin Name', $parsed['Name']);
     }

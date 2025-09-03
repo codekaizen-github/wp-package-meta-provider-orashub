@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileContentReaderTest extends TestCase
 {
-    public function testDoesNotExistException()
+    public function testDoesNotExistException(): void
     {
         $filePath = FixturePathHelper::getPathForFile() . '/unreal.txt';
         $reader = new FileContentReader();
@@ -17,7 +17,7 @@ class FileContentReaderTest extends TestCase
         $this->expectExceptionMessage("Invalid or inaccessible file path: $filePath");
         $reader->read($filePath);
     }
-    public function testLength()
+    public function testLength(): void
     {
         $filePath = FixturePathHelper::getPathForFile() . '/random.txt';
         $reader = new FileContentReader();
