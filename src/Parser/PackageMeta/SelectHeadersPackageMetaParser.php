@@ -35,8 +35,6 @@ class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayP
         foreach ($this->headers as $field => $regex) {
             if (preg_match('/^(?:[ \t]*<\?php)?[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $content, $match) && $match[1]) {
                 $all_headers[$field] = $this->cleanUpHeaderComment($match[1]);
-            } else {
-                $all_headers[$field] = '';
             }
         }
 
