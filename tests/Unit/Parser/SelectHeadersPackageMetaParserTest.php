@@ -89,4 +89,31 @@ class SelectHeadersPackageMetaParserTest extends TestCase
         $this->assertArrayHasKey('Name', $parsed);
         $this->assertEquals('Plugin Name', $parsed['Name']);
     }
+    public function testThemeHeadersWithStandardHeadersForThemeStyleCSSFabledSunset(): void
+    {
+        $headers = [
+            'Name'        => 'Theme Name',
+            'ThemeURI'    => 'Theme URI',
+            'Description' => 'Description',
+            'Author'      => 'Author',
+            'AuthorURI'   => 'Author URI',
+            'Version'     => 'Version',
+            'Template'    => 'Template',
+            'Status'      => 'Status',
+            'Tags'        => 'Tags',
+            'TextDomain'  => 'Text Domain',
+            'DomainPath'  => 'Domain Path',
+            'RequiresWP'  => 'Requires at least',
+            'RequiresPHP' => 'Requires PHP',
+            'UpdateURI'   => 'Update URI',
+        ];
+        $filePath = FixturePathHelper::getPathForTheme() . '/fabled-sunset/style.css';
+        $reader = new FileContentReader();
+        $parser = new SelectHeadersPackageMetaParser($headers);
+        $parsed = $parser->parse($reader->read($filePath));
+        $this->assertArrayHasKey('Name', $parsed);
+        $this->assertEquals('Fabled Sunset', $parsed['Name']);
+        $this->assertArrayHasKey('ThemeURI', $parsed);
+        $this->assertEquals('https://example.com/fabled-sunset', $parsed['ThemeURI']);
+    }
 }
