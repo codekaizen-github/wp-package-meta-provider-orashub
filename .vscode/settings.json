@@ -4,5 +4,10 @@
         "pcre",
         "SPL",
         "standard",
-    ]
+    ],
+    // PHP specific settings
+    "[php]": {
+        "editor.defaultFormatter": "valeryanm.vscode-phpsab",
+        "editor.formatOnSave": true // Set to true if you want automatic formatting on save
+    },
 }
