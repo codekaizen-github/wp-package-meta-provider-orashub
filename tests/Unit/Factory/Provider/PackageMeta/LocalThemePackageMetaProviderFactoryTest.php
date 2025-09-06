@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class LocalThemePackageMetaProviderFactoryTest extends TestCase
 {
-    public function testThemePackageMetaFabledSunsetThemeGetName()
+    public function testThemePackageMetaFabledSunsetThemeGetName(): void
     {
         $filePath = FixturePathHelper::getPathForTheme() . '/fabled-sunset/style.css';
         $factory = new LocalThemePackageMetaProviderFactory($filePath);
