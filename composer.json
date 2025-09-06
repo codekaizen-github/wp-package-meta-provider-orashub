@@ -29,7 +29,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "analyze": "phpstan"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
