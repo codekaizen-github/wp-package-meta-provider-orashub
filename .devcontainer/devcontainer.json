@@ -21,5 +21,6 @@
     },
     "postAttachCommand": {
         "gitSafeDirectory": "git config --global --add safe.directory /workspace;",
+        "gitHooks": "git config core.hooksPath .githooks;"
     }
 }
