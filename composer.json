@@ -33,7 +33,9 @@
     },
     "scripts": {
         "test": "phpunit",
-        "analyze": "phpstan"
+        "analyze": "phpstan",
+        "sniff": "phpcs -ps src/ tests/",
+        "fix": "phpcbf src/ tests/"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
