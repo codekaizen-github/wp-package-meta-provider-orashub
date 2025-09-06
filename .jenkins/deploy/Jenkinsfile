@@ -32,6 +32,7 @@ pipeline {
                             sh "composer install"
                             sh "composer run analyze"
                             sh "composer run test"
+                            sh "composer run sniff"
                         }
                     }
                 }
