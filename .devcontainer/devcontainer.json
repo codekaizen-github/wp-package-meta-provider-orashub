@@ -12,7 +12,8 @@
                 "johnbillion.vscode-wordpress-hooks",
                 "SanderRonde.phpstan-vscode",
                 "valeryanm.vscode-phpsab",
-                "wongjn.php-sniffer"
+                "wongjn.php-sniffer",
+                "EditorConfig.EditorConfig"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash"
