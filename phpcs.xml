@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress PSR Hybrid Standards">
+    <description>A hybrid of WordPress and PSR standards, preferring PSR for naming conventions and WordPress for whitespace conventions</description>
+
+    <!-- Paths to check -->
+    <file>./src</file>
+    <file>./tests</file>
+
+    <!-- Exclude vendor directory and test fixtures -->
+    <exclude-pattern>/vendor/</exclude-pattern>
+    <exclude-pattern>/tests/Fixture/</exclude-pattern>
+
+    <!-- Show progress and sniff codes in report -->
+    <arg value="ps"/>
+
+    <!-- Include complete PSR standards -->
+    <rule ref="PSR1"/>
+    <rule ref="PSR2" >
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+        <exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+    </rule>
+    <rule ref="PSR12">
+        <!-- Use WordPress whitespace rules instead -->
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
+        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+    </rule>
+
+    <!-- Add explicit camelCase enforcement -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
+
+    <!-- Include WordPress standards but exclude naming conventions -->
+    <rule ref="WordPress">
+        <!-- Exclude WordPress naming conventions in favor of PSR -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+        <!-- Allow short array syntax -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+</ruleset>

@@ -27,10 +27,12 @@ pipeline {
                     }
                 }
                 stages {
-                    stage('Run Tests') {
+                    stage('Run Static Analysis and Tests') {
                         steps {
                             sh "composer install"
+                            sh "composer run analyze"
                             sh "composer run test"
+                            sh "composer run sniff"
                         }
                     }
                 }
