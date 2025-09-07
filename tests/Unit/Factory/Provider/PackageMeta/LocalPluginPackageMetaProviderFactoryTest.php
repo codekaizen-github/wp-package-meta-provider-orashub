@@ -26,6 +26,7 @@ class LocalPluginPackageMetaProviderFactoryTest extends TestCase {
 		$provider = $factory->create();
 		$this->assertEquals( 'My Basics Plugin', $provider->getName() );
 	}
+
 	/**
 	 * Tests that the provider returns the correct name for Minimum Headers Plugin.
 	 */

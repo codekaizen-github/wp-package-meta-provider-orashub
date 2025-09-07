@@ -13,7 +13,6 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderF
 use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta\LocalPluginPackageMetaProvider;
 use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
 
-
 /**
  * Factory for creating local plugin package meta providers.
  *

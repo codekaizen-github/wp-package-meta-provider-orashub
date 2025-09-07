@@ -49,17 +49,17 @@ class SelectHeadersPackageMetaParser implements ContentStringToAssociativeArrayP
 	public function parse( string $content ): array {
 
 		// Make sure we catch CR-only line endings.
-		$content     = str_replace( "\r", "\n", $content );
-		$all_headers = [];
+		$content    = str_replace( "\r", "\n", $content );
+		$allHeaders = [];
 
 		foreach ( $this->headers as $field => $regex ) {
 			$pattern = '/^(?:[ \t]*<\?php)?[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi';
 			if ( preg_match( $pattern, $content, $match ) && $match[1] ) {
-				$all_headers[ $field ] = $this->cleanUpHeaderComment( $match[1] );
+				$allHeaders[ $field ] = $this->cleanUpHeaderComment( $match[1] );
 			}
 		}
 
-		return $all_headers;
+		return $allHeaders;
 	}
 	/**
 	 * Strips close comment and close php tags from file headers used by WP.

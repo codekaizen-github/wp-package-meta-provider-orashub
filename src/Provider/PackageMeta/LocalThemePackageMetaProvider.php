@@ -17,7 +17,6 @@ use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackag
 use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use InvalidArgumentException;
 
-
 /**
  * Provider for local WordPress theme package metadata.
  *
