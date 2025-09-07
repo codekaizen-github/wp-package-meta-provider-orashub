@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress PSR-12 Hybrid Standards">
-    <description>A hybrid of WordPress and PSR-12 standards, preferring PSR-12 for naming conventions</description>
+<ruleset name="WordPress PSR Hybrid Standards">
+    <description>A hybrid of WordPress and PSR standards, preferring PSR for naming conventions and WordPress for whitespace conventions</description>
 
     <!-- Paths to check -->
     <file>./src</file>
@@ -29,7 +29,9 @@
     </rule>
 
     <!-- Add explicit camelCase enforcement -->
-    <rule ref="Squiz.NamingConventions.ValidVariableName"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
 
     <!-- Include WordPress standards but exclude naming conventions -->
     <rule ref="WordPress">
