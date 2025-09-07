@@ -2,13 +2,13 @@
 /**
  * Unit tests for LocalPluginPackageMetaProviderFactory.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Factory\Provider\PackageMeta\LocalPluginPackageMetaProviderFactory;
-use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
+use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta\LocalPluginPackageMetaProviderFactory;
+use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
 
 /**

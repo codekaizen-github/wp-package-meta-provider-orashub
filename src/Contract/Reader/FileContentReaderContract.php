@@ -4,11 +4,11 @@
  *
  * Defines the contract for reading file content.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Contract\Reader;
 
 /**
  * Interface for file content readers.

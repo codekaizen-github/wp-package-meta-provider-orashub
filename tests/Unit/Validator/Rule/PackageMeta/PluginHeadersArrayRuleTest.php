@@ -4,13 +4,13 @@
  *
  * Tests for validating plugin header arrays according to WordPress standards.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
 use PHPUnit\Framework\TestCase;
 use Respect\Validation\Validator;
 
@@ -39,7 +39,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'Network'         => 'true',
 			'RequiresWP'      => '6.8.2',
 			'RequiresPHP'     => '8.2.1',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 			'RequiresPlugins' => 'akismet,hello-dolly',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
@@ -63,7 +63,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'Network'         => 'true',
 			'RequiresWP'      => '6.8.2',
 			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 			'RequiresPlugins' => 'akismet,hello-dolly',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
@@ -99,7 +99,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'Network'         => 'true',
 			'RequiresWP'      => '6.8.2',
 			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 			'RequiresPlugins' => 'akismet,hello-dolly',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
@@ -123,7 +123,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'Network'         => 'true',
 			'RequiresWP'      => '6.8.2',
 			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 			'RequiresPlugins' => 'akismet,hello-dolly',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
@@ -146,7 +146,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'Network'         => 'true',
 			'RequiresWP'      => '6.8.2',
 			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 			'RequiresPlugins' => 'akismet,hello-dolly',
 		];
 		// Testing without using check() to avoid exception handling.

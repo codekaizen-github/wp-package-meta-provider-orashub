@@ -4,11 +4,11 @@
  *
  * Defines the contract for parsing content strings into associative arrays.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Contract\Parser;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Contract\Parser;
 
 /**
  * Interface for content string to associative array parsers.

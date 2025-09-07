@@ -4,14 +4,14 @@
  *
  * Tests for validating file content reading functionality.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Reader
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Reader
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Reader;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Reader;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
-use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
+use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
+use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

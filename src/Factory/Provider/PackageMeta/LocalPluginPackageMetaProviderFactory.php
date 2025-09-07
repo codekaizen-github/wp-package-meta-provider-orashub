@@ -2,16 +2,16 @@
 /**
  * Local Plugin Package Meta Provider Factory
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
-use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta\LocalPluginPackageMetaProvider;
-use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalPluginPackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 
 /**
  * Factory for creating local plugin package meta providers.

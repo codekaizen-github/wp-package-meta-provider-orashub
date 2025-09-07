@@ -4,15 +4,15 @@
  *
  * Tests for parsing and extracting package metadata headers from plugin and theme files.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Parser
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Parser
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Parser;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Parser;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
-use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
-use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
+use CodeKaizen\WPPackageMetaProviderORASHub\Parser\PackageMeta\SelectHeadersPackageMetaParser;
+use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
+use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
 
 /**

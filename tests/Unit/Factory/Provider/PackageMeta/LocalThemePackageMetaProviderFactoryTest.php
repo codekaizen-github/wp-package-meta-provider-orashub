@@ -4,14 +4,14 @@
  *
  * Tests for the factory that creates local theme package metadata providers.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Factory\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Factory\Provider\PackageMeta\LocalThemePackageMetaProviderFactory;
-use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
+use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta\LocalThemePackageMetaProviderFactory;
+use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
 
 /**

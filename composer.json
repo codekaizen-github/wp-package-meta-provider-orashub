@@ -1,5 +1,5 @@
 {
-    "name": "codekaizen/wp-package-meta-provider-local",
+    "name": "codekaizen/wp-package-meta-provider-orashub",
     "authors": [
         {
             "name": "Andrew Dawes",
@@ -23,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeKaizen\\WPPackageMetaProviderLocal\\": "src/"
+            "CodeKaizen\\WPPackageMetaProviderORASHub\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "CodeKaizen\\WPPackageMetaProviderLocalTests\\": "tests/"
+            "CodeKaizen\\WPPackageMetaProviderORASHubTests\\": "tests/"
         }
     },
     "scripts": {

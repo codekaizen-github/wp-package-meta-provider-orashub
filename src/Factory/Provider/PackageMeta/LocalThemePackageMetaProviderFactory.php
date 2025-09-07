@@ -4,16 +4,16 @@
  *
  * Factory for creating local theme package meta providers.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaProviderFactoryContract;
-use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta\LocalThemePackageMetaProvider;
-use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalThemePackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 
 /**
  * Factory for creating local theme package meta providers.

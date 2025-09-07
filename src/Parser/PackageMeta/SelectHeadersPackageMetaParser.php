@@ -4,13 +4,13 @@
  *
  * Parses file content to extract metadata from headers based on regex patterns.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Parser\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Contract\Parser\ContentStringToAssociativeArrayParserContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Parser\ContentStringToAssociativeArrayParserContract;
 use Exception;
 
 /**

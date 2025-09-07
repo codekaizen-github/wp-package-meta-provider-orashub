@@ -4,13 +4,13 @@
  *
  * This file contains a validation rule for WordPress plugin header arrays.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\Version\FlexibleSemanticVersionRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\Version\FlexibleSemanticVersionRule;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Rules\Core\Simple;

@@ -4,13 +4,13 @@
  *
  * Tests for validating theme header arrays according to WordPress standards.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use PHPUnit\Framework\TestCase;
 use Respect\Validation\Validator;
 
@@ -41,7 +41,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'DomainPath'  => '/languages',
 			'RequiresWP'  => '6.8.2',
 			'RequiresPHP' => '8.2.1',
-			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -66,7 +66,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'DomainPath'  => '/languages',
 			'RequiresWP'  => '6.8.2',
 			'RequiresPHP' => '8.2',
-			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -103,7 +103,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'DomainPath'  => '/languages',
 			'RequiresWP'  => '6.8.2',
 			'RequiresPHP' => '8.2.1',
-			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
@@ -128,7 +128,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'DomainPath'  => '/languages',
 			'RequiresWP'  => '6.8.2',
 			'RequiresPHP' => '8.2.1',
-			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
@@ -152,7 +152,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'DomainPath'  => '/languages',
 			'RequiresWP'  => '6.8.2',
 			'RequiresPHP' => '8.2.1',
-			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-local',
+			'UpdateURI'   => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
 		];
 		// Testing without using check() to avoid exception handling.
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );

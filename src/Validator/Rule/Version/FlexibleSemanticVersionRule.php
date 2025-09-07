@@ -5,11 +5,11 @@
  * This file contains a flexible semantic version validation rule that
  * accepts major-only, major.minor, and full semantic versions.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\Version;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\Version;
 
 use Respect\Validation\Rules\Core\Simple;
 

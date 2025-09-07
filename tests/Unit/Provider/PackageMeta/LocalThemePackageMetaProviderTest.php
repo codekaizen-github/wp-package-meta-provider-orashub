@@ -4,15 +4,15 @@
  *
  * Tests for the provider that reads and extracts metadata from local theme files.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta\LocalThemePackageMetaProvider;
-use CodeKaizen\WPPackageMetaProviderLocal\Reader\FileContentReader;
-use CodeKaizen\WPPackageMetaProviderLocalTests\Helper\FixturePathHelper;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalThemePackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
+use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
 
 /**

@@ -4,13 +4,13 @@
  *
  * Tests for validating flexible semantic version strings according to WordPress standards.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\Version
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\Version
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Unit\Validator\Rule\Version;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\Version;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\Version\FlexibleSemanticVersionRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\Version\FlexibleSemanticVersionRule;
 use PHPUnit\Framework\TestCase;
 use Respect\Validation\Validator;
 

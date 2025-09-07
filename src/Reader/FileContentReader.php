@@ -4,13 +4,13 @@
  *
  * Provides a way to read the contents of a file.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Reader;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Reader;
 
-use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Reader\FileContentReaderContract;
 use InvalidArgumentException;
 
 /**

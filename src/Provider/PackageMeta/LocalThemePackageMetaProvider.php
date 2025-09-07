@@ -4,17 +4,17 @@
  *
  * Provides metadata for WordPress themes installed locally.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocal
+ * @package CodeKaizen\WPPackageMetaProviderORASHub
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocal\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta;
 
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
-use CodeKaizen\WPPackageMetaProviderLocal\Contract\Reader\FileContentReaderContract;
-use CodeKaizen\WPPackageMetaProviderLocal\Parser\PackageMeta\SelectHeadersPackageMetaParser;
-use CodeKaizen\WPPackageMetaProviderLocal\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Reader\FileContentReaderContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Parser\PackageMeta\SelectHeadersPackageMetaParser;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use InvalidArgumentException;
 
 /**

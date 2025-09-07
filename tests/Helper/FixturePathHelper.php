@@ -4,11 +4,11 @@
  *
  * Provides utility methods for accessing test fixture file paths.
  *
- * @package CodeKaizen\WPPackageMetaProviderLocalTests\Helper
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Helper
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderLocalTests\Helper;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Helper;
 
 /**
  * Helper class for working with fixture file paths.
