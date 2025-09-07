@@ -4,6 +4,7 @@
         "pcre",
         "SPL",
         "standard",
+        "json"
     ],
     // PHP specific settings
     "[php]": {
