@@ -2,32 +2,6 @@
 <ruleset name="WordPress PSR-12 Hybrid Standards">
     <description>A hybrid of WordPress and PSR-12 standards, preferring PSR-12 for naming conventions</description>
 
-    <!-- Base on WordPress standards for most formatting rules -->
-    <rule ref="WordPress">
-        <!-- Exclude WordPress naming conventions in favor of PSR-12 -->
-        <exclude name="WordPress.Files.FileName"/>
-        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
-        <exclude name="WordPress.NamingConventions.PrefixAllGlobals"/>
-        <!-- Allow short array syntax -->
-        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
-    </rule>
-
-    <!-- Configure for tabs per WordPress defaults -->
-    <arg name="tab-width" value="4"/>
-
-    <!-- Include PSR-12 naming and basic formatting rules -->
-    <rule ref="PSR12">
-        <!-- Use WordPress whitespace rules instead -->
-        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
-        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
-        <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
-        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
-        <exclude name="PSR12.Files.FileHeader"/>
-        <exclude name="PSR12.Files.DeclareStatement"/>
-        <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
-    </rule>
-
     <!-- Paths to check -->
     <file>./src</file>
     <file>./tests</file>
@@ -38,5 +12,25 @@
 
     <!-- Show progress and sniff codes in report -->
     <arg value="ps"/>
+
+    <!-- Base on WordPress standards for most formatting rules -->
+    <rule ref="WordPress">
+        <!-- Exclude WordPress naming conventions in favor of PSR-12 -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+        <!-- Allow short array syntax -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <!-- Include PSR-12 naming and basic formatting rules -->
+    <rule ref="PSR12">
+        <!-- Use WordPress whitespace rules instead -->
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
+        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+    </rule>
 
 </ruleset>
