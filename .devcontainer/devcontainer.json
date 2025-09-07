@@ -1,5 +1,5 @@
 {
-    "name": "WP Package Meta Provider Local Development Environment",
+    "name": "WP Package Meta Provider ORASHub Development Environment",
     "dockerComposeFile": "docker-compose.yml",
     "service": "dev",
     "workspaceFolder": "/workspace",

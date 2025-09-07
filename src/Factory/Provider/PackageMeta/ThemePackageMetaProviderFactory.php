@@ -12,7 +12,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaProviderFactoryContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalThemePackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
 use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 
 /**
@@ -20,7 +20,7 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
  *
  * @since 1.0.0
  */
-class LocalThemePackageMetaProviderFactory implements ThemePackageMetaProviderFactoryContract {
+class ThemePackageMetaProviderFactory implements ThemePackageMetaProviderFactoryContract {
 	/**
 	 * Path to the theme file.
 	 *
@@ -38,12 +38,12 @@ class LocalThemePackageMetaProviderFactory implements ThemePackageMetaProviderFa
 	}
 
 	/**
-	 * Creates a new LocalThemePackageMetaProvider instance.
+	 * Creates a new ThemePackageMetaProvider instance.
 	 *
 	 * @return ThemePackageMetaContract
 	 */
 	public function create(): ThemePackageMetaContract {
-		return new LocalThemePackageMetaProvider(
+		return new ThemePackageMetaProvider(
 			$this->filePath,
 			new FileContentReader()
 		);

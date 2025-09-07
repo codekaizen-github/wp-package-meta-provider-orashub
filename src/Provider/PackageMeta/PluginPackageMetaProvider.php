@@ -24,7 +24,7 @@ use InvalidArgumentException;
  *
  * @since 1.0.0
  */
-class LocalPluginPackageMetaProvider implements PluginPackageMetaContract {
+class PluginPackageMetaProvider implements PluginPackageMetaContract {
 
 	/**
 	 * Path to the plugin file.

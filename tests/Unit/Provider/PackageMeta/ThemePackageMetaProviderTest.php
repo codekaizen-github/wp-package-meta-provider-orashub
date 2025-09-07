@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalThemePackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
 use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @since 1.0.0
  */
-class LocalThemePackageMetaProviderTest extends TestCase {
+class ThemePackageMetaProviderTest extends TestCase {
 
 	/**
 	 * Tests getName() extracts the correct theme name from the Fabled Sunset theme.
@@ -30,7 +30,7 @@ class LocalThemePackageMetaProviderTest extends TestCase {
 	public function testGetNameFromThemeFabledSunset(): void {
 		$filePath = FixturePathHelper::getPathForTheme() . '/fabled-sunset/style.css';
 		$reader   = new FileContentReader();
-		$provider = new LocalThemePackageMetaProvider( $filePath, $reader );
+		$provider = new ThemePackageMetaProvider( $filePath, $reader );
 		$this->assertEquals( 'Fabled Sunset', $provider->getName() );
 	}
 }

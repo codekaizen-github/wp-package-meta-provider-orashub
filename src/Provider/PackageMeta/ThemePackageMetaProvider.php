@@ -24,7 +24,7 @@ use InvalidArgumentException;
  *
  * @since 1.0.0
  */
-class LocalThemePackageMetaProvider implements ThemePackageMetaContract {
+class ThemePackageMetaProvider implements ThemePackageMetaContract {
 
 	/**
 	 * Path to the theme file.

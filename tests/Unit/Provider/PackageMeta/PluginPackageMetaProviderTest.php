@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\LocalPluginPackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
 use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @since 1.0.0
  */
-class LocalPluginPackageMetaProviderTest extends TestCase {
+class PluginPackageMetaProviderTest extends TestCase {
 
 	/**
 	 * Tests getName() extracts the correct plugin name from the My Basics plugin.
@@ -30,7 +30,7 @@ class LocalPluginPackageMetaProviderTest extends TestCase {
 	public function testGetNameFromPluginMyBasicsPlugin(): void {
 		$filePath = FixturePathHelper::getPathForPlugin() . '/my-basics-plugin.php';
 		$reader   = new FileContentReader();
-		$provider = new LocalPluginPackageMetaProvider( $filePath, $reader );
+		$provider = new PluginPackageMetaProvider( $filePath, $reader );
 		$this->assertEquals( 'My Basics Plugin', $provider->getName() );
 	}
 }
