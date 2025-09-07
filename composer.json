@@ -11,7 +11,8 @@
         "php": "^8.1",
         "codekaizen/wp-package-meta-provider-contract": "dev-main",
         "psr/log": "^3.0",
-        "respect/validation": "^2.2"
+        "respect/validation": "^2.2",
+        "guzzlehttp/guzzle": "^7.10"
     },
     "config": {
         "platform": {
