@@ -11,7 +11,6 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
-use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
 
 /**
  * Factory for creating local plugin package meta providers.
@@ -20,19 +19,28 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
  */
 class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFactoryContract {
 	/**
-	 * Path to the plugin file.
+	 * URL to meta endpoint.
 	 *
 	 * @var string
 	 */
-	public string $filePath;
+	protected string $url;
+
+	/**
+	 * Key to extract metadata from.
+	 *
+	 * @var string
+	 */
+	protected string $metaAnnotationKey;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string $filePath Path to the plugin file.
+	 * @param string $url Endpoint with meta information.
+	 * @param string $metaAnnotationKey Key to extract meta information from.
 	 */
-	public function __construct( string $filePath ) {
-		$this->filePath = $filePath;
+	public function __construct( string $url, string $metaAnnotationKey ) {
+		$this->url               = $url;
+		$this->metaAnnotationKey = $metaAnnotationKey;
 	}
 
 	/**
@@ -42,8 +50,8 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 	 */
 	public function create(): PluginPackageMetaContract {
 		return new PluginPackageMetaProvider(
-			$this->filePath,
-			new FileContentReader()
+			$this->url,
+			$this->metaAnnotationKey
 		);
 	}
 }

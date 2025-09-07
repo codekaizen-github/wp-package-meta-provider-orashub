@@ -12,10 +12,10 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta;
 
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Reader\FileContentReaderContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Parser\PackageMeta\SelectHeadersPackageMetaParser;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use InvalidArgumentException;
+use Respect\Validation\Rules\Url;
+use GuzzleHttp\Client;
 
 /**
  * Provider for local WordPress theme package metadata.
@@ -27,28 +27,28 @@ use InvalidArgumentException;
 class ThemePackageMetaProvider implements ThemePackageMetaContract {
 
 	/**
-	 * Path to the theme file.
+	 * URL to meta endpoint.
 	 *
 	 * @var string
 	 */
-	protected string $filePath;
+	protected string $url;
 
 	/**
-	 * File content reader instance.
+	 * Key to extract metadata from.
 	 *
-	 * @var FileContentReaderContract
+	 * @var string
 	 */
-	protected FileContentReaderContract $reader;
+	protected string $metaAnnotationKey;
 
 	/**
-	 * Full theme slug including directory prefix and file extension.
+	 * Full plugin slug including directory prefix and file extension.
 	 *
 	 * @var string
 	 */
 	protected string $fullSlug;
 
 	/**
-	 * Short theme slug without directory prefix or file extension.
+	 * Short plugin slug without directory prefix or file extension.
 	 *
 	 * @var string
 	 */
@@ -60,28 +60,18 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 	 * @var ?array<string,string>
 	 */
 	protected ?array $packageMeta;
-		/**
-		 * Constructor.
-		 *
-		 * @param string                    $filePath Path to the style.css file.
-		 * @param FileContentReaderContract $reader File content reader instance.
-		 * @throws InvalidArgumentException If the file path is invalid.
-		 */
-	public function __construct( string $filePath, FileContentReaderContract $reader ) {
-		if ( ! file_exists( $filePath ) ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- This is an exception message that is not displayed to end users.
-			throw new InvalidArgumentException( "Invalid file path: $filePath" );
-		}
-		$this->filePath    = $filePath;
-		$this->reader      = $reader;
-		$basename          = basename( $filePath );
-		$directory         = dirname( $filePath );
-		$directoryBasename = pathinfo( $directory, PATHINFO_BASENAME );
-		// Includes any .php extension.
-		$this->fullSlug = $directoryBasename . '/' . $basename;
-		// Remove extension (if any) to get just the filename.
-		$this->shortSlug   = pathinfo( $basename, PATHINFO_FILENAME );
-		$this->packageMeta = null;
+	/**
+	 * Constructor.
+	 *
+	 * @param string $url Endpoint with meta information.
+	 * @param string $metaAnnotationKey Key to extract meta information from.
+	 * @throws InvalidArgumentException If the URL is invalid.
+	 */
+	public function __construct( string $url, string $metaAnnotationKey ) {
+		Validator::create( new Url() )->check( $url );
+		$this->url               = $url;
+		$this->metaAnnotationKey = $metaAnnotationKey;
+		$this->packageMeta       = null;
 	}
 	/**
 	 * Gets the name of the theme.
@@ -263,26 +253,15 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 		if ( null !== $this->packageMeta ) {
 			return $this->packageMeta;
 		}
-		$parser    = new SelectHeadersPackageMetaParser(
-			array(
-				'Name'        => 'Theme Name',
-				'ThemeURI'    => 'Theme URI',
-				'Description' => 'Description',
-				'Author'      => 'Author',
-				'AuthorURI'   => 'Author URI',
-				'Version'     => 'Version',
-				'Template'    => 'Template',
-				'Status'      => 'Status',
-				'Tags'        => 'Tags',
-				'TextDomain'  => 'Text Domain',
-				'DomainPath'  => 'Domain Path',
-				'RequiresWP'  => 'Requires at least',
-				'RequiresPHP' => 'Requires PHP',
-				'UpdateURI'   => 'Update URI',
-			)
-		);
-		$metaArray = $parser->parse( $this->reader->read( $this->filePath ) );
+		$client    = new Client();
+		$response  = $client->get( $this->url );
+		$metaArray = json_decode( $response->getBody(), true );
 		Validator::create( new ThemeHeadersArrayRule() )->check( $metaArray );
+		/**
+		 * Meta array will have been validated.
+		 *
+		 * @var array<string,string> $metaArray
+		 * */
 		$this->packageMeta = $metaArray;
 		return $this->packageMeta;
 	}
