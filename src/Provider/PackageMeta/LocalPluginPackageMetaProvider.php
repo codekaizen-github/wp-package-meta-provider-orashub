@@ -241,7 +241,10 @@ class LocalPluginPackageMetaProvider implements PluginPackageMetaContract {
 	 * @return string[] Array of required plugin identifiers.
 	 */
 	public function getRequiresPlugins(): array {
-		return isset( $this->getPackageMeta()['RequiresPlugins'] ) ? array_map( 'trim', explode( ',', $this->getPackageMeta()['RequiresPlugins'] ) ) : [];
+		$meta = $this->getPackageMeta();
+		return isset( $meta['RequiresPlugins'] )
+			? array_map( 'trim', explode( ',', $meta['RequiresPlugins'] ) )
+			: [];
 	}
 	/**
 	 * Gets the sections of the plugin description.

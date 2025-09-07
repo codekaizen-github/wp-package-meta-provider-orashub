@@ -13,6 +13,9 @@
         <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
     </rule>
 
+    <!-- Configure for tabs per WordPress defaults -->
+    <arg name="tab-width" value="4"/>
+
     <!-- Include PSR-12 naming and basic formatting rules -->
     <rule ref="PSR12">
         <!-- Use WordPress whitespace rules instead -->
@@ -25,7 +28,6 @@
         <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
     </rule>
 
-
     <!-- Paths to check -->
     <file>./src</file>
     <file>./tests</file>
@@ -33,9 +35,6 @@
     <!-- Exclude vendor directory and test fixtures -->
     <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/tests/Fixture/</exclude-pattern>
-
-    <!-- Configure for tabs per WordPress defaults -->
-    <arg name="tab-width" value="4"/>
 
     <!-- Show progress and sniff codes in report -->
     <arg value="ps"/>
