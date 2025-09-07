@@ -1,23 +1,30 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress PSR-4 Standards">
-    <description>WordPress Coding Standards with PSR-4 autoloader compatibility</description>
+<ruleset name="WordPress PSR-12 Hybrid Standards">
+    <description>A hybrid of WordPress and PSR-12 standards, preferring PSR-12 for naming conventions</description>
 
-    <!-- Include WordPress Coding Standards -->
+    <!-- Base on WordPress standards for most formatting rules -->
     <rule ref="WordPress">
-        <!-- Exclude rules that conflict with PSR-4 autoloading -->
-        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
-        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-
+        <!-- Exclude WordPress naming conventions in favor of PSR-12 -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals"/>
         <!-- Allow short array syntax -->
-        <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
-
-        <!-- Allow less strict interpolated variable naming -->
-        <exclude name="WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase" />
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
     </rule>
 
-    <!-- Add PSR-4 compatible rules -->
-    <rule ref="PSR1.Classes.ClassDeclaration"/>
-    <rule ref="PSR2.Classes.PropertyDeclaration"/>
+    <!-- Include PSR-12 naming and basic formatting rules -->
+    <rule ref="PSR12">
+        <!-- Use WordPress whitespace rules instead -->
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+        <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+        <exclude name="PSR12.ControlStructures.ControlStructureSpacing"/>
+        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+        <exclude name="PSR12.Files.FileHeader"/>
+        <exclude name="PSR12.Files.DeclareStatement"/>
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+    </rule>
+
 
     <!-- Paths to check -->
     <file>./src</file>
@@ -27,21 +34,10 @@
     <exclude-pattern>/vendor/</exclude-pattern>
     <exclude-pattern>/tests/Fixture/</exclude-pattern>
 
-    <!-- Configure for tabs -->
+    <!-- Configure for tabs per WordPress defaults -->
     <arg name="tab-width" value="4"/>
 
-    <!-- Show progress, show sniff codes in report -->
+    <!-- Show progress and sniff codes in report -->
     <arg value="ps"/>
 
-    <!-- Allow PSR-4 style variable/method names -->
-    <rule ref="WordPress.NamingConventions.ValidVariableName">
-        <exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
-    </rule>
-
-    <!-- Allow PSR-4 style method names -->
-    <rule ref="WordPress.NamingConventions.ValidFunctionName">
-        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
-    </rule>
 </ruleset>
