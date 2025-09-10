@@ -10,9 +10,9 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
+use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
-use CodeKaizen\WPPackageMetaProviderORASHub\Reader\FileContentReader;
-use CodeKaizen\WPPackageMetaProviderORASHubTests\Helper\FixturePathHelper;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,9 +28,30 @@ class PluginPackageMetaProviderTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetNameFromPluginMyBasicsPlugin(): void {
-		$filePath = FixturePathHelper::getPathForPlugin() . '/my-basics-plugin.php';
-		$reader   = new FileContentReader();
-		$provider = new PluginPackageMetaProvider( $filePath, $reader );
-		$this->assertEquals( 'My Basics Plugin', $provider->getName() );
+		// $url                       = 'https://example.com/my-plugin/';
+		// $metaAnnotationKey         = 'metaAnnotationKey';
+		// $client                    = new Client();
+		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
+		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
+		$response                        =
+			[
+				'Name'            => 'Plugin Name',
+				'PluginURI'       => 'https://example.com/plugin-name',
+				'Description'     => 'Description of the plugin.',
+				'Version'         => '1.0.0',
+				'RequiresWP'      => '5.2',
+				'RequiresPHP'     => '7.2',
+				'Author'          => 'Your Name',
+				'AuthorURI'       => 'https://example.com',
+				'TextDomain'      => 'plugin-slug',
+				'License'         => 'GPL v2 or later',
+				'LicenseURI'      => 'http://www.gnu.org/licenses/gpl-2.0.txt',
+				'UpdateURI'       => 'https://example.com/my-plugin/',
+				'RequiresPlugins' => 'my-plugin, yet-another-plugin',
+			];
+		$metaAnnotationKeyAccessorDouble = Mockery::mock( MetaAnnotationKeyAccessor::class );
+		$metaAnnotationKeyAccessorDouble->shouldReceive( 'get' )->with()->andReturn( $response );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessorDouble );
+		$this->assertEquals( 'Plugin Name', $provider->getName() );
 	}
 }
