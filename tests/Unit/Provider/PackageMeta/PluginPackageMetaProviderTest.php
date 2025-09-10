@@ -11,7 +11,9 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
+use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
+use GuzzleHttp\Client;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -33,25 +35,25 @@ class PluginPackageMetaProviderTest extends TestCase {
 		// $client                    = new Client();
 		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
 		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
-		$response                        =
-			[
-				'Name'            => 'Plugin Name',
-				'PluginURI'       => 'https://example.com/plugin-name',
-				'Description'     => 'Description of the plugin.',
-				'Version'         => '1.0.0',
-				'RequiresWP'      => '5.2',
-				'RequiresPHP'     => '7.2',
-				'Author'          => 'Your Name',
-				'AuthorURI'       => 'https://example.com',
-				'TextDomain'      => 'plugin-slug',
-				'License'         => 'GPL v2 or later',
-				'LicenseURI'      => 'http://www.gnu.org/licenses/gpl-2.0.txt',
-				'UpdateURI'       => 'https://example.com/my-plugin/',
-				'RequiresPlugins' => 'my-plugin, yet-another-plugin',
-			];
-		$metaAnnotationKeyAccessorDouble = Mockery::mock( MetaAnnotationKeyAccessor::class );
-		$metaAnnotationKeyAccessorDouble->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessorDouble );
+		$response                  =
+		[
+			'Name'            => 'Plugin Name',
+			'PluginURI'       => 'https://example.com/plugin-name',
+			'Description'     => 'Description of the plugin.',
+			'Version'         => '1.0.0',
+			'RequiresWP'      => '5.2',
+			'RequiresPHP'     => '7.2',
+			'Author'          => 'Your Name',
+			'AuthorURI'       => 'https://example.com',
+			'TextDomain'      => 'plugin-slug',
+			'License'         => 'GPL v2 or later',
+			'LicenseURI'      => 'http://www.gnu.org/licenses/gpl-2.0.txt',
+			'UpdateURI'       => 'https://example.com/my-plugin/',
+			'RequiresPlugins' => 'my-plugin, yet-another-plugin',
+		];
+		$metaAnnotationKeyAccessor = Mockery::mock( MetaAnnotationKeyAccessor::class );
+		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
 		$this->assertEquals( 'Plugin Name', $provider->getName() );
 	}
 }

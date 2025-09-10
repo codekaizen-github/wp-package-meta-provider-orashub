@@ -10,7 +10,10 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaProviderFactoryContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
+use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
+use GuzzleHttp\Client;
 
 /**
  * Factory for creating local theme package meta providers.
@@ -49,9 +52,9 @@ class ThemePackageMetaProviderFactory implements ThemePackageMetaProviderFactory
 	 * @return ThemePackageMetaContract
 	 */
 	public function create(): ThemePackageMetaContract {
-		return new ThemePackageMetaProvider(
-			$this->url,
-			$this->metaAnnotationKey
-		);
+		$client                    = new Client();
+		$requestor                 = new GuzzleHttpGetRequest( $client, $this->url );
+		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $this->metaAnnotationKey );
+		return new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
 	}
 }

@@ -7,7 +7,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Client;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use Exception;
 use GuzzleHttp\Client;
 use Psr\Http\Message\UriInterface;
@@ -17,7 +17,7 @@ use Respect\Validation\Validator;
 /**
  * GuzzleHttpGetRequest.
  */
-class GuzzleHttpGetRequest implements AssociativeArrayStringToMixedAccessorContract {
+class GuzzleHttpGetRequest implements MixedAccessorContract {
 	/**
 	 * Undocumented variable
 	 *
@@ -52,21 +52,13 @@ class GuzzleHttpGetRequest implements AssociativeArrayStringToMixedAccessorContr
 	/**
 	 * Undocumented function
 	 *
-	 * @return array<string,mixed>
+	 * @return mixed
 	 * @throws Exception  Exception.
 	 */
-	public function get(): array {
+	public function get(): mixed {
 		$response = $this->client->get( $this->uri, $this->options );
 		$body     = $response->getBody();
 		$decoded  = json_decode( $body, true );
-		if ( ! is_array( $decoded ) ) {
-			throw new Exception( 'Not of type array' );
-		}
-		/**
-		 * Meta array will have been validated.
-		 *
-		 * @var array<string,mixed> $decoded
-		 * */
 		return $decoded;
 	}
 }

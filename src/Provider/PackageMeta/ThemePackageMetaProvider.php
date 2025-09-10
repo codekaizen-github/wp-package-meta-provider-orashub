@@ -14,8 +14,7 @@ use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use InvalidArgumentException;
-use Respect\Validation\Rules\Url;
-use GuzzleHttp\Client;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 
 /**
  * Provider for local WordPress theme package metadata.
@@ -41,6 +40,13 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 	protected string $metaAnnotationKey;
 
 	/**
+	 * HTTP client.
+	 *
+	 * @var MixedAccessorContract
+	 */
+	protected MixedAccessorContract $client;
+
+	/**
 	 * Full plugin slug including directory prefix and file extension.
 	 *
 	 * @var string
@@ -63,15 +69,13 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $url Endpoint with meta information.
-	 * @param string $metaAnnotationKey Key to extract meta information from.
+	 * @param MixedAccessorContract $client HTTP client.
 	 * @throws InvalidArgumentException If the URL is invalid.
 	 */
-	public function __construct( string $url, string $metaAnnotationKey ) {
-		Validator::create( new Url() )->check( $url );
-		$this->url               = $url;
-		$this->metaAnnotationKey = $metaAnnotationKey;
-		$this->packageMeta       = null;
+	public function __construct( MixedAccessorContract $client ) {
+
+		$this->client      = $client;
+		$this->packageMeta = null;
 	}
 	/**
 	 * Gets the name of the theme.
@@ -253,9 +257,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 		if ( null !== $this->packageMeta ) {
 			return $this->packageMeta;
 		}
-		$client    = new Client();
-		$response  = $client->get( $this->url );
-		$metaArray = json_decode( $response->getBody(), true );
+		$metaArray = $this->client->get();
 		Validator::create( new ThemeHeadersArrayRule() )->check( $metaArray );
 		/**
 		 * Meta array will have been validated.

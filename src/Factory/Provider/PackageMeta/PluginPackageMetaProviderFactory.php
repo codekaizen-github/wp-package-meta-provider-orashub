@@ -10,7 +10,10 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
+use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
+use GuzzleHttp\Client;
 
 /**
  * Factory for creating local plugin package meta providers.
@@ -49,9 +52,9 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 	 * @return PluginPackageMetaContract
 	 */
 	public function create(): PluginPackageMetaContract {
-		return new PluginPackageMetaProvider(
-			$this->url,
-			$this->metaAnnotationKey
-		);
+		$client                    = new Client();
+		$requestor                 = new GuzzleHttpGetRequest( $client, $this->url );
+		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $this->metaAnnotationKey );
+		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
 	}
 }

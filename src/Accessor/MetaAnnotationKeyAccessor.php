@@ -7,7 +7,6 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use Exception;
 
@@ -18,9 +17,9 @@ class MetaAnnotationKeyAccessor implements MixedAccessorContract {
 	/**
 	 * Undocumented variable
 	 *
-	 * @var AssociativeArrayStringToMixedAccessorContract
+	 * @var MixedAccessorContract
 	 */
-	protected AssociativeArrayStringToMixedAccessorContract $accessor;
+	protected MixedAccessorContract $accessor;
 	/**
 	 * Undocumented variable
 	 *
@@ -30,10 +29,10 @@ class MetaAnnotationKeyAccessor implements MixedAccessorContract {
 	/**
 	 * Undocumented function
 	 *
-	 * @param AssociativeArrayStringToMixedAccessorContract $accessor Accessor.
-	 * @param string                                        $metaAnnotationKey Meta Annotation Key.
+	 * @param MixedAccessorContract $accessor Accessor.
+	 * @param string                $metaAnnotationKey Meta Annotation Key.
 	 */
-	public function __construct( AssociativeArrayStringToMixedAccessorContract $accessor, string $metaAnnotationKey ) {
+	public function __construct( MixedAccessorContract $accessor, string $metaAnnotationKey ) {
 		$this->accessor          = $accessor;
 		$this->metaAnnotationKey = $metaAnnotationKey;
 	}
@@ -45,6 +44,9 @@ class MetaAnnotationKeyAccessor implements MixedAccessorContract {
 	 */
 	public function get(): mixed {
 		$raw = $this->accessor->get();
+		if ( ! is_array( $raw ) ) {
+			throw new Exception( 'Input is not an array' );
+		}
 		if ( ! array_key_exists( $this->metaAnnotationKey, $raw ) ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new Exception( "Array key does not exist: $this->metaAnnotationKey" );

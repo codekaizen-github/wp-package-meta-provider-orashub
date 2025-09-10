@@ -1,17 +1,17 @@
 <?php
 /**
- * Interface for AssociativeArrayStringToMixedAccessorContract
+ * Interface for AssociativeArrayStringToStringAccessorContract
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor;
 
-interface AssociativeArrayStringToMixedAccessorContract {
+interface AssociativeArrayStringToStringAccessorContract {
 	/**
 	 * Gets data
 	 *
-	 * @return array<string,mixed>
+	 * @return array<string,string>
 	 */
 	public function get(): array;
 }
