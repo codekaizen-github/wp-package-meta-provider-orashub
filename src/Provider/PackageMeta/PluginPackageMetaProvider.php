@@ -14,8 +14,7 @@ use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
 use InvalidArgumentException;
-use Respect\Validation\Rules\Url;
-use GuzzleHttp\Client;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 
 /**
  * Provider for local WordPress plugin package metadata.
@@ -27,18 +26,11 @@ use GuzzleHttp\Client;
 class PluginPackageMetaProvider implements PluginPackageMetaContract {
 
 	/**
-	 * URL to meta endpoint.
+	 * HTTP client.
 	 *
-	 * @var string
+	 * @var MixedAccessorContract
 	 */
-	protected string $url;
-
-	/**
-	 * Key to extract metadata from.
-	 *
-	 * @var string
-	 */
-	protected string $metaAnnotationKey;
+	protected MixedAccessorContract $client;
 
 	/**
 	 * Full plugin slug including directory prefix and file extension.
@@ -63,15 +55,11 @@ class PluginPackageMetaProvider implements PluginPackageMetaContract {
 	/**
 	 * Constructor.
 	 *
-	 * @param string $url Endpoint with meta information.
-	 * @param string $metaAnnotationKey Key to extract meta information from.
-	 * @throws InvalidArgumentException If the URL is invalid.
+	 * @param MixedAccessorContract $client HTTP client.
 	 */
-	public function __construct( string $url, string $metaAnnotationKey ) {
-		Validator::create( new Url() )->check( $url );
-		$this->url               = $url;
-		$this->metaAnnotationKey = $metaAnnotationKey;
-		$this->packageMeta       = null;
+	public function __construct( MixedAccessorContract $client ) {
+		$this->client      = $client;
+		$this->packageMeta = null;
 	}
 	/**
 	 * Gets the name of the plugin.
@@ -252,7 +240,6 @@ class PluginPackageMetaProvider implements PluginPackageMetaContract {
 	public function getNetwork(): bool {
 		return (bool) ( $this->getPackageMeta()['Network'] ?? false );
 	}
-
 	/**
 	 * Gets the plugin package metadata.
 	 *
@@ -265,9 +252,7 @@ class PluginPackageMetaProvider implements PluginPackageMetaContract {
 		if ( null !== $this->packageMeta ) {
 			return $this->packageMeta;
 		}
-		$client    = new Client();
-		$response  = $client->get( $this->url );
-		$metaArray = json_decode( $response->getBody(), true );
+		$metaArray = $this->client->get();
 		Validator::create( new PluginHeadersArrayRule() )->check( $metaArray );
 		/**
 		 * Meta array will have been validated.
