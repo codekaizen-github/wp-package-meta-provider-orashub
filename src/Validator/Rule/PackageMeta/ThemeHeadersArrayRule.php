@@ -38,23 +38,34 @@ class ThemeHeadersArrayRule extends Simple {
 		if ( ! is_array( $input ) ) {
 			return false;
 		}
-
 		return Validator::create(
 			new Rules\AllOf(
-				new Rules\Key( 'Name', new Rules\StringType(), true ),
-				new Rules\Key( 'ThemeURI', new Rules\Url(), false ),
-				new Rules\Key( 'Description', new Rules\StringType(), false ),
-				new Rules\Key( 'Author', new Rules\StringType(), false ),
-				new Rules\Key( 'AuthorURI', new Rules\StringType(), false ),
-				new Rules\Key( 'Version', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'Template', new Rules\StringType(), false ),
-				new Rules\Key( 'Status', new Rules\StringType(), false ),
-				new Rules\Key( 'Tags', new Rules\StringType(), false ),
-				new Rules\Key( 'TextDomain', new Rules\StringType(), false ),
-				new Rules\Key( 'DomainPath', new Rules\StringType(), false ),
-				new Rules\Key( 'RequiresWP', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'RequiresPHP', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'UpdateURI', new Rules\Url(), false ),
+				new Rules\Key( 'name', new Rules\StringType(), true ),
+				new Rules\Key( 'viewUrl', new Rules\Url(), false ),
+				new Rules\Key( 'version', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key( 'downloadUrl', new Rules\Url(), false ),
+				new Rules\Key( 'tested', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key( 'stable', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key(
+					'tags',
+					new Rules\AllOf(
+						new Rules\ArrayType(),
+						new Rules\Each( new Rules\StringType() )
+					),
+					false
+				),
+				new Rules\Key( 'author', new Rules\StringType(), false ),
+				new Rules\Key( 'authorUrl', new Rules\Url(), false ),
+				new Rules\Key( 'license', new Rules\StringType(), false ),
+				new Rules\Key( 'licenseUrl', new Rules\Url(), false ),
+				new Rules\Key( 'description', new Rules\StringType(), false ),
+				new Rules\Key( 'shortDescription', new Rules\StringType(), false ),
+				new Rules\Key( 'requiresWordPressVersion', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key( 'requiresPHPVersion', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key( 'textDomain', new Rules\StringType(), false ),
+				new Rules\Key( 'domainPath', new Rules\StringType(), false ),
+				new Rules\Key( 'template', new Rules\StringType(), false ),
+				new Rules\Key( 'status', new Rules\StringType(), false ),
 			)
 		)->isValid( $input );
 	}
