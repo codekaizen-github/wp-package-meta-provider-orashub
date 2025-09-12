@@ -28,19 +28,29 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testValidCaseKitchenSink(): void {
 		$input   = [
-			'Name'            => 'Test Plugin',
-			'PluginURI'       => 'https://codekaizen.net',
-			'Version'         => '3.0.1',
-			'Description'     => 'This is a test plugin',
-			'Author'          => 'Andrew Dawes',
-			'AuthorURI'       => 'https://codekaizen.net/team/andrew-dawes',
-			'TextDomain'      => 'test-plugin',
-			'DomainPath'      => '/languages',
-			'Network'         => 'true',
-			'RequiresWP'      => '6.8.2',
-			'RequiresPHP'     => '8.2.1',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
-			'RequiresPlugins' => 'akismet,hello-dolly',
+			'name'                     => 'Test Plugin',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -52,19 +62,29 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testValidCaseKitchenSinkWithNonFullSemverRequiresPHP(): void {
 		$input   = [
-			'Name'            => 'Test Plugin',
-			'PluginURI'       => 'https://codekaizen.net',
-			'Version'         => '3.0.1',
-			'Description'     => 'This is a test plugin',
-			'Author'          => 'Andrew Dawes',
-			'AuthorURI'       => 'https://codekaizen.net/team/andrew-dawes',
-			'TextDomain'      => 'test-plugin',
-			'DomainPath'      => '/languages',
-			'Network'         => 'true',
-			'RequiresWP'      => '6.8.2',
-			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
-			'RequiresPlugins' => 'akismet,hello-dolly',
+			'name'                     => 'Test Plugin',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -76,7 +96,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testValidCaseNameOnly(): void {
 		$input   = [
-			'Name' => 'Test Plugin',
+			'name' => 'Test Plugin',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -86,21 +106,31 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testInvalidCasePluginURIIsNotAURI(): void {
+	public function testInvalidCaseViewURLIsNotAURL(): void {
 		$input   = [
-			'Name'            => 'Test Plugin',
-			'PluginURI'       => 'not_a_uri',
-			'Version'         => '3.0.1',
-			'Description'     => 'This is a test plugin',
-			'Author'          => 'Andrew Dawes',
-			'AuthorURI'       => 'https://codekaizen.net/team/andrew-dawes',
-			'TextDomain'      => 'test-plugin',
-			'DomainPath'      => '/languages',
-			'Network'         => 'true',
-			'RequiresWP'      => '6.8.2',
-			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
-			'RequiresPlugins' => 'akismet,hello-dolly',
+			'name'                     => 'Test Plugin',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'this_is_not_a_url',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
@@ -112,19 +142,29 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testInvalidCaseVersionIsNotAVersion(): void {
 		$input   = [
-			'Name'            => 'Test Plugin',
-			'PluginURI'       => 'https://codekaizen.net',
-			'Version'         => 'one',
-			'Description'     => 'This is a test plugin',
-			'Author'          => 'Andrew Dawes',
-			'AuthorURI'       => 'https://codekaizen.net/team/andrew-dawes',
-			'TextDomain'      => 'test-plugin',
-			'DomainPath'      => '/languages',
-			'Network'         => 'true',
-			'RequiresWP'      => '6.8.2',
-			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
-			'RequiresPlugins' => 'akismet,hello-dolly',
+			'name'                     => 'Test Plugin',
+			'version'                  => 'three',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
@@ -136,18 +176,28 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testInvalidCaseNameIsNull(): void {
 		$input = [
-			'PluginURI'       => 'https://codekaizen.net',
-			'Version'         => 'one',
-			'Description'     => 'This is a test plugin',
-			'Author'          => 'Andrew Dawes',
-			'AuthorURI'       => 'https://codekaizen.net/team/andrew-dawes',
-			'TextDomain'      => 'test-plugin',
-			'DomainPath'      => '/languages',
-			'Network'         => 'true',
-			'RequiresWP'      => '6.8.2',
-			'RequiresPHP'     => '8.2',
-			'UpdateURI'       => 'https://github.com/codekaizen-github/wp-package-meta-provider-orashub',
-			'RequiresPlugins' => 'akismet,hello-dolly',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		// Testing without using check() to avoid exception handling.
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
