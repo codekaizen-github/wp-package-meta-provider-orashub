@@ -33,24 +33,30 @@ class ThemePackageMetaProviderTest extends TestCase {
 		// $client                    = new Client();
 		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
 		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
-		$response                  =
-		[
-			'FabledSunset' => 'Fabled Sunset',
-			'ThemeURI'     => ' https://example.com/fabled-sunset',
-			'Description'  => 'Custom theme description...',
-			'Version'      => '1.0.0',
-			'RequiresWP'   => '5.2',
-			'RequiresPHP'  => '7.2',
-			'Author'       => 'Your Name',
-			'AuthorURI'    => 'https://example.com',
-			'TextDomain'   => 'fabled-sunset',
-			'License'      => 'GPL v2 or later',
-			'LicenseURI'   => 'http://www.gnu.org/licenses/gpl-2.0.txt',
-			'UpdateURI'    => 'https://example.com/abledfabled-sunset/',
+		$response                  = [
+			'name'                     => 'Test Theme',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test theme',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'template'                 => 'parent-theme',
+			'status'                   => 'publish',
 		];
 		$metaAnnotationKeyAccessor = Mockery::mock( MetaAnnotationKeyAccessor::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
-		$this->assertEquals( 'Fabled Sunset', $provider->getName() );
+		$this->assertEquals( 'Test Theme', $provider->getName() );
 	}
 }

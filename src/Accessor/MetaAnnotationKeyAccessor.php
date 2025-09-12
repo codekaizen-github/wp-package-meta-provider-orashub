@@ -7,13 +7,17 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use Exception;
+use Respect\Validation\Validator;
+use Respect\Validation\Rules;
+use Respect\Validation\Exceptions\ValidationException;
 
 /**
  * HTTPGetRequest.
  */
-class MetaAnnotationKeyAccessor implements MixedAccessorContract {
+class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessorContract {
 	/**
 	 * Undocumented variable
 	 *
@@ -39,10 +43,10 @@ class MetaAnnotationKeyAccessor implements MixedAccessorContract {
 	/**
 	 * Undocumented function
 	 *
-	 * @return mixed
-	 * @throws Exception Throws exception on array key not existing.
+	 * @return array<string,mixed>
+	 * @throws Exception|ValidationException Throws exception on non-array, array key not existing, or invalid keys.
 	 */
-	public function get(): mixed {
+	public function get(): array {
 		$raw = $this->accessor->get();
 		if ( ! is_array( $raw ) ) {
 			throw new Exception( 'Input is not an array' );
@@ -51,6 +55,13 @@ class MetaAnnotationKeyAccessor implements MixedAccessorContract {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new Exception( "Array key does not exist: $this->metaAnnotationKey" );
 		}
-		return $raw[ $this->metaAnnotationKey ];
+		$value = $raw[ $this->metaAnnotationKey ];
+		Validator::create( new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ) )->check( $value );
+		/**
+		 * Value will have been validated
+		 *
+		 * @var array<string,mixed> $value
+		 */
+		return $value;
 	}
 }

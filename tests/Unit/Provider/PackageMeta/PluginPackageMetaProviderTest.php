@@ -35,25 +35,34 @@ class PluginPackageMetaProviderTest extends TestCase {
 		// $client                    = new Client();
 		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
 		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
-		$response                  =
-		[
-			'Name'            => 'Plugin Name',
-			'PluginURI'       => 'https://example.com/plugin-name',
-			'Description'     => 'Description of the plugin.',
-			'Version'         => '1.0.0',
-			'RequiresWP'      => '5.2',
-			'RequiresPHP'     => '7.2',
-			'Author'          => 'Your Name',
-			'AuthorURI'       => 'https://example.com',
-			'TextDomain'      => 'plugin-slug',
-			'License'         => 'GPL v2 or later',
-			'LicenseURI'      => 'http://www.gnu.org/licenses/gpl-2.0.txt',
-			'UpdateURI'       => 'https://example.com/my-plugin/',
-			'RequiresPlugins' => 'my-plugin, yet-another-plugin',
+		$response                  = [
+			'name'                     => 'Test Plugin',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
 		];
 		$metaAnnotationKeyAccessor = Mockery::mock( MetaAnnotationKeyAccessor::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
-		$this->assertEquals( 'Plugin Name', $provider->getName() );
+		$this->assertEquals( 'Test Plugin', $provider->getName() );
 	}
 }
