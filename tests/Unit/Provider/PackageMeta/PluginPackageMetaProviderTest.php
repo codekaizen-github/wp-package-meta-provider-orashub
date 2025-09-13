@@ -11,9 +11,7 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
-use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
-use GuzzleHttp\Client;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -30,11 +28,6 @@ class PluginPackageMetaProviderTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetNameFromPluginMyBasicsPlugin(): void {
-		// $url                       = 'https://example.com/my-plugin/';
-		// $metaAnnotationKey         = 'metaAnnotationKey';
-		// $client                    = new Client();
-		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
-		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
 		$response                  = [
 			'name'                     => 'Test Plugin',
 			'version'                  => '3.0.1',

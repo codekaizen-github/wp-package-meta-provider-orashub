@@ -28,11 +28,6 @@ class ThemePackageMetaProviderTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetNameFromThemeFabledSunset(): void {
-		// $url                       = 'https://example.com/my-plugin/';
-		// $metaAnnotationKey         = 'metaAnnotationKey';
-		// $client                    = new Client();
-		// $requestor                 = new GuzzleHttpGetRequest( $client, $url );
-		// $metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $metaAnnotationKey );
 		$response                  = [
 			'name'                     => 'Test Theme',
 			'version'                  => '3.0.1',
