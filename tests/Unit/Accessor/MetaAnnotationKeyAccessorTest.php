@@ -8,7 +8,7 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
-use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
+use CodeKaizen\WPPackageMetaProviderORASHub\Client\HTTPGetRequestJSONResponseGuzzleClient;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
@@ -53,7 +53,7 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
 			'testMetaAnnotationKey' => $expected,
 		];
-		$client   = Mockery::mock( GuzzleHttpGetRequest::class );
+		$client   = Mockery::mock( HTTPGetRequestJSONResponseGuzzleClient::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
 		$this->assertEquals( $expected, $metaAnnotationKeyAccessor->get() );
@@ -65,7 +65,7 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 	 */
 	public function testInputIsNotArrayAndThrowsException() {
 		$response = 'hi';
-		$client   = Mockery::mock( GuzzleHttpGetRequest::class );
+		$client   = Mockery::mock( HTTPGetRequestJSONResponseGuzzleClient::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
 		$this->expectException( UnexpectedValueException::class );
@@ -81,7 +81,7 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'otherDataOne' => 1,
 			'otherDataTwo' => [ 'asdf', 'fda', [ 'asdf' ] ],
 		];
-		$client   = Mockery::mock( GuzzleHttpGetRequest::class );
+		$client   = Mockery::mock( HTTPGetRequestJSONResponseGuzzleClient::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
 		$this->expectException( UnexpectedValueException::class );
@@ -98,7 +98,7 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
 			'testMetaAnnotationKey' => 'hi',
 		];
-		$client   = Mockery::mock( GuzzleHttpGetRequest::class );
+		$client   = Mockery::mock( HTTPGetRequestJSONResponseGuzzleClient::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
 		$this->expectException( UnexpectedValueException::class );
@@ -115,7 +115,7 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
 			'testMetaAnnotationKey' => [ 'hello', 'world' ],
 		];
-		$client   = Mockery::mock( GuzzleHttpGetRequest::class );
+		$client   = Mockery::mock( HTTPGetRequestJSONResponseGuzzleClient::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
 		$this->expectException( UnexpectedValueException::class );

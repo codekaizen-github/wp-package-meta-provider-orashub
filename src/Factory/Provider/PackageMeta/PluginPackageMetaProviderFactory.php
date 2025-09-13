@@ -11,7 +11,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
-use CodeKaizen\WPPackageMetaProviderORASHub\Client\GuzzleHttpGetRequest;
+use CodeKaizen\WPPackageMetaProviderORASHub\Client\HTTPGetRequestJSONResponseGuzzleClient;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
 use GuzzleHttp\Client;
 
@@ -53,7 +53,7 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 	 */
 	public function create(): PluginPackageMetaContract {
 		$client                    = new Client();
-		$requestor                 = new GuzzleHttpGetRequest( $client, $this->url );
+		$requestor                 = new HTTPGetRequestJSONResponseGuzzleClient( $client, $this->url );
 		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $this->metaAnnotationKey );
 		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
 	}
