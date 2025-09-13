@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for making GuzzleHttpGetRequests
+ * Class for making HTTPGetRequestJSONResponseGuzzleClients
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub
  */
@@ -15,9 +15,9 @@ use Respect\Validation\Rules\Url;
 use Respect\Validation\Validator;
 
 /**
- * GuzzleHttpGetRequest.
+ * HTTPGetRequestJSONResponseGuzzleClient.
  */
-class GuzzleHttpGetRequest implements MixedAccessorContract {
+class HTTPGetRequestJSONResponseGuzzleClient implements MixedAccessorContract {
 	/**
 	 * Undocumented variable
 	 *
