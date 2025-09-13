@@ -10,9 +10,12 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use Exception;
+use InvalidArgumentException;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Exceptions\ValidationException;
+use Throwable;
+use UnexpectedValueException;
 
 /**
  * HTTPGetRequest.
@@ -44,24 +47,29 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 	 * Undocumented function
 	 *
 	 * @return array<string,mixed>
-	 * @throws Exception|ValidationException Throws exception on non-array, array key not existing, or invalid keys.
+	 * @throws UnexpectedValueException Throws exception on non-array, array key not existing, or invalid keys.
 	 */
 	public function get(): array {
 		$raw = $this->accessor->get();
-		if ( ! is_array( $raw ) ) {
-			throw new Exception( 'Input is not an array' );
-		}
-		if ( ! array_key_exists( $this->metaAnnotationKey, $raw ) ) {
+		try {
+			Validator::create(
+				new Rules\ArrayType(),
+				new Rules\Key(
+					$this->metaAnnotationKey,
+					new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) )
+				)
+			)->check( $raw );
+		} catch ( ValidationException $e ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
-			throw new Exception( "Array key does not exist: $this->metaAnnotationKey" );
+			throw new UnexpectedValueException( $e->getMessage() );
 		}
-		$value = $raw[ $this->metaAnnotationKey ];
-		Validator::create( new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ) )->check( $value );
 		/**
-		 * Value will have been validated
+		 * Values will have been validated
 		 *
+		 * @var array<string,mixed> $raw
 		 * @var array<string,mixed> $value
 		 */
+		$value = $raw[ $this->metaAnnotationKey ];
 		return $value;
 	}
 }
