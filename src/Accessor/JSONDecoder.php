@@ -5,7 +5,7 @@
  * @package CodeKaizen\WPPackageMetaProviderORASHub
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Client;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\StreamAccessorContract;

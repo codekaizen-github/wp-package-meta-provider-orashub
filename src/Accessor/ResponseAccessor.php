@@ -11,8 +11,10 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\ResponseAccessorCo
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
+use Respect\Validation\Exceptions\ValidationException;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
+use UnexpectedValueException;
 
 /**
  * HTTPGetRequest.
@@ -42,9 +44,14 @@ class ResponseAccessor implements ResponseAccessorContract {
 	 * @param Client              $client Client.
 	 * @param string|UriInterface $uri URI.
 	 * @param array<string,mixed> $options Options.
+	 * @throws UnexpectedValueException If URL is not valid.
 	 */
 	public function __construct( Client $client, string|UriInterface $uri, array $options = [] ) {
-		Validator::create( new Rules\Url() )->check( $uri );
+		try {
+			Validator::create( new Rules\Url() )->check( $uri );
+		} catch ( ValidationException $e ) {
+			throw new UnexpectedValueException( 'Invalid URL' );
+		}
 		$this->client  = $client;
 		$this->uri     = $uri;
 		$this->options = $options;

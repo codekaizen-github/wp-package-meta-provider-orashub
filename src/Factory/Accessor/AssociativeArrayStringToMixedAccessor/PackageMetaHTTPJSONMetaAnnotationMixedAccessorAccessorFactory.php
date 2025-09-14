@@ -13,7 +13,7 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArraySt
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\ResponseAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\StreamAccessor;
-use CodeKaizen\WPPackageMetaProviderORASHub\Client\JSONDecoder;
+use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\JSONDecoder;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Factory\AssociativeArrayStringToMixedAccessorFactoryContract;
 use GuzzleHttp\Client;
 use Psr\Http\Message\UriInterface;
