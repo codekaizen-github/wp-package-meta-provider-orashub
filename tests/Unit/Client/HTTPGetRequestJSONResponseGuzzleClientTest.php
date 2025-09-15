@@ -7,14 +7,12 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Client;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\ResponseAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Client\HTTPGetRequestJSONResponseGuzzleClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use UnexpectedValueException;
 
 /**
  * Undocumented class

@@ -10,10 +10,9 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
-use CodeKaizen\WPPackageMetaProviderORASHub\Client\HTTPGetRequestJSONResponseGuzzleClient;
+// phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
+use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\AssociativeArrayStringToMixedAccessor\PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
-use GuzzleHttp\Client;
 
 /**
  * Factory for creating local plugin package meta providers.
@@ -52,9 +51,12 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 	 * @return PluginPackageMetaContract
 	 */
 	public function create(): PluginPackageMetaContract {
-		$client                    = new Client();
-		$requestor                 = new HTTPGetRequestJSONResponseGuzzleClient( $client, $this->url );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $requestor, $this->metaAnnotationKey );
+		$factory                   = new PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory(
+			$this->url,
+			$this->metaAnnotationKey,
+			[]
+		);
+		$metaAnnotationKeyAccessor = $factory->create();
 		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
 	}
 }

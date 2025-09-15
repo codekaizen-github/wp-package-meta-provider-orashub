@@ -23,7 +23,9 @@ use Psr\Http\Message\UriInterface;
  *
  * @since 1.0.0
  */
+// phpcs:ignore Generic.Files.LineLength.TooLong, Squiz.Commenting.ClassComment.Missing
 class PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory implements AssociativeArrayStringToMixedAccessorFactoryContract {
+
 	/**
 	 * Undocumented variable
 	 *
