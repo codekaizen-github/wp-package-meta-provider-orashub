@@ -13,6 +13,8 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderF
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\AssociativeArrayStringToMixedAccessor\PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Factory for creating local plugin package meta providers.
@@ -35,14 +37,23 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 	protected string $metaAnnotationKey;
 
 	/**
+	 * Undocumented variable
+	 *
+	 * @var LoggerInterface
+	 */
+	protected LoggerInterface $logger;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param string $url Endpoint with meta information.
-	 * @param string $metaAnnotationKey Key to extract meta information from.
+	 * @param string          $url Endpoint with meta information.
+	 * @param string          $metaAnnotationKey Key to extract meta information from.
+	 * @param LoggerInterface $logger Logger.
 	 */
-	public function __construct( string $url, string $metaAnnotationKey ) {
+	public function __construct( string $url, string $metaAnnotationKey, LoggerInterface $logger = new NullLogger() ) {
 		$this->url               = $url;
 		$this->metaAnnotationKey = $metaAnnotationKey;
+		$this->logger            = $logger;
 	}
 
 	/**

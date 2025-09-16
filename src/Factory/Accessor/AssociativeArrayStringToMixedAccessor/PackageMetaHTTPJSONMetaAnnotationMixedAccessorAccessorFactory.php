@@ -17,6 +17,8 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\JSONDecoder;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Factory\AssociativeArrayStringToMixedAccessorFactoryContract;
 use GuzzleHttp\Client;
 use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Factory for creating local plugin package meta providers.
@@ -45,7 +47,14 @@ class PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory implements A
 	 *
 	 * @var array<string,mixed>
 	 */
-	protected array $options = [];
+	protected array $options;
+
+	/**
+	 * Undocumented variable
+	 *
+	 * @var LoggerInterface
+	 */
+	protected LoggerInterface $logger;
 
 	/**
 	 * Constructor.
@@ -53,11 +62,18 @@ class PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory implements A
 	 * @param string|UriInterface $uri URI.
 	 * @param string              $metaAnnotationKey Key to extract meta information from.
 	 * @param array<string,mixed> $options Options.
+	 * @param LoggerInterface     $logger Logger.
 	 */
-	public function __construct( string|UriInterface $uri, string $metaAnnotationKey, array $options = [] ) {
+	public function __construct(
+		string|UriInterface $uri,
+		string $metaAnnotationKey,
+		array $options = [],
+		LoggerInterface $logger = new NullLogger()
+	) {
 		$this->uri               = $uri;
 		$this->metaAnnotationKey = $metaAnnotationKey;
 		$this->options           = $options;
+		$this->logger            = $logger;
 	}
 
 	/**
