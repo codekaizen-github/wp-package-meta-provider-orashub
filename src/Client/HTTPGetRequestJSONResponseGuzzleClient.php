@@ -13,6 +13,7 @@ use GuzzleHttp\Client;
 use Psr\Http\Message\UriInterface;
 use Respect\Validation\Rules\Url;
 use Respect\Validation\Validator;
+use UnexpectedValueException;
 
 /**
  * HTTPGetRequestJSONResponseGuzzleClient.
@@ -53,12 +54,15 @@ class HTTPGetRequestJSONResponseGuzzleClient implements MixedAccessorContract {
 	 * Undocumented function
 	 *
 	 * @return mixed
-	 * @throws Exception  Exception.
+	 * @throws UnexpectedValueException  Exception.
 	 */
 	public function get(): mixed {
 		$response = $this->client->get( $this->uri, $this->options );
 		$body     = $response->getBody();
 		$decoded  = json_decode( $body, true );
+		if ( null === $decoded ) {
+			throw new UnexpectedValueException( 'Unable to decode JSON' );
+		}
 		return $decoded;
 	}
 }

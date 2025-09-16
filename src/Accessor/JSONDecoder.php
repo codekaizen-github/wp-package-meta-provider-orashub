@@ -10,6 +10,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\StreamAccessorContract;
 use Exception;
+use UnexpectedValueException;
 
 /**
  * HTTPGetRequestJSONResponseGuzzleClient.
@@ -33,11 +34,14 @@ class JSONDecoder implements MixedAccessorContract {
 	 * Undocumented function
 	 *
 	 * @return mixed
-	 * @throws Exception  Exception.
+	 * @throws UnexpectedValueException  Exception.
 	 */
 	public function get(): mixed {
 		$body    = $this->client->get();
 		$decoded = json_decode( $body, true );
+		if ( null === $decoded ) {
+			throw new UnexpectedValueException( 'Unable to decode JSON' );
+		}
 		return $decoded;
 	}
 }
