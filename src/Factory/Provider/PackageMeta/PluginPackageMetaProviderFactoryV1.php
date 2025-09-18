@@ -21,7 +21,7 @@ use Psr\Log\NullLogger;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFactoryContract {
+class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFactoryContract {
 	/**
 	 * URL to meta endpoint.
 	 *
@@ -65,7 +65,8 @@ class PluginPackageMetaProviderFactory implements PluginPackageMetaProviderFacto
 		$factory                   = new PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory(
 			$this->url,
 			$this->metaAnnotationKey,
-			[]
+			[],
+			$this->logger,
 		);
 		$metaAnnotationKeyAccessor = $factory->create();
 		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
