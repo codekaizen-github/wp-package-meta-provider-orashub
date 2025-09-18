@@ -7,8 +7,8 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\StreamAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\JSONDecoder;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\StreamAccessorContract;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Psr7\Utils;
@@ -72,7 +72,7 @@ class JSONDecoderTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$streamAccessor = Mockery::mock( StreamAccessor::class );
+		$streamAccessor = Mockery::mock( StreamAccessorContract::class );
 		$streamAccessor->shouldReceive( 'get' )->with()->andReturn( Utils::streamFor( $input ) );
 		$decoder = new JSONDecoder( $streamAccessor );
 		$this->assertEquals( $expected, $decoder->get() );
@@ -132,7 +132,7 @@ class JSONDecoderTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$streamAccessor = Mockery::mock( StreamAccessor::class );
+		$streamAccessor = Mockery::mock( StreamAccessorContract::class );
 		$streamAccessor->shouldReceive( 'get' )->with()->andReturn( Utils::streamFor( $input ) );
 		$decoder = new JSONDecoder( $streamAccessor );
 		$this->assertNotEquals( $expected, $decoder->get() );

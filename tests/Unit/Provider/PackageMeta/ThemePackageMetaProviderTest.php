@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -49,7 +49,7 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
-		$metaAnnotationKeyAccessor = Mockery::mock( MetaAnnotationKeyAccessor::class );
+		$metaAnnotationKeyAccessor = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
 		$this->assertEquals( 'Test Theme', $provider->getName() );

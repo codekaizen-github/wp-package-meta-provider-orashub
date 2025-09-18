@@ -14,7 +14,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 
 /**
@@ -65,7 +65,7 @@ class ResponseAccessorTest extends TestCase {
 		);
 		$handlerStack    = HandlerStack::create( $handler );
 		$client          = new Client( [ 'handler' => $handlerStack ] );
-		$logger          = Mockery::mock( NullLogger::class );
+		$logger          = Mockery::mock( LoggerInterface::class );
 		$logger->shouldReceive( 'debug' )->once()->with(
 			"HTTP GET Request {$url}",
 			[

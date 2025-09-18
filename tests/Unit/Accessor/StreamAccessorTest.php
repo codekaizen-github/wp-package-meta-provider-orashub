@@ -1,17 +1,14 @@
 <?php
 /**
- * Test for ResponseAccessor
+ * Test for ResponseAccessorContract
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\ResponseAccessor;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\ResponseAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\StreamAccessor;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -50,7 +47,7 @@ class StreamAccessorTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$responseAccessor = Mockery::mock( ResponseAccessor::class );
+		$responseAccessor = Mockery::mock( ResponseAccessorContract::class );
 		$responseAccessor->shouldReceive( 'get' )->with()->andReturn( new Response( 200, [], $response ) );
 		$streamAccessor = new StreamAccessor( $responseAccessor );
 		$this->assertEquals( $response, $streamAccessor->get() );
@@ -85,7 +82,7 @@ class StreamAccessorTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$responseAccessor = Mockery::mock( ResponseAccessor::class );
+		$responseAccessor = Mockery::mock( ResponseAccessorContract::class );
 		$responseAccessor->shouldReceive( 'get' )->with()->andReturn( new Response( 200, [], $response ) );
 		$streamAccessor = new StreamAccessor( $responseAccessor );
 		$this->assertEquals( $response, $streamAccessor->get() );
