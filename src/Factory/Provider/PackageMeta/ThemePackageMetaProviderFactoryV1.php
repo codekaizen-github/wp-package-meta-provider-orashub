@@ -11,7 +11,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaProviderFactoryContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\AssociativeArrayStringToMixedAccessor\PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory;
+use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\PackageMeta\HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -62,7 +62,7 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 	 * @return ThemePackageMetaContract
 	 */
 	public function create(): ThemePackageMetaContract {
-		$factory                   = new PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory(
+		$factory                   = new HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory(
 			$this->url,
 			$this->metaAnnotationKey,
 			[],

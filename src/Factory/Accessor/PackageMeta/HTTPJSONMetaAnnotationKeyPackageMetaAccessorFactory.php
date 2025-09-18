@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\AssociativeArrayStringToMixedAccessor;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 
@@ -26,7 +26,7 @@ use Psr\Log\NullLogger;
  * @since 1.0.0
  */
 // phpcs:ignore Generic.Files.LineLength.TooLong, Squiz.Commenting.ClassComment.Missing
-class PackageMetaHTTPJSONMetaAnnotationMixedAccessorAccessorFactory implements AssociativeArrayStringToMixedAccessorFactoryContract {
+class HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory implements AssociativeArrayStringToMixedAccessorFactoryContract {
 
 	/**
 	 * Undocumented variable
