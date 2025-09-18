@@ -12,7 +12,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use UnexpectedValueException;
 
 /**
@@ -26,11 +28,13 @@ class ResponseAccessorTest extends TestCase {
 	 */
 	public function testIsValid(): void {
 		$url             = 'https://codekaizen.net';
+		$options         = [];
 		$statusCode      = 200;
+		$reasonPhrase    = 'OK';
 		$xFooHeaderKey   = 'X-Foo';
 		$xFooHeaderValue = 'Bar';
 		$headers         = [ $xFooHeaderKey => $xFooHeaderValue ];
-		$response        = <<<'JSON'
+		$body            = <<<'JSON'
 		{
 			"name": "Test Plugin",
 			"version": "3.0.1",
@@ -54,18 +58,38 @@ class ResponseAccessorTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$mock            = new MockHandler(
+		$handler         = new MockHandler(
 			[
-				new Response( $statusCode, $headers, $response ),
+				new Response( $statusCode, $headers, $body, '1.1', $reasonPhrase ),
 			]
 		);
-		$handlerStack    = HandlerStack::create( $mock );
+		$handlerStack    = HandlerStack::create( $handler );
 		$client          = new Client( [ 'handler' => $handlerStack ] );
-		$accessor        = new ResponseAccessor( $client, $url, [] );
-		$value           = $accessor->get();
+		$logger          = Mockery::mock( NullLogger::class );
+		$logger->shouldReceive( 'debug' )->once()->with(
+			"HTTP GET Request {$url}",
+			[
+				'uri'     => $url,
+				'options' => $options,
+			]
+		);
+		$logger->shouldReceive( 'debug' )->once()->with(
+			"HTTP GET Response {$url} {$statusCode}",
+			[
+				'uri'          => $url,
+				'options'      => $options,
+				'statusCode'   => $statusCode,
+				'reasonPhrase' => $reasonPhrase,
+				'headers'      => [ $xFooHeaderKey => [ $xFooHeaderValue ] ],
+				'body'         => $body,
+			]
+		);
+
+		$accessor = new ResponseAccessor( $client, $url, $options, $logger );
+		$value    = $accessor->get();
 		$this->assertEquals( $statusCode, $value->getStatusCode() );
 		$this->assertEquals( [ $xFooHeaderValue ], $value->getHeader( $xFooHeaderKey ) );
-		$this->assertEquals( $response, $value->getBody() );
+		$this->assertEquals( $body, $value->getBody() );
 	}
 	/**
 	 * Undocumented function
@@ -102,12 +126,12 @@ class ResponseAccessorTest extends TestCase {
 			"network": true
 		}
 		JSON;
-		$mock            = new MockHandler(
+		$handler         = new MockHandler(
 			[
 				new Response( $statusCode, $headers, $response ),
 			]
 		);
-		$handlerStack    = HandlerStack::create( $mock );
+		$handlerStack    = HandlerStack::create( $handler );
 		$client          = new Client( [ 'handler' => $handlerStack ] );
 		$this->expectException( UnexpectedValueException::class );
 		$this->expectExceptionMessage( 'Invalid URL' );
