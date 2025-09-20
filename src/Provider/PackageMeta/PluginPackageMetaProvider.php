@@ -353,7 +353,7 @@ class PluginPackageMetaProvider implements PluginPackageMetaContract {
 		 *
 		 * @var ?bool $value
 		 */
-		$value = $this->getPackageMeta()['Network'];
+		$value = $this->getPackageMeta()['network'];
 		return (bool) $value;
 	}
 	/**
