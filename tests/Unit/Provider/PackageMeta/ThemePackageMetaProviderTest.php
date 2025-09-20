@@ -30,6 +30,8 @@ class ThemePackageMetaProviderTest extends TestCase {
 	public function testGetNameFromThemeFabledSunset(): void {
 		$response                  = [
 			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -53,5 +55,46 @@ class ThemePackageMetaProviderTest extends TestCase {
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
 		$this->assertEquals( 'Test Theme', $provider->getName() );
+	}
+	/**
+	 * Test
+	 *
+	 * @return void
+	 */
+	public function testJSONEncodeAndDecode(): void {
+		$response                  = [
+			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test theme',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'template'                 => 'parent-theme',
+			'status'                   => 'publish',
+		];
+		$metaAnnotationKeyAccessor = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
+		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
+		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
+		$this->assertEquals( 'Test Theme', $provider->getName() );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$encoded = json_encode( $provider );
+		$this->assertIsString( $encoded );
+		$decoded = json_decode( $encoded, true );
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'name', $decoded );
+		$this->assertEquals( 'Test Theme', $decoded['name'] );
 	}
 }

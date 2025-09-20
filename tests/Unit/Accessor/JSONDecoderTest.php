@@ -25,6 +25,8 @@ class JSONDecoderTest extends TestCase {
 	public function testValidJSONIsValid() {
 		$expected       = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -51,6 +53,8 @@ class JSONDecoderTest extends TestCase {
 		$input          = <<<'JSON'
 		{
 			"name": "Test Plugin",
+			"fullSlug": "test-plugin/test-plugin.php",
+			"shortSlug": "test-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",
@@ -85,6 +89,8 @@ class JSONDecoderTest extends TestCase {
 	public function testValidJSONDoesNotMatchExpectedAndIsInvalid() {
 		$expected       = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -111,6 +117,8 @@ class JSONDecoderTest extends TestCase {
 		$input          = <<<'JSON'
 		{
 			"name": "A Different Plugin",
+			"fullSlug": "different-plugin/different-plugin.php",
+			"shortSlug": "different-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",

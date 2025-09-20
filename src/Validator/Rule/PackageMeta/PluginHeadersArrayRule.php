@@ -42,6 +42,8 @@ class PluginHeadersArrayRule extends Simple {
 		return Validator::create(
 			new Rules\AllOf(
 				new Rules\Key( 'name', new Rules\StringType(), true ),
+				new Rules\Key( 'fullSlug', new Rules\StringType(), true ),
+				new Rules\Key( 'shortSlug', new Rules\StringType(), true ),
 				new Rules\Key( 'viewUrl', new Rules\Url(), false ),
 				new Rules\Key( 'version', new FlexibleSemanticVersionRule(), false ),
 				new Rules\Key( 'downloadUrl', new Rules\Url(), false ),

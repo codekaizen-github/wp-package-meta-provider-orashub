@@ -26,6 +26,8 @@ class StreamAccessorTest extends TestCase {
 		$response         = <<<'JSON'
 		{
 			"name": "Test Plugin",
+			"fullSlug": "test-plugin/test-plugin.php",
+			"shortSlug": "test-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",
@@ -58,9 +60,37 @@ class StreamAccessorTest extends TestCase {
 		 * @return void
 		 */
 	public function testIsInvalid(): void {
-		$response         = <<<'JSON'
+		$expected         = <<<'JSON'
+		{
+			"name": "Test Plugin",
+			"fullSlug": "test-plugin/test-plugin.php",
+			"shortSlug": "test-plugin",
+			"version": "3.0.1",
+			"viewUrl": "https://codekaizen.net",
+			"downloadUrl": "https://codekaizen.net",
+			"tested": "6.8.2",
+			"stable": "6.8.2",
+			"tags": ["tag1", "tag2", "tag3"],
+			"author": "Andrew Dawes",
+			"authorUrl": "https://codekaizen.net/team/andrew-dawes",
+			"license": "GPL v2 or later",
+			"licenseUrl": "https://www.gnu.org/licenses/gpl-2.0.html",
+			"description": "This is a test plugin",
+			"shortDescription": "Test",
+			"requiresWordPressVersion": "6.8.2",
+			"requiresPHPVersion": "8.2.1",
+			"textDomain": "test-plugin",
+			"domainPath": "/languages",
+			"requiresPlugins": ["akismet", "hello-dolly"],
+			"sections": {"changelog": "changed", "about": "this is a plugin about section"},
+			"network": true
+		}
+		JSON;
+		$actual           = <<<'JSON'
 		{
 			"name": "A Different Test Plugin",
+			"fullSlug": "different-plugin/different-plugin.php",
+			"shortSlug": "different-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",
@@ -83,8 +113,8 @@ class StreamAccessorTest extends TestCase {
 		}
 		JSON;
 		$responseAccessor = Mockery::mock( ResponseAccessorContract::class );
-		$responseAccessor->shouldReceive( 'get' )->with()->andReturn( new Response( 200, [], $response ) );
+		$responseAccessor->shouldReceive( 'get' )->with()->andReturn( new Response( 200, [], $actual ) );
 		$streamAccessor = new StreamAccessor( $responseAccessor );
-		$this->assertEquals( $response, $streamAccessor->get() );
+		$this->assertNotEquals( $expected, $streamAccessor->get() );
 	}
 }

@@ -80,7 +80,13 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 	 * @return string
 	 */
 	public function getFullSlug(): string {
-		return $this->fullSlug;
+		/**
+		 * Value will have been validated.
+		 *
+		 * @var string $value
+		 */
+		$value = $this->getPackageMeta()['fullSlug'];
+		return $value;
 	}
 	/**
 	 * Slug minus any prefix. Should not contain a "/".
@@ -88,7 +94,13 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 	 * @return string
 	 */
 	public function getShortSlug(): string {
-		return $this->shortSlug;
+		/**
+		 * Value will have been validated.
+		 *
+		 * @var string $value
+		 */
+		$value = $this->getPackageMeta()['shortSlug'];
+		return $value;
 	}
 	/**
 	 * Gets the plugin URI.
@@ -363,5 +375,35 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 		 * */
 		$this->packageMeta = $metaArray;
 		return $this->packageMeta;
+	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return mixed
+	 */
+	public function jsonSerialize(): mixed {
+		return [
+			'name'                     => $this->getName(),
+			'fullSlug'                 => $this->getFullSlug(),
+			'shortSlug'                => $this->getShortSlug(),
+			'viewUrl'                  => $this->getViewUrl(),
+			'version'                  => $this->getVersion(),
+			'downloadUrl'              => $this->getDownloadUrl(),
+			'tested'                   => $this->getTested(),
+			'stable'                   => $this->getStable(),
+			'tags'                     => $this->getTags(),
+			'author'                   => $this->getAuthor(),
+			'authorUrl'                => $this->getAuthorUrl(),
+			'license'                  => $this->getLicense(),
+			'licenseUrl'               => $this->getLicenseUrl(),
+			'description'              => $this->getDescription(),
+			'shortDescription'         => $this->getShortDescription(),
+			'requiresWordPressVersion' => $this->getRequiresWordPressVersion(),
+			'requiresPHPVersion'       => $this->getRequiresPHPVersion(),
+			'textDomain'               => $this->getTextDomain(),
+			'domainPath'               => $this->getDomainPath(),
+			'template'                 => $this->getTemplate(),
+			'status'                   => $this->getStatus(),
+		];
 	}
 }

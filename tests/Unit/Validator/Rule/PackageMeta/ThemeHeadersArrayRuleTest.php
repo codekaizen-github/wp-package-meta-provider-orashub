@@ -29,6 +29,8 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	public function testValidCaseKitchenSink(): void {
 		$input   = [
 			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -59,6 +61,8 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	public function testValidCaseKitchenSinkWithNonFullSemverRequiresPHP(): void {
 		$input   = [
 			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -86,9 +90,11 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testValidCaseNameOnly(): void {
+	public function testValidCaseBareMinimumFields(): void {
 		$input   = [
-			'name' => 'Test Theme',
+			'name'      => 'Test Theme',
+			'fullSlug'  => 'test-theme/style.css',
+			'shortSlug' => 'test-theme',
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -101,6 +107,8 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	public function testInvalidCaseViewURLIsNotAURL(): void {
 		$input   = [
 			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'not_a_url',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -131,6 +139,8 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	public function testInvalidCaseVersionIsNotAVersion(): void {
 		$input   = [
 			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => 'three',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -160,6 +170,8 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testInvalidCaseNameIsNull(): void {
 		$input = [
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',

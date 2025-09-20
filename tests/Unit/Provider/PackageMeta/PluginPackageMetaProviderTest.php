@@ -30,6 +30,8 @@ class PluginPackageMetaProviderTest extends TestCase {
 	public function testGetNameFromPluginMyBasicsPlugin(): void {
 		$response                  = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -57,5 +59,51 @@ class PluginPackageMetaProviderTest extends TestCase {
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
 		$this->assertEquals( 'Test Plugin', $provider->getName() );
+	}
+	/**
+	 * Test
+	 *
+	 * @return void
+	 */
+	public function testJSONEncodeAndDecode(): void {
+
+		$response                  = [
+			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
+			'version'                  => '3.0.1',
+			'viewUrl'                  => 'https://codekaizen.net',
+			'downloadUrl'              => 'https://codekaizen.net',
+			'tested'                   => '6.8.2',
+			'stable'                   => '6.8.2',
+			'tags'                     => [ 'tag1', 'tag2', 'tag3' ],
+			'author'                   => 'Andrew Dawes',
+			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
+			'license'                  => 'GPL v2 or later',
+			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
+			'description'              => 'This is a test plugin',
+			'shortDescription'         => 'Test',
+			'requiresWordPressVersion' => '6.8.2',
+			'requiresPHPVersion'       => '8.2.1',
+			'textDomain'               => 'test-plugin',
+			'domainPath'               => '/languages',
+			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
+			'sections'                 => [
+				'changelog' => 'changed',
+				'about'     => 'this is a plugin about section',
+			],
+			'network'                  => true,
+		];
+		$metaAnnotationKeyAccessor = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
+		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
+		$this->assertEquals( 'Test Plugin', $provider->getName() );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$encoded = json_encode( $provider );
+		$this->assertIsString( $encoded );
+		$decoded = json_decode( $encoded, true );
+		$this->assertIsArray( $decoded );
+		$this->assertArrayHasKey( 'name', $decoded );
+		$this->assertEquals( 'Test Plugin', $decoded['name'] );
 	}
 }

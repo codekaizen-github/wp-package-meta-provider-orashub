@@ -29,6 +29,8 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	public function testValidCaseKitchenSink(): void {
 		$input   = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -63,6 +65,8 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	public function testValidCaseKitchenSinkWithNonFullSemverRequiresPHP(): void {
 		$input   = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -94,9 +98,11 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	public function testValidCaseNameOnly(): void {
+	public function testValidCaseBareMinimumFields(): void {
 		$input   = [
-			'name' => 'Test Plugin',
+			'name'      => 'Test Plugin',
+			'fullSlug'  => 'test-plugin/test-plugin.php',
+			'shortSlug' => 'test-plugin',
 		];
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
@@ -109,6 +115,8 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	public function testInvalidCaseViewURLIsNotAURL(): void {
 		$input   = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'this_is_not_a_url',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -143,6 +151,8 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	public function testInvalidCaseVersionIsNotAVersion(): void {
 		$input   = [
 			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => 'three',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -176,6 +186,8 @@ class PluginHeadersArrayRuleTest extends TestCase {
 	 */
 	public function testInvalidCaseNameIsNull(): void {
 		$input = [
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',

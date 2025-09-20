@@ -37,6 +37,8 @@ class ResponseAccessorTest extends TestCase {
 		$body            = <<<'JSON'
 		{
 			"name": "Test Plugin",
+			"fullSlug": "test-plugin/test-plugin.php",
+			"shortSlug": "test-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",
@@ -105,6 +107,8 @@ class ResponseAccessorTest extends TestCase {
 		$response        = <<<'JSON'
 		{
 			"name": "Test Plugin",
+			"fullSlug": "test-plugin/test-plugin.php",
+			"shortSlug": "test-plugin",
 			"version": "3.0.1",
 			"viewUrl": "https://codekaizen.net",
 			"downloadUrl": "https://codekaizen.net",
