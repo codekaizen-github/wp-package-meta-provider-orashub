@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codekaizen-github/wp-package-meta-provider-contract.git",
-                "reference": "753d4624552262246e0c2138c16cd14c4e759788"
+                "reference": "b16ce19cb2a229dc9f03690d62e6f960ad9d383a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/753d4624552262246e0c2138c16cd14c4e759788",
-                "reference": "753d4624552262246e0c2138c16cd14c4e759788",
+                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/b16ce19cb2a229dc9f03690d62e6f960ad9d383a",
+                "reference": "b16ce19cb2a229dc9f03690d62e6f960ad9d383a",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
                 "issues": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/issues",
                 "source": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/tree/main"
             },
-            "time": "2025-09-20T19:22:42+00:00"
+            "time": "2025-09-27T16:46:55+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
