@@ -52,7 +52,7 @@ class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFac
 	 */
 	public function __construct(
 		string $url,
-		string $metaAnnotationKey = 'wp-package-metadata',
+		string $metaAnnotationKey = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata',
 		LoggerInterface $logger = new NullLogger()
 	) {
 		$this->url               = $url;
