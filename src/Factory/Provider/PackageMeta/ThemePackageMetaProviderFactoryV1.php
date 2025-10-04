@@ -50,7 +50,11 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 	 * @param string          $metaAnnotationKey Key to extract meta information from.
 	 * @param LoggerInterface $logger Logger.
 	 */
-	public function __construct( string $url, string $metaAnnotationKey = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata', LoggerInterface $logger = new NullLogger() ) {
+	public function __construct(
+		string $url,
+		string $metaAnnotationKey = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata',
+		LoggerInterface $logger = new NullLogger()
+	) {
 		$this->url               = $url;
 		$this->metaAnnotationKey = $metaAnnotationKey;
 		$this->logger            = $logger;
