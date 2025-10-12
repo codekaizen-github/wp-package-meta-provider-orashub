@@ -2,7 +2,7 @@
 /**
  * Test for ResponseAccessorContract
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor;

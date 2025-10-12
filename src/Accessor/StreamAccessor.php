@@ -2,7 +2,7 @@
 /**
  * Class for accessing key from associative array
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Accessor
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;

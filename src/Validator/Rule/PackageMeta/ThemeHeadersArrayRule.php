@@ -4,7 +4,7 @@
  *
  * This file contains a validation rule for WordPress theme header arrays.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta
  * @since 1.0.0
  */
 

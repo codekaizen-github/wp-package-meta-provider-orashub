@@ -2,7 +2,7 @@
 /**
  * Interface for MixedAccessorContract
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor;

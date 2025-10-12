@@ -2,7 +2,7 @@
 /**
  * Class for making HTTPGetRequestJSONResponseGuzzleClients
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Accessor
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;

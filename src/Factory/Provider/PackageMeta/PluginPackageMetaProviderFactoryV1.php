@@ -2,7 +2,7 @@
 /**
  * Local Plugin Package Meta Provider Factory
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta
  * @since 1.0.0
  */
 

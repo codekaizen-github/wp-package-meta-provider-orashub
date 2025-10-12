@@ -2,7 +2,7 @@
 /**
  * Accessor interface.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Contract\Factory
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Contract\Factory;
