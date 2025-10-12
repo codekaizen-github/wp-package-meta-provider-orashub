@@ -45,5 +45,7 @@
         "wp-coding-standards/wpcs": "^3.0",
         "mockery/mockery": "^1.6",
         "phpstan/phpstan-mockery": "^2.0"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
