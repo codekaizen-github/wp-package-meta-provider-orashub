@@ -50,10 +50,11 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 		$raw = $this->accessor->get();
 		try {
 			Validator::create(
-				new Rules\ArrayType(),
-				new Rules\Key(
-					$this->metaAnnotationKey,
-					new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) )
+				new Rules\AllOf(
+					new Rules\ArrayType(),
+					new Rules\Key(
+						'annotations'
+					),
 				)
 			)->check( $raw );
 		} catch ( ValidationException $e ) {
@@ -61,12 +62,32 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 			throw new UnexpectedValueException( $e->getMessage() );
 		}
 		/**
-		 * Values will have been validated
+		 * Value.
 		 *
 		 * @var array<string,mixed> $raw
+		 */
+		$annotationsRaw = $raw['annotations'];
+		try {
+			Validator::create(
+				new Rules\AllOf(
+					new Rules\ArrayType(),
+					new Rules\Key(
+						$this->metaAnnotationKey,
+						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) )
+					),
+				)
+			)->check( $annotationsRaw );
+		} catch ( ValidationException $e ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
+			throw new UnexpectedValueException( $e->getMessage() );
+		}
+		/**
+		 * Values will have been validated
+		 *
+		 * @var array<string,string> $annotationsRaw
 		 * @var array<string,mixed> $value
 		 */
-		$value = $raw[ $this->metaAnnotationKey ];
+		$value = $annotationsRaw[ $this->metaAnnotationKey ];
 		return $value;
 	}
 }

@@ -51,9 +51,13 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'network'                  => true,
 		];
 		$response = [
-			'otherDataOne'          => 1,
-			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
-			'testMetaAnnotationKey' => $expected,
+			'randomData'  => 'value',
+			'otherData'   => 'value',
+			'annotations' => [
+				'otherDataOne'          => 1,
+				'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
+				'testMetaAnnotationKey' => $expected,
+			],
 		];
 		$client   = Mockery::mock( MixedAccessorContract::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
@@ -96,9 +100,13 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 	 */
 	public function testKeyExistsButDataTypeIsInvalidScalarAndThrowsException() {
 		$response = [
-			'otherDataOne'          => 1,
-			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
-			'testMetaAnnotationKey' => 'hi',
+			'randomData'  => 'value',
+			'otherData'   => 'value',
+			'annotations' => [
+				'otherDataOne'          => 1,
+				'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
+				'testMetaAnnotationKey' => 'hi',
+			],
 		];
 		$client   = Mockery::mock( MixedAccessorContract::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
@@ -113,9 +121,13 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 	 */
 	public function testKeyExistsButDataTypeIsInvalidIndexedArrayAndThrowsException() {
 		$response = [
-			'otherDataOne'          => 1,
-			'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
-			'testMetaAnnotationKey' => [ 'hello', 'world' ],
+			'randomData'  => 'value',
+			'otherData'   => 'value',
+			'annotations' => [
+				'otherDataOne'          => 1,
+				'otherDataTwo'          => [ 'asdf', 'fda', [ 'asdf' ] ],
+				'testMetaAnnotationKey' => [ 'hello', 'world' ],
+			],
 		];
 		$client   = Mockery::mock( MixedAccessorContract::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
