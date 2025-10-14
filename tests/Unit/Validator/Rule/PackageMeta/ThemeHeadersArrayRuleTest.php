@@ -195,4 +195,51 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function testAllOptionalParamsAreEmptyValid(): void {
+		$input   = [
+			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
+			'version'                  => null,
+			'viewUrl'                  => null,
+			'downloadUrl'              => null,
+			'tested'                   => null,
+			'stable'                   => null,
+			'tags'                     => [],
+			'author'                   => null,
+			'authorUrl'                => null,
+			'license'                  => null,
+			'licenseUrl'               => null,
+			'description'              => null,
+			'shortDescription'         => null,
+			'requiresWordPressVersion' => null,
+			'requiresPHPVersion'       => null,
+			'textDomain'               => null,
+			'domainPath'               => null,
+			'template'                 => null,
+			'status'                   => null,
+		];
+		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$this->assertTrue( $isValid );
+	}
+		/**
+		 * Undocumented function
+		 *
+		 * @return void
+		 */
+	public function testOptionalArraysAreNullInvalid(): void {
+		$input   = [
+			'name'      => 'Test Theme',
+			'fullSlug'  => 'test-theme/style.css',
+			'shortSlug' => 'test-theme',
+			'tags'      => null,
+		];
+		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$this->assertFalse( $isValid );
+	}
 }

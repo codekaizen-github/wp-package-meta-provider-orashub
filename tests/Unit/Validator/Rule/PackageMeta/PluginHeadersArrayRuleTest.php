@@ -215,4 +215,56 @@ class PluginHeadersArrayRuleTest extends TestCase {
 		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function testAllOptionalParamsAreEmptyValid(): void {
+		$input   = [
+			'name'                     => 'Test Plugin',
+			'fullSlug'                 => 'test-plugin/test-plugin.php',
+			'shortSlug'                => 'test-plugin',
+			// All optional params are empty.
+			'version'                  => null,
+			'viewUrl'                  => null,
+			'downloadUrl'              => null,
+			'tested'                   => null,
+			'stable'                   => null,
+			'tags'                     => [],
+			'author'                   => null,
+			'authorUrl'                => null,
+			'license'                  => null,
+			'licenseUrl'               => null,
+			'description'              => null,
+			'shortDescription'         => null,
+			'requiresWordPressVersion' => null,
+			'requiresPHPVersion'       => null,
+			'textDomain'               => null,
+			'domainPath'               => null,
+			'requiresPlugins'          => [],
+			'sections'                 => [],
+			'network'                  => null,
+		];
+		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$this->assertTrue( $isValid );
+	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function testOptionalArraysAreNullInvalid(): void {
+		$input = [
+			'name'            => 'Test Plugin',
+			'fullSlug'        => 'test-plugin/test-plugin.php',
+			'shortSlug'       => 'test-plugin',
+			'tags'            => null,
+			'requiresPlugins' => null,
+			'sections'        => null,
+		];
+		// Testing without using check() to avoid exception handling.
+		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$this->assertFalse( $isValid );
+	}
 }

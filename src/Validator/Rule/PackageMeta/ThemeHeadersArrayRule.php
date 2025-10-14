@@ -43,11 +43,32 @@ class ThemeHeadersArrayRule extends Simple {
 				new Rules\Key( 'name', new Rules\StringType(), true ),
 				new Rules\Key( 'fullSlug', new Rules\StringType(), true ),
 				new Rules\Key( 'shortSlug', new Rules\StringType(), true ),
-				new Rules\Key( 'viewUrl', new Rules\Url(), false ),
-				new Rules\Key( 'version', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'downloadUrl', new Rules\Url(), false ),
-				new Rules\Key( 'tested', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'stable', new FlexibleSemanticVersionRule(), false ),
+				new Rules\Key( 'viewUrl', new Rules\AnyOf( new Rules\NullType(), new Rules\Url() ), false ),
+				new Rules\Key(
+					'version',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new FlexibleSemanticVersionRule()
+					),
+					false
+				),
+				new Rules\Key( 'downloadUrl', new Rules\AnyOf( new Rules\NullType(), new Rules\Url() ), false ),
+				new Rules\Key(
+					'tested',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new FlexibleSemanticVersionRule()
+					),
+					false
+				),
+				new Rules\Key(
+					'stable',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new FlexibleSemanticVersionRule()
+					),
+					false
+				),
 				new Rules\Key(
 					'tags',
 					new Rules\AllOf(
@@ -56,18 +77,39 @@ class ThemeHeadersArrayRule extends Simple {
 					),
 					false
 				),
-				new Rules\Key( 'author', new Rules\StringType(), false ),
-				new Rules\Key( 'authorUrl', new Rules\Url(), false ),
-				new Rules\Key( 'license', new Rules\StringType(), false ),
-				new Rules\Key( 'licenseUrl', new Rules\Url(), false ),
-				new Rules\Key( 'description', new Rules\StringType(), false ),
-				new Rules\Key( 'shortDescription', new Rules\StringType(), false ),
-				new Rules\Key( 'requiresWordPressVersion', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'requiresPHPVersion', new FlexibleSemanticVersionRule(), false ),
-				new Rules\Key( 'textDomain', new Rules\StringType(), false ),
-				new Rules\Key( 'domainPath', new Rules\StringType(), false ),
-				new Rules\Key( 'template', new Rules\StringType(), false ),
-				new Rules\Key( 'status', new Rules\StringType(), false ),
+				new Rules\Key( 'author', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key( 'authorUrl', new Rules\AnyOf( new Rules\NullType(), new Rules\Url() ), false ),
+				new Rules\Key( 'license', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key( 'licenseUrl', new Rules\AnyOf( new Rules\NullType(), new Rules\Url() ), false ),
+				new Rules\Key( 'description', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key(
+					'shortDescription',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new Rules\StringType()
+					),
+					false
+				),
+				new Rules\Key(
+					'requiresWordPressVersion',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new FlexibleSemanticVersionRule()
+					),
+					false
+				),
+				new Rules\Key(
+					'requiresPHPVersion',
+					new Rules\AnyOf(
+						new Rules\NullType(),
+						new FlexibleSemanticVersionRule()
+					),
+					false
+				),
+				new Rules\Key( 'textDomain', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key( 'domainPath', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key( 'template', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
+				new Rules\Key( 'status', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
 			)
 		)->isValid( $input );
 	}
