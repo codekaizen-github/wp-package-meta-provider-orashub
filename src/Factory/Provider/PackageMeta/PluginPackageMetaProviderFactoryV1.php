@@ -8,8 +8,9 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaContract;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\PluginPackageMetaProviderFactoryContract;
+// phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Factory\Provider\PackageMeta\PluginPackageMetaProviderFactoryContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\PluginPackageMetaProviderContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\PackageMeta\HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory;
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
@@ -63,9 +64,9 @@ class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFac
 	/**
 	 * Creates a new PluginPackageMetaProvider instance.
 	 *
-	 * @return PluginPackageMetaContract
+	 * @return PluginPackageMetaProviderContract
 	 */
-	public function create(): PluginPackageMetaContract {
+	public function create(): PluginPackageMetaProviderContract {
 		$factory                   = new HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory(
 			$this->url,
 			$this->metaAnnotationKey,

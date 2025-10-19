@@ -48,6 +48,19 @@ class ThemePackageMetaProviderTest extends TestCase {
 		$statusExpected                   = 'publish';
 		$textDomainExpected               = 'test-theme';
 		$domainPathExpected               = '/languages';
+		$iconsExpected                    = [
+			'1x'  => 'https://example.com/icon-128x128.png',
+			'2x'  => 'https://example.com/icon-256x256.png',
+			'svg' => 'https://example.com/icon.svg',
+		];
+		$bannersExpected                  = [
+			'1x' => 'https://example.com/banner-772x250.png',
+			'2x' => 'https://example.com/banner-1544x500.png',
+		];
+		$bannersRtlExpected               = [
+			'1x' => 'https://example.com/banner-rtl-772x250.png',
+			'2x' => 'https://example.com/banner-rtl-1544x500.png',
+		];
 		$testedExpected                   = '6.8.2';
 		$stableExpected                   = '6.8.2';
 		$licenseExpected                  = 'GPL v2 or later';
@@ -73,6 +86,9 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'requiresPHPVersion'       => $requiresPHPVersionExpected,
 			'textDomain'               => $textDomainExpected,
 			'domainPath'               => $domainPathExpected,
+			'icons'                    => $iconsExpected,
+			'banners'                  => $bannersExpected,
+			'bannersRtl'               => $bannersRtlExpected,
 			'template'                 => $templateExpected,
 			'status'                   => $statusExpected,
 		];
@@ -100,6 +116,9 @@ class ThemePackageMetaProviderTest extends TestCase {
 		$this->assertEquals( $statusExpected, $provider->getStatus() );
 		$this->assertEquals( $textDomainExpected, $provider->getTextDomain() );
 		$this->assertEquals( $domainPathExpected, $provider->getDomainPath() );
+		$this->assertEquals( $iconsExpected, $provider->getIcons() );
+		$this->assertEquals( $bannersExpected, $provider->getBanners() );
+		$this->assertEquals( $bannersRtlExpected, $provider->getBannersRtl() );
 	}
 	/**
 	 * Test
@@ -127,6 +146,19 @@ class ThemePackageMetaProviderTest extends TestCase {
 		$statusExpected                   = 'publish';
 		$textDomainExpected               = 'test-theme';
 		$domainPathExpected               = '/languages';
+		$iconsExpected                    = [
+			'1x'  => 'https://example.com/icon-128x128.png',
+			'2x'  => 'https://example.com/icon-256x256.png',
+			'svg' => 'https://example.com/icon.svg',
+		];
+		$bannersExpected                  = [
+			'1x' => 'https://example.com/banner-772x250.png',
+			'2x' => 'https://example.com/banner-1544x500.png',
+		];
+		$bannersRtlExpected               = [
+			'1x' => 'https://example.com/banner-rtl-772x250.png',
+			'2x' => 'https://example.com/banner-rtl-1544x500.png',
+		];
 		$testedExpected                   = '6.8.2';
 		$stableExpected                   = '6.8.2';
 		$licenseExpected                  = 'GPL v2 or later';
@@ -152,6 +184,9 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'requiresPHPVersion'       => $requiresPHPVersionExpected,
 			'textDomain'               => $textDomainExpected,
 			'domainPath'               => $domainPathExpected,
+			'icons'                    => $iconsExpected,
+			'banners'                  => $bannersExpected,
+			'bannersRtl'               => $bannersRtlExpected,
 			'template'                 => $templateExpected,
 			'status'                   => $statusExpected,
 		];
@@ -206,5 +241,11 @@ class ThemePackageMetaProviderTest extends TestCase {
 		$this->assertEquals( $textDomainExpected, $decoded['textDomain'] );
 		$this->assertArrayHasKey( 'domainPath', $decoded );
 		$this->assertEquals( $domainPathExpected, $decoded['domainPath'] );
+		$this->assertArrayHasKey( 'icons', $decoded );
+		$this->assertEquals( $iconsExpected, $decoded['icons'] );
+		$this->assertArrayHasKey( 'banners', $decoded );
+		$this->assertEquals( $bannersExpected, $decoded['banners'] );
+		$this->assertArrayHasKey( 'bannersRtl', $decoded );
+		$this->assertEquals( $bannersRtlExpected, $decoded['bannersRtl'] );
 	}
 }

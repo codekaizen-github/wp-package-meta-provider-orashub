@@ -47,6 +47,19 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
 			'sections'                 => [
 				'changelog' => 'changed',
@@ -83,6 +96,19 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
 			'sections'                 => [
 				'changelog' => 'changed',
@@ -133,6 +159,19 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
 			'sections'                 => [
 				'changelog' => 'changed',
@@ -169,6 +208,19 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
 			'sections'                 => [
 				'changelog' => 'changed',
@@ -204,6 +256,19 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
 			'sections'                 => [
 				'changelog' => 'changed',
@@ -242,6 +307,9 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => null,
 			'textDomain'               => null,
 			'domainPath'               => null,
+			'icons'                    => [],
+			'banners'                  => [],
+			'bannersRtl'               => [],
 			'requiresPlugins'          => [],
 			'sections'                 => [],
 			'network'                  => null,
@@ -259,6 +327,9 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'name'            => 'Test Plugin',
 			'fullSlug'        => 'test-plugin/test-plugin.php',
 			'shortSlug'       => 'test-plugin',
+			'icons'           => null,
+			'banners'         => null,
+			'bannersRtl'      => null,
 			'tags'            => null,
 			'requiresPlugins' => null,
 			'sections'        => null,

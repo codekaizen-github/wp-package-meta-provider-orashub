@@ -47,6 +47,19 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
@@ -79,6 +92,19 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
@@ -125,6 +151,19 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
@@ -157,6 +196,19 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
@@ -188,6 +240,19 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => '8.2.1',
 			'textDomain'               => 'test-plugin',
 			'domainPath'               => '/languages',
+			'icons'                    => [
+				'1x'  => 'https://example.com/icon-128x128.png',
+				'2x'  => 'https://example.com/icon-256x256.png',
+				'svg' => 'https://example.com/icon.svg',
+			],
+			'banners'                  => [
+				'1x' => 'https://example.com/banner-772x250.png',
+				'2x' => 'https://example.com/banner-1544x500.png',
+			],
+			'bannersRtl'               => [
+				'1x' => 'https://example.com/banner-rtl-772x250.png',
+				'2x' => 'https://example.com/banner-rtl-1544x500.png',
+			],
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
@@ -221,6 +286,9 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'requiresPHPVersion'       => null,
 			'textDomain'               => null,
 			'domainPath'               => null,
+			'icons'                    => [],
+			'banners'                  => [],
+			'bannersRtl'               => [],
 			'template'                 => null,
 			'status'                   => null,
 		];
@@ -233,11 +301,15 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 		 * @return void
 		 */
 	public function testOptionalArraysAreNullInvalid(): void {
-		$input   = [
-			'name'      => 'Test Theme',
-			'fullSlug'  => 'test-theme/style.css',
-			'shortSlug' => 'test-theme',
-			'tags'      => null,
+		$input = [
+			'name'       => 'Test Theme',
+			'fullSlug'   => 'test-theme/style.css',
+			'shortSlug'  => 'test-theme',
+			'icons'      => null,
+			'banners'    => null,
+			'bannersRtl' => null,
+			'tags'       => null,
+
 		];
 		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
 		$this->assertFalse( $isValid );

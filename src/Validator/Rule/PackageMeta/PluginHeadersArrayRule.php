@@ -117,6 +117,33 @@ class PluginHeadersArrayRule extends Simple {
 				new Rules\Key( 'textDomain', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
 				new Rules\Key( 'domainPath', new Rules\AnyOf( new Rules\NullType(), new Rules\StringType() ), false ),
 				new Rules\Key(
+					'icons',
+					new Rules\AllOf(
+						new Rules\ArrayType(),
+						new Rules\Each( new Rules\StringType() ),
+						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
+					),
+					false
+				),
+				new Rules\Key(
+					'banners',
+					new Rules\AllOf(
+						new Rules\ArrayType(),
+						new Rules\Each( new Rules\StringType() ),
+						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
+					),
+					false
+				),
+				new Rules\Key(
+					'bannersRtl',
+					new Rules\AllOf(
+						new Rules\ArrayType(),
+						new Rules\Each( new Rules\StringType() ),
+						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
+					),
+					false
+				),
+				new Rules\Key(
 					'requiresPlugins',
 					new Rules\AllOf(
 						new Rules\ArrayType(),

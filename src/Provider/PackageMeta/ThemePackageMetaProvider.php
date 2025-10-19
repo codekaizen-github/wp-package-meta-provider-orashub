@@ -10,8 +10,8 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta;
 
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract;
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 
@@ -22,7 +22,7 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArraySt
  *
  * @since 1.0.0
  */
-class ThemePackageMetaProvider implements ThemePackageMetaContract {
+class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	/**
 	 * HTTP client.
 	 *
@@ -327,6 +327,48 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 		return $value;
 	}
 	/**
+	 * Gets the icons for the theme.
+	 *
+	 * @return array<string,string> Associative array of icons.
+	 */
+	public function getIcons(): array {
+		/**
+		 * Value will have been validated.
+		 *
+		 * @var array<string,string> $value
+		 */
+		$value = $this->getPackageMeta()['icons'];
+		return $value;
+	}
+	/**
+	 * Gets the banners for the theme.
+	 *
+	 * @return array<string,string> Associative array of banners.
+	 */
+	public function getBanners(): array {
+		/**
+		 * Value will have been validated.
+		 *
+		 * @var array<string,string> $value
+		 */
+		$value = $this->getPackageMeta()['banners'];
+		return $value;
+	}
+	/**
+	 * Gets the banners for the theme in RTL languages.
+	 *
+	 * @return array<string,string> Associative array of RTL banners.
+	 */
+	public function getBannersRTL(): array {
+		/**
+		 * Value will have been validated.
+		 *
+		 * @var array<string,string> $value
+		 */
+		$value = $this->getPackageMeta()['bannersRtl'];
+		return $value;
+	}
+	/**
 	 * Gets the template for the theme.
 	 *
 	 * @return ?string The template or null if not specified.
@@ -402,6 +444,9 @@ class ThemePackageMetaProvider implements ThemePackageMetaContract {
 			'requiresPHPVersion'       => $this->getRequiresPHPVersion(),
 			'textDomain'               => $this->getTextDomain(),
 			'domainPath'               => $this->getDomainPath(),
+			'icons'                    => $this->getIcons(),
+			'banners'                  => $this->getBanners(),
+			'bannersRtl'               => $this->getBannersRTL(),
 			'template'                 => $this->getTemplate(),
 			'status'                   => $this->getStatus(),
 		];

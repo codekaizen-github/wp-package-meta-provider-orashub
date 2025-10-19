@@ -26,7 +26,7 @@ class ThemePackageMetaProviderFactoryV1Test extends TestCase {
 	public function testFactoryCreatesProvider(): void {
 		Mockery::mock(
 			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider',
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract'
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract'
 		);
 		$url               = 'http://example.com';
 		$metaAnnotationKey = 'org.example.meta';
@@ -38,7 +38,7 @@ class ThemePackageMetaProviderFactoryV1Test extends TestCase {
 		);
 		$return            = $sut->create();
 		$this->assertInstanceOf(
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\ThemePackageMetaContract',
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract',
 			$return
 		);
 	}
