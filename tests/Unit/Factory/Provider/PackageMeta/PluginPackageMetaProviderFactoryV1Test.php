@@ -30,10 +30,12 @@ class PluginPackageMetaProviderFactoryV1Test extends TestCase {
 		);
 		$url               = 'http://example.com';
 		$metaAnnotationKey = 'org.example.meta';
+		$httpOptions       = [];
 		$logger            = Mockery::mock( LoggerInterface::class );
 		$sut               = new PluginPackageMetaProviderFactoryV1(
 			$url,
 			$metaAnnotationKey,
+			$httpOptions,
 			$logger
 		);
 		$return            = $sut->create();

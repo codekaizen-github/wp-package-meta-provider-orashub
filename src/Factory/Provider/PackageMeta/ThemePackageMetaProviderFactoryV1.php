@@ -40,6 +40,13 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 	/**
 	 * Undocumented variable
 	 *
+	 * @var array<string,mixed>
+	 */
+	protected array $httpOptions;
+
+	/**
+	 * Undocumented variable
+	 *
 	 * @var LoggerInterface
 	 */
 	protected LoggerInterface $logger;
@@ -47,17 +54,20 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 	/**
 	 * Constructor.
 	 *
-	 * @param string          $url Endpoint with meta information.
-	 * @param string          $metaAnnotationKey Key to extract meta information from.
-	 * @param LoggerInterface $logger Logger.
+	 * @param string              $url Endpoint with meta information.
+	 * @param string              $metaAnnotationKey Key to extract meta information from.
+	 * @param array<string,mixed> $httpOptions HTTP client options.
+	 * @param LoggerInterface     $logger Logger.
 	 */
 	public function __construct(
 		string $url,
 		string $metaAnnotationKey = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata',
+		array $httpOptions = [],
 		LoggerInterface $logger = new NullLogger()
 	) {
 		$this->url               = $url;
 		$this->metaAnnotationKey = $metaAnnotationKey;
+		$this->httpOptions       = $httpOptions;
 		$this->logger            = $logger;
 	}
 
@@ -70,7 +80,7 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 		$factory                   = new HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory(
 			$this->url,
 			$this->metaAnnotationKey,
-			[],
+			$this->httpOptions,
 			$this->logger,
 		);
 		$metaAnnotationKeyAccessor = $factory->create();
