@@ -252,4 +252,69 @@ class PluginPackageMetaProviderTest extends TestCase {
 		$this->assertArrayHasKey( 'sections', $decoded );
 		$this->assertEquals( $sectionsExpected, $decoded['sections'] );
 	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function testBareMinimumFieldsValid(): void {
+		$nameExpected                     = 'Test Plugin';
+		$fullSlugExpected                 = 'test-plugin/test-plugin.php';
+		$shortSlugExpected                = 'test-plugin';
+		$viewURLExpected                  = null;
+		$versionExpected                  = null;
+		$shortDescriptionExpected         = null;
+		$authorExpected                   = null;
+		$authorURLExpected                = null;
+		$textDomainExpected               = null;
+		$domainPathExpected               = null;
+		$iconsExpected                    = [];
+		$bannersExpected                  = [];
+		$bannersRtlExpected               = [];
+		$networkExpected                  = false;
+		$requiresWordPressVersionExpected = null;
+		$requiresPHPVersionExpected       = null;
+		$downloadURLExpected              = null;
+		$testedExpected                   = null;
+		$stableExpected                   = null;
+		$requiresPluginsExpected          = [];
+		$tagsExpected                     = [];
+		$licenseExpected                  = null;
+		$licenseURLExpected               = null;
+		$descriptionExpected              = null;
+		$sectionsExpected                 = [];
+		$response                         = [
+			'name'      => $nameExpected,
+			'fullSlug'  => $fullSlugExpected,
+			'shortSlug' => $shortSlugExpected,
+		];
+		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
+		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
+		$this->assertEquals( $nameExpected, $provider->getName() );
+		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
+		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
+		$this->assertEquals( $viewURLExpected, $provider->getViewURL() );
+		$this->assertEquals( $versionExpected, $provider->getVersion() );
+		$this->assertEquals( $shortDescriptionExpected, $provider->getShortDescription() );
+		$this->assertEquals( $authorExpected, $provider->getAuthor() );
+		$this->assertEquals( $authorURLExpected, $provider->getAuthorURL() );
+		$this->assertEquals( $textDomainExpected, $provider->getTextDomain() );
+		$this->assertEquals( $domainPathExpected, $provider->getDomainPath() );
+		$this->assertEquals( $iconsExpected, $provider->getIcons() );
+		$this->assertEquals( $bannersExpected, $provider->getBanners() );
+		$this->assertEquals( $bannersRtlExpected, $provider->getBannersRtl() );
+		$this->assertEquals( $networkExpected, $provider->getNetwork() );
+		$this->assertEquals( $requiresWordPressVersionExpected, $provider->getRequiresWordPressVersion() );
+		$this->assertEquals( $requiresPHPVersionExpected, $provider->getRequiresPHPVersion() );
+		$this->assertEquals( $downloadURLExpected, $provider->getDownloadURL() );
+		$this->assertEquals( $requiresPluginsExpected, $provider->getRequiresPlugins() );
+		$this->assertEquals( $testedExpected, $provider->getTested() );
+		$this->assertEquals( $stableExpected, $provider->getStable() );
+		$this->assertEquals( $licenseExpected, $provider->getLicense() );
+		$this->assertEquals( $licenseURLExpected, $provider->getLicenseURL() );
+		$this->assertEquals( $descriptionExpected, $provider->getDescription() );
+		$this->assertEquals( $tagsExpected, $provider->getTags() );
+		$this->assertEquals( $sectionsExpected, $provider->getSections() );
+	}
 }

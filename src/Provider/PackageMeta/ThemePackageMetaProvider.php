@@ -113,7 +113,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['viewUrl'];
+		$value = $this->getPackageMeta()['viewUrl'] ?? null;
 		return $value;
 	}
 	/**
@@ -127,7 +127,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['version'];
+		$value = $this->getPackageMeta()['version'] ?? null;
 		return $value;
 	}
 	/**
@@ -141,7 +141,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['downloadUrl'];
+		$value = $this->getPackageMeta()['downloadUrl'] ?? null;
 		return $value;
 	}
 	/**
@@ -155,7 +155,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['tested'];
+		$value = $this->getPackageMeta()['tested'] ?? null;
 		return $value;
 	}
 	/**
@@ -169,7 +169,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['stable'];
+		$value = $this->getPackageMeta()['stable'] ?? null;
 		return $value;
 	}
 	/**
@@ -183,7 +183,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var string[] $value
 		 */
-		$value = $this->getPackageMeta()['tags'];
+		$value = $this->getPackageMeta()['tags'] ?? [];
 		return $value;
 	}
 	/**
@@ -197,7 +197,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['author'];
+		$value = $this->getPackageMeta()['author'] ?? null;
 		return $value;
 	}
 	/**
@@ -211,7 +211,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['authorUrl'];
+		$value = $this->getPackageMeta()['authorUrl'] ?? null;
 		return $value;
 	}
 	/**
@@ -225,7 +225,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['license'];
+		$value = $this->getPackageMeta()['license'] ?? null;
 		return $value;
 	}
 	/**
@@ -239,7 +239,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['licenseUrl'];
+		$value = $this->getPackageMeta()['licenseUrl'] ?? null;
 		return $value;
 	}
 	/**
@@ -253,7 +253,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['shortDescription'];
+		$value = $this->getPackageMeta()['shortDescription'] ?? null;
 		return $value;
 	}
 	/**
@@ -267,7 +267,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string$value
 		 */
-		$value = $this->getPackageMeta()['description'];
+		$value = $this->getPackageMeta()['description'] ?? null;
 		return $value;
 	}
 	/**
@@ -281,7 +281,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['requiresWordPressVersion'];
+		$value = $this->getPackageMeta()['requiresWordPressVersion'] ?? null;
 		return $value;
 	}
 	/**
@@ -295,7 +295,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['requiresPHPVersion'];
+		$value = $this->getPackageMeta()['requiresPHPVersion'] ?? null;
 		return $value;
 	}
 	/**
@@ -309,7 +309,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['textDomain'];
+		$value = $this->getPackageMeta()['textDomain'] ?? null;
 		return $value;
 	}
 	/**
@@ -323,7 +323,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['domainPath'];
+		$value = $this->getPackageMeta()['domainPath'] ?? null;
 		return $value;
 	}
 	/**
@@ -337,7 +337,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var array<string,string> $value
 		 */
-		$value = $this->getPackageMeta()['icons'];
+		$value = $this->getPackageMeta()['icons'] ?? [];
 		return $value;
 	}
 	/**
@@ -351,7 +351,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var array<string,string> $value
 		 */
-		$value = $this->getPackageMeta()['banners'];
+		$value = $this->getPackageMeta()['banners'] ?? [];
 		return $value;
 	}
 	/**
@@ -365,7 +365,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var array<string,string> $value
 		 */
-		$value = $this->getPackageMeta()['bannersRtl'];
+		$value = $this->getPackageMeta()['bannersRtl'] ?? [];
 		return $value;
 	}
 	/**
@@ -379,7 +379,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['template'];
+		$value = $this->getPackageMeta()['template'] ?? null;
 		return $value;
 	}
 	/**
@@ -393,7 +393,7 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 		 *
 		 * @var ?string $value
 		 */
-		$value = $this->getPackageMeta()['status'];
+		$value = $this->getPackageMeta()['status'] ?? null;
 		return $value;
 	}
 	/**
