@@ -8,14 +8,11 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Assembler\Array\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler;
-use GuzzleHttp\Psr7\Stream;
 use GuzzleHttp\Psr7\Utils;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use StreamBucket;
 use UnexpectedValueException;
 
 /**
