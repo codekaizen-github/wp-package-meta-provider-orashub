@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\ThemePackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\ThemePackageMetaValue;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

@@ -15,7 +15,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\ThemePackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\ThemePackageMetaValue;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;

@@ -4,11 +4,11 @@
  *
  * Provides metadata for WordPress themes installed locally.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use Respect\Validation\Validator;
