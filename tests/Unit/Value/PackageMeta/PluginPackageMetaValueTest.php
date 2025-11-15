@@ -2,26 +2,63 @@
 /**
  * Local Plugin Package Meta Provider Test
  *
- * Tests for the provider that reads and extracts metadata from local plugin files.
+ * Tests for the sut that reads and extracts metadata from local plugin files.
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\PluginPackageMetaValue;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Mockery\MockInterface;
 
 /**
- * Tests for the plugin package metadata provider implementation.
+ * Tests for the plugin package metadata sut implementation.
  *
  * @since 1.0.0
  */
 class PluginPackageMetaValueTest extends TestCase {
+
+	/**
+	 * Undocumented variable
+	 *
+	 * @var (LoggerInterface&MockInterface)|null
+	 */
+	protected ?LoggerInterface $logger;
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->logger = Mockery::mock( LoggerInterface::class );
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		Mockery::close();
+		parent::tearDown();
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return LoggerInterface&MockInterface
+	 */
+	protected function getLogger(): LoggerInterface {
+		self::assertNotNull( $this->logger );
+		return $this->logger;
+	}
 
 	/**
 	 * Tests getName() extracts the correct plugin name from the My Basics plugin.
@@ -55,7 +92,7 @@ class PluginPackageMetaValueTest extends TestCase {
 		$networkExpected                  = true;
 		$requiresWordPressVersionExpected = '6.8.2';
 		$requiresPHPVersionExpected       = '8.2.1';
-		$downloadURLExpected              = 'https://github.com/codekaizen-github/wp-package-meta-provider-local';
+		$downloadURLExpected              = 'https://github.com/codekaizen-github/wp-package-meta-sut-local';
 		$testedExpected                   = '6.8.2';
 		$stableExpected                   = '6.8.2';
 		$requiresPluginsExpected          = [ 'akismet', 'hello-dolly' ];
@@ -94,35 +131,32 @@ class PluginPackageMetaValueTest extends TestCase {
 			'sections'                 => $sectionsExpected,
 			'network'                  => $networkExpected,
 		];
-		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
-		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaValue( $metaAnnotationKeyAccessor, $logger );
-		$this->assertEquals( $nameExpected, $provider->getName() );
-		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
-		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
-		$this->assertEquals( $viewURLExpected, $provider->getViewURL() );
-		$this->assertEquals( $versionExpected, $provider->getVersion() );
-		$this->assertEquals( $shortDescriptionExpected, $provider->getShortDescription() );
-		$this->assertEquals( $authorExpected, $provider->getAuthor() );
-		$this->assertEquals( $authorURLExpected, $provider->getAuthorURL() );
-		$this->assertEquals( $textDomainExpected, $provider->getTextDomain() );
-		$this->assertEquals( $domainPathExpected, $provider->getDomainPath() );
-		$this->assertEquals( $iconsExpected, $provider->getIcons() );
-		$this->assertEquals( $bannersExpected, $provider->getBanners() );
-		$this->assertEquals( $bannersRtlExpected, $provider->getBannersRtl() );
-		$this->assertEquals( $networkExpected, $provider->getNetwork() );
-		$this->assertEquals( $requiresWordPressVersionExpected, $provider->getRequiresWordPressVersion() );
-		$this->assertEquals( $requiresPHPVersionExpected, $provider->getRequiresPHPVersion() );
-		$this->assertEquals( $downloadURLExpected, $provider->getDownloadURL() );
-		$this->assertEquals( $requiresPluginsExpected, $provider->getRequiresPlugins() );
-		$this->assertEquals( $testedExpected, $provider->getTested() );
-		$this->assertEquals( $stableExpected, $provider->getStable() );
-		$this->assertEquals( $licenseExpected, $provider->getLicense() );
-		$this->assertEquals( $licenseURLExpected, $provider->getLicenseURL() );
-		$this->assertEquals( $descriptionExpected, $provider->getDescription() );
-		$this->assertEquals( $tagsExpected, $provider->getTags() );
-		$this->assertEquals( $sectionsExpected, $provider->getSections() );
+		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
+		$this->assertEquals( $nameExpected, $sut->getName() );
+		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
+		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
+		$this->assertEquals( $viewURLExpected, $sut->getViewURL() );
+		$this->assertEquals( $versionExpected, $sut->getVersion() );
+		$this->assertEquals( $shortDescriptionExpected, $sut->getShortDescription() );
+		$this->assertEquals( $authorExpected, $sut->getAuthor() );
+		$this->assertEquals( $authorURLExpected, $sut->getAuthorURL() );
+		$this->assertEquals( $textDomainExpected, $sut->getTextDomain() );
+		$this->assertEquals( $domainPathExpected, $sut->getDomainPath() );
+		$this->assertEquals( $iconsExpected, $sut->getIcons() );
+		$this->assertEquals( $bannersExpected, $sut->getBanners() );
+		$this->assertEquals( $bannersRtlExpected, $sut->getBannersRtl() );
+		$this->assertEquals( $networkExpected, $sut->getNetwork() );
+		$this->assertEquals( $requiresWordPressVersionExpected, $sut->getRequiresWordPressVersion() );
+		$this->assertEquals( $requiresPHPVersionExpected, $sut->getRequiresPHPVersion() );
+		$this->assertEquals( $downloadURLExpected, $sut->getDownloadURL() );
+		$this->assertEquals( $requiresPluginsExpected, $sut->getRequiresPlugins() );
+		$this->assertEquals( $testedExpected, $sut->getTested() );
+		$this->assertEquals( $stableExpected, $sut->getStable() );
+		$this->assertEquals( $licenseExpected, $sut->getLicense() );
+		$this->assertEquals( $licenseURLExpected, $sut->getLicenseURL() );
+		$this->assertEquals( $descriptionExpected, $sut->getDescription() );
+		$this->assertEquals( $tagsExpected, $sut->getTags() );
+		$this->assertEquals( $sectionsExpected, $sut->getSections() );
 	}
 	/**
 	 * Test
@@ -156,7 +190,7 @@ class PluginPackageMetaValueTest extends TestCase {
 		$networkExpected                  = true;
 		$requiresWordPressVersionExpected = '6.8.2';
 		$requiresPHPVersionExpected       = '8.2.1';
-		$downloadURLExpected              = 'https://github.com/codekaizen-github/wp-package-meta-provider-local';
+		$downloadURLExpected              = 'https://github.com/codekaizen-github/wp-package-meta-sut-local';
 		$testedExpected                   = '6.8.2';
 		$stableExpected                   = '6.8.2';
 		$requiresPluginsExpected          = [ 'akismet', 'hello-dolly' ];
@@ -195,12 +229,9 @@ class PluginPackageMetaValueTest extends TestCase {
 			'sections'                 => $sectionsExpected,
 			'network'                  => $networkExpected,
 		];
-		$client                           = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaValue( $client, $logger );
+		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
-		$encoded = json_encode( $provider );
+		$encoded = json_encode( $sut );
 		$this->assertIsString( $encoded );
 		$decoded = json_decode( $encoded, true );
 		$this->assertIsArray( $decoded );
@@ -291,34 +322,31 @@ class PluginPackageMetaValueTest extends TestCase {
 			'fullSlug'  => $fullSlugExpected,
 			'shortSlug' => $shortSlugExpected,
 		];
-		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
-		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaValue( $metaAnnotationKeyAccessor, $logger );
-		$this->assertEquals( $nameExpected, $provider->getName() );
-		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
-		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
-		$this->assertEquals( $viewURLExpected, $provider->getViewURL() );
-		$this->assertEquals( $versionExpected, $provider->getVersion() );
-		$this->assertEquals( $shortDescriptionExpected, $provider->getShortDescription() );
-		$this->assertEquals( $authorExpected, $provider->getAuthor() );
-		$this->assertEquals( $authorURLExpected, $provider->getAuthorURL() );
-		$this->assertEquals( $textDomainExpected, $provider->getTextDomain() );
-		$this->assertEquals( $domainPathExpected, $provider->getDomainPath() );
-		$this->assertEquals( $iconsExpected, $provider->getIcons() );
-		$this->assertEquals( $bannersExpected, $provider->getBanners() );
-		$this->assertEquals( $bannersRtlExpected, $provider->getBannersRtl() );
-		$this->assertEquals( $networkExpected, $provider->getNetwork() );
-		$this->assertEquals( $requiresWordPressVersionExpected, $provider->getRequiresWordPressVersion() );
-		$this->assertEquals( $requiresPHPVersionExpected, $provider->getRequiresPHPVersion() );
-		$this->assertEquals( $downloadURLExpected, $provider->getDownloadURL() );
-		$this->assertEquals( $requiresPluginsExpected, $provider->getRequiresPlugins() );
-		$this->assertEquals( $testedExpected, $provider->getTested() );
-		$this->assertEquals( $stableExpected, $provider->getStable() );
-		$this->assertEquals( $licenseExpected, $provider->getLicense() );
-		$this->assertEquals( $licenseURLExpected, $provider->getLicenseURL() );
-		$this->assertEquals( $descriptionExpected, $provider->getDescription() );
-		$this->assertEquals( $tagsExpected, $provider->getTags() );
-		$this->assertEquals( $sectionsExpected, $provider->getSections() );
+		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
+		$this->assertEquals( $nameExpected, $sut->getName() );
+		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
+		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
+		$this->assertEquals( $viewURLExpected, $sut->getViewURL() );
+		$this->assertEquals( $versionExpected, $sut->getVersion() );
+		$this->assertEquals( $shortDescriptionExpected, $sut->getShortDescription() );
+		$this->assertEquals( $authorExpected, $sut->getAuthor() );
+		$this->assertEquals( $authorURLExpected, $sut->getAuthorURL() );
+		$this->assertEquals( $textDomainExpected, $sut->getTextDomain() );
+		$this->assertEquals( $domainPathExpected, $sut->getDomainPath() );
+		$this->assertEquals( $iconsExpected, $sut->getIcons() );
+		$this->assertEquals( $bannersExpected, $sut->getBanners() );
+		$this->assertEquals( $bannersRtlExpected, $sut->getBannersRtl() );
+		$this->assertEquals( $networkExpected, $sut->getNetwork() );
+		$this->assertEquals( $requiresWordPressVersionExpected, $sut->getRequiresWordPressVersion() );
+		$this->assertEquals( $requiresPHPVersionExpected, $sut->getRequiresPHPVersion() );
+		$this->assertEquals( $downloadURLExpected, $sut->getDownloadURL() );
+		$this->assertEquals( $requiresPluginsExpected, $sut->getRequiresPlugins() );
+		$this->assertEquals( $testedExpected, $sut->getTested() );
+		$this->assertEquals( $stableExpected, $sut->getStable() );
+		$this->assertEquals( $licenseExpected, $sut->getLicense() );
+		$this->assertEquals( $licenseURLExpected, $sut->getLicenseURL() );
+		$this->assertEquals( $descriptionExpected, $sut->getDescription() );
+		$this->assertEquals( $tagsExpected, $sut->getTags() );
+		$this->assertEquals( $sectionsExpected, $sut->getSections() );
 	}
 }

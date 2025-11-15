@@ -14,7 +14,6 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPa
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\PluginPackageMetaValueServiceContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Client\HTTPClientContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\PluginPackageMetaValue;
 use Psr\Http\Client\ClientInterface;
