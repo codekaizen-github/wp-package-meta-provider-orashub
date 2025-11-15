@@ -77,7 +77,7 @@ class HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory implements Associative
 	}
 
 	/**
-	 * Creates a new PluginPackageMetaProvider instance.
+	 * Creates a new PluginPackageMetaValue instance.
 	 *
 	 * @return AssociativeArrayStringToMixedAccessorContract
 	 */

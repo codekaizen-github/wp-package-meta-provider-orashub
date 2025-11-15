@@ -2,12 +2,12 @@
 /**
  * Test
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\Value\PackageMeta
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta\ThemePackageMetaProviderFactoryV1;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaProviderFactoryV1;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -25,8 +25,8 @@ class ThemePackageMetaProviderFactoryV1Test extends TestCase {
 	 */
 	public function testFactoryCreatesProvider(): void {
 		Mockery::mock(
-			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider',
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract'
+			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\ThemePackageMetaProvider',
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Service\PackageMeta\ThemePackageMetaProviderContract'
 		);
 		$url               = 'http://example.com';
 		$metaAnnotationKey = 'org.example.meta';
@@ -40,7 +40,7 @@ class ThemePackageMetaProviderFactoryV1Test extends TestCase {
 		);
 		$return            = $sut->create();
 		$this->assertInstanceOf(
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract',
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Service\PackageMeta\ThemePackageMetaProviderContract',
 			$return
 		);
 	}

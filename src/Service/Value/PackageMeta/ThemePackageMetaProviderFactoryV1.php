@@ -1,28 +1,28 @@
 <?php
 /**
- * Local Plugin Package Meta Provider Factory
+ * Local Theme Package Meta Provider Factory
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta;
 
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderContract\Contract\Factory\Provider\PackageMeta\PluginPackageMetaProviderFactoryContract;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\PluginPackageMetaProviderContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\Value\PackageMeta\ThemePackageMetaValueProviderContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\PackageMeta\ThemePackageMetaProviderContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Accessor\PackageMeta\HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory;
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\ThemePackageMetaProvider;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Factory for creating local plugin package meta providers.
+ * Factory for creating local theme package meta providers.
  *
  * @since 1.0.0
  */
-class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFactoryContract {
+class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaValueProviderContract {
 	/**
 	 * URL to meta endpoint.
 	 *
@@ -72,11 +72,11 @@ class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFac
 	}
 
 	/**
-	 * Creates a new PluginPackageMetaProvider instance.
+	 * Creates a new ThemePackageMetaProvider instance.
 	 *
-	 * @return PluginPackageMetaProviderContract
+	 * @return ThemePackageMetaProviderContract
 	 */
-	public function create(): PluginPackageMetaProviderContract {
+	public function create(): ThemePackageMetaProviderContract {
 		$factory                   = new HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory(
 			$this->url,
 			$this->metaAnnotationKey,
@@ -84,6 +84,6 @@ class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFac
 			$this->logger,
 		);
 		$metaAnnotationKeyAccessor = $factory->create();
-		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $this->logger );
+		return new ThemePackageMetaProvider( $metaAnnotationKeyAccessor, $this->logger );
 	}
 }

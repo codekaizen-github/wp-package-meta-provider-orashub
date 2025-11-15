@@ -4,13 +4,13 @@
  *
  * Provides metadata for WordPress plugins installed locally.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\PluginPackageMetaProviderContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
@@ -26,7 +26,7 @@ use UnexpectedValueException;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaProvider implements PluginPackageMetaProviderContract {
+class PluginPackageMetaValue implements PluginPackageMetaValueContract {
 
 	/**
 	 * HTTP client.
@@ -46,22 +46,35 @@ class PluginPackageMetaProvider implements PluginPackageMetaProviderContract {
 	/**
 	 * Cached package metadata.
 	 *
-	 * @var ?array<string,mixed>
+	 * @var array<string,mixed>
 	 */
-	protected ?array $packageMeta;
+	protected array $packageMeta;
 	/**
 	 * Constructor.
 	 *
-	 * @param AssociativeArrayStringToMixedAccessorContract $client HTTP client.
-	 * @param LoggerInterface                               $logger Logger.
+	 * @param array<string,mixed> $packageMeta HTTP packageMeta.
+	 * @param LoggerInterface     $logger Logger.
+	 * @throws UnexpectedValueException If the metadata is invalid.
 	 */
 	public function __construct(
-		AssociativeArrayStringToMixedAccessorContract $client,
+		array $packageMeta,
 		LoggerInterface $logger = new NullLogger()
 	) {
-		$this->client      = $client;
+		try {
+			Validator::create( new PluginHeadersArrayRule() )->check( $packageMeta );
+		} catch ( Throwable $e ) {
+			$this->logger->error(
+				'Failed to validate plugin metadata.',
+				[
+					'exception'   => $e,
+					'packageMeta' => $packageMeta,
+				]
+			);
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
+			throw new UnexpectedValueException( 'Invalid plugin metadata.', 0, $e );
+		}
 		$this->logger      = $logger;
-		$this->packageMeta = null;
+		$this->packageMeta = $packageMeta;
 	}
 	/**
 	 * Gets the name of the plugin.
@@ -423,29 +436,6 @@ class PluginPackageMetaProvider implements PluginPackageMetaProviderContract {
 	 * @throws UnexpectedValueException If the metadata is invalid.
 	 */
 	protected function getPackageMeta(): array {
-		if ( null !== $this->packageMeta ) {
-			return $this->packageMeta;
-		}
-		$metaArray = $this->client->get();
-		try {
-			Validator::create( new PluginHeadersArrayRule() )->check( $metaArray );
-		} catch ( Throwable $e ) {
-			$this->logger->error(
-				'Failed to validate plugin metadata.',
-				[
-					'exception' => $e,
-					'metaArray' => $metaArray,
-				]
-			);
-			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
-			throw new UnexpectedValueException( 'Invalid plugin metadata.', 0, $e );
-		}
-		/**
-		 * Meta array will have been validated.
-		 *
-		 * @var array<string,mixed> $metaArray
-		 */
-		$this->packageMeta = $metaArray;
 		return $this->packageMeta;
 	}
 	/**

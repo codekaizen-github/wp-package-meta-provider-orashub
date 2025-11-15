@@ -4,14 +4,14 @@
  *
  * Tests for the provider that reads and extracts metadata from local theme files.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\ThemePackageMetaProvider;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

@@ -2,12 +2,12 @@
 /**
  * Test
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\Value\PackageMeta
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Factory\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Provider\PackageMeta\PluginPackageMetaProviderFactoryV1;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueServiceV1;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Undocumented class
  */
-class PluginPackageMetaProviderFactoryV1Test extends TestCase {
+class PluginPackageMetaValueServiceV1Test extends TestCase {
 	/**
 	 * Undocumented function
 	 *
@@ -25,14 +25,14 @@ class PluginPackageMetaProviderFactoryV1Test extends TestCase {
 	 */
 	public function testFactoryCreatesProvider(): void {
 		Mockery::mock(
-			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider',
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\PluginPackageMetaProviderContract'
+			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\PluginPackageMetaValue',
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Service\PackageMeta\PluginPackageMetaValueContract'
 		);
 		$url               = 'http://example.com';
 		$metaAnnotationKey = 'org.example.meta';
 		$httpOptions       = [];
 		$logger            = Mockery::mock( LoggerInterface::class );
-		$sut               = new PluginPackageMetaProviderFactoryV1(
+		$sut               = new PluginPackageMetaValueServiceV1(
 			$url,
 			$metaAnnotationKey,
 			$httpOptions,
@@ -40,7 +40,7 @@ class PluginPackageMetaProviderFactoryV1Test extends TestCase {
 		);
 		$return            = $sut->create();
 		$this->assertInstanceOf(
-			'CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\PluginPackageMetaProviderContract',
+			'CodeKaizen\WPPackageMetaProviderContract\Contract\Service\PackageMeta\PluginPackageMetaValueContract',
 			$return
 		);
 	}

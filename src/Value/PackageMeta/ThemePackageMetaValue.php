@@ -4,17 +4,18 @@
  *
  * Provides metadata for WordPress themes installed locally.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\ThemePackageMetaProviderContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Throwable;
 use UnexpectedValueException;
 
@@ -25,7 +26,8 @@ use UnexpectedValueException;
  *
  * @since 1.0.0
  */
-class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
+class ThemePackageMetaValue implements ThemePackageMetaValueContract {
+
 	/**
 	 * HTTP client.
 	 *
@@ -33,8 +35,9 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	 */
 	protected AssociativeArrayStringToMixedAccessorContract $client;
 
+
 	/**
-	 * Logger interface.
+	 * Logger.
 	 *
 	 * @var LoggerInterface
 	 */
@@ -43,20 +46,35 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	/**
 	 * Cached package metadata.
 	 *
-	 * @var ?array<string,mixed>
+	 * @var array<string,mixed>
 	 */
-	protected ?array $packageMeta;
+	protected array $packageMeta;
 	/**
 	 * Constructor.
 	 *
-	 * @param AssociativeArrayStringToMixedAccessorContract $client HTTP client.
-	 * @param LoggerInterface                               $logger Logger interface.
+	 * @param array<string,mixed> $packageMeta HTTP packageMeta.
+	 * @param LoggerInterface     $logger Logger.
+	 * @throws UnexpectedValueException If the metadata is invalid.
 	 */
-	public function __construct( AssociativeArrayStringToMixedAccessorContract $client, LoggerInterface $logger ) {
-
-		$this->client      = $client;
+	public function __construct(
+		array $packageMeta,
+		LoggerInterface $logger = new NullLogger()
+	) {
+		try {
+			Validator::create( new ThemeHeadersArrayRule() )->check( $packageMeta );
+		} catch ( Throwable $e ) {
+			$this->logger->error(
+				'Failed to validate theme metadata.',
+				[
+					'exception'   => $e,
+					'packageMeta' => $packageMeta,
+				]
+			);
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
+			throw new UnexpectedValueException( 'Invalid theme metadata.', 0, $e );
+		}
 		$this->logger      = $logger;
-		$this->packageMeta = null;
+		$this->packageMeta = $packageMeta;
 	}
 	/**
 	 * Gets the name of the plugin.
@@ -404,29 +422,6 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	 * @throws UnexpectedValueException If the metadata is invalid.
 	 */
 	protected function getPackageMeta(): array {
-		if ( null !== $this->packageMeta ) {
-			return $this->packageMeta;
-		}
-		$metaArray = $this->client->get();
-		try {
-			Validator::create( new ThemeHeadersArrayRule() )->check( $metaArray );
-		} catch ( Throwable $e ) {
-			$this->logger->error(
-				'Failed to validate theme metadata.',
-				[
-					'exception' => $e,
-					'metaArray' => $metaArray,
-				]
-			);
-			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
-			throw new UnexpectedValueException( 'Invalid theme metadata.', 0, $e );
-		}
-		/**
-		 * Meta array will have been validated.
-		 *
-		 * @var array<string,mixed> $metaArray
-		 * */
-		$this->packageMeta = $metaArray;
 		return $this->packageMeta;
 	}
 	/**

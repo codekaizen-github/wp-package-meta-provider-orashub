@@ -4,14 +4,14 @@
  *
  * Tests for the provider that reads and extracts metadata from local plugin files.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Provider\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Service\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\PluginPackageMetaValue;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,7 +21,7 @@ use Psr\Log\LoggerInterface;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaProviderTest extends TestCase {
+class PluginPackageMetaValueTest extends TestCase {
 
 	/**
 	 * Tests getName() extracts the correct plugin name from the My Basics plugin.
@@ -97,7 +97,7 @@ class PluginPackageMetaProviderTest extends TestCase {
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
+		$provider = new PluginPackageMetaValue( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
@@ -198,7 +198,7 @@ class PluginPackageMetaProviderTest extends TestCase {
 		$client                           = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
 		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaProvider( $client, $logger );
+		$provider = new PluginPackageMetaValue( $client, $logger );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$encoded = json_encode( $provider );
 		$this->assertIsString( $encoded );
@@ -294,7 +294,7 @@ class PluginPackageMetaProviderTest extends TestCase {
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
 		$logger   = Mockery::mock( LoggerInterface::class );
-		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
+		$provider = new PluginPackageMetaValue( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
