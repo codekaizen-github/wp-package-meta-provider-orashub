@@ -13,7 +13,6 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -27,14 +26,6 @@ use UnexpectedValueException;
  * @since 1.0.0
  */
 class ThemePackageMetaValue implements ThemePackageMetaValueContract {
-
-	/**
-	 * HTTP client.
-	 *
-	 * @var AssociativeArrayStringToMixedAccessorContract
-	 */
-	protected AssociativeArrayStringToMixedAccessorContract $client;
-
 
 	/**
 	 * Logger.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Local Plugin Package Meta Provider Factory
+ * Local Plugin Package Meta Provider Service
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta
  * @since 1.0.0
@@ -17,24 +17,33 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Client\HTTPClientContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\PackageMeta\PluginPackageMetaValue;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use UnexpectedValueException;
 use Throwable;
 
 /**
- * Factory for creating local plugin package meta providers.
+ * Service for creating local plugin package meta providers.
  *
  * @since 1.0.0
  */
-class PluginPackageMetaValueServiceV1 implements PluginPackageMetaValueServiceContract {
+class PluginPackageMetaValueService implements PluginPackageMetaValueServiceContract {
 
 	/**
 	 * Client.
 	 *
-	 * @var HTTPClientContract
+	 * @var ClientInterface
 	 */
-	protected HTTPClientContract $client;
+	protected ClientInterface $client;
+
+	/**
+	 * Request.
+	 *
+	 * @var RequestInterface
+	 */
+	protected RequestInterface $request;
 
 	/**
 	 * Assembler.
@@ -42,13 +51,6 @@ class PluginPackageMetaValueServiceV1 implements PluginPackageMetaValueServiceCo
 	 * @var ResponsePackageMetaArrayAssemblerContract
 	 */
 	protected ResponsePackageMetaArrayAssemblerContract $assembler;
-
-	/**
-	 * URL to meta endpoint.
-	 *
-	 * @var string
-	 */
-	protected string $url;
 
 	/**
 	 * Undocumented variable
@@ -67,20 +69,20 @@ class PluginPackageMetaValueServiceV1 implements PluginPackageMetaValueServiceCo
 	/**
 	 * Constructor.
 	 *
-	 * @param HTTPClientContract                        $client HTTP Client.
+	 * @param RequestInterface                          $request Request.
+	 * @param ClientInterface                           $client Client.
 	 * @param ResponsePackageMetaArrayAssemblerContract $assembler Assembler.
-	 * @param string                                    $url Endpoint with meta information.
 	 * @param LoggerInterface                           $logger Logger.
 	 */
 	public function __construct(
-		HTTPClientContract $client,
+		RequestInterface $request,
+		ClientInterface $client,
 		ResponsePackageMetaArrayAssemblerContract $assembler,
-		string $url,
 		LoggerInterface $logger = new NullLogger()
 	) {
+		$this->request   = $request;
 		$this->client    = $client;
 		$this->assembler = $assembler;
-		$this->url       = $url;
 		$this->logger    = $logger;
 		$this->value     = null;
 	}
@@ -97,16 +99,16 @@ class PluginPackageMetaValueServiceV1 implements PluginPackageMetaValueServiceCo
 			return $this->value;
 		}
 		$this->logger->debug(
-			"HTTP GET Request {$this->url}",
+			"HTTP {$this->request->getMethod()} Request {$this->request->getUri()}",
 			[
-				'url' => $this->url,
+				'url' => $this->request->getUri(),
 			]
 		);
-		$response = $this->client->get( $this->url );
+		$response = $this->client->sendRequest( $this->request );
 		$this->logger->debug(
-			"HTTP GET Response {$this->url} {$response->getStatusCode()}",
+			"HTTP {$this->request->getMethod()} Response {$this->request->getUri()} {$response->getStatusCode()}",
 			[
-				'url'          => $this->url,
+				'url'          => $this->request->getUri(),
 				'statusCode'   => $response->getStatusCode(),
 				'reasonPhrase' => $response->getReasonPhrase(),
 				'headers'      => $response->getHeaders(),
