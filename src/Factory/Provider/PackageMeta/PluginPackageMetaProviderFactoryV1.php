@@ -84,6 +84,6 @@ class PluginPackageMetaProviderFactoryV1 implements PluginPackageMetaProviderFac
 			$this->logger,
 		);
 		$metaAnnotationKeyAccessor = $factory->create();
-		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
+		return new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $this->logger );
 	}
 }

@@ -14,6 +14,7 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArraySt
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\PluginPackageMetaProvider;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Tests for the plugin package metadata provider implementation.
@@ -95,7 +96,8 @@ class PluginPackageMetaProviderTest extends TestCase {
 		];
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
@@ -195,7 +197,8 @@ class PluginPackageMetaProviderTest extends TestCase {
 		];
 		$client                           = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new PluginPackageMetaProvider( $client );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new PluginPackageMetaProvider( $client, $logger );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$encoded = json_encode( $provider );
 		$this->assertIsString( $encoded );
@@ -290,7 +293,8 @@ class PluginPackageMetaProviderTest extends TestCase {
 		];
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new PluginPackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );

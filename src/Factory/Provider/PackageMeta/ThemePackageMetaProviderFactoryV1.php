@@ -84,6 +84,6 @@ class ThemePackageMetaProviderFactoryV1 implements ThemePackageMetaProviderFacto
 			$this->logger,
 		);
 		$metaAnnotationKeyAccessor = $factory->create();
-		return new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
+		return new ThemePackageMetaProvider( $metaAnnotationKeyAccessor, $this->logger );
 	}
 }

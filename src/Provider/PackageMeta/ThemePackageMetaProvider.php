@@ -14,6 +14,9 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Provider\PackageMeta\Theme
 use Respect\Validation\Validator;
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
+use Psr\Log\LoggerInterface;
+use Throwable;
+use UnexpectedValueException;
 
 /**
  * Provider for local WordPress theme package metadata.
@@ -31,18 +34,11 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	protected AssociativeArrayStringToMixedAccessorContract $client;
 
 	/**
-	 * Full plugin slug including directory prefix and file extension.
+	 * Logger interface.
 	 *
-	 * @var string
+	 * @var LoggerInterface
 	 */
-	protected string $fullSlug;
-
-	/**
-	 * Short plugin slug without directory prefix or file extension.
-	 *
-	 * @var string
-	 */
-	protected string $shortSlug;
+	protected LoggerInterface $logger;
 
 	/**
 	 * Cached package metadata.
@@ -54,10 +50,12 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	 * Constructor.
 	 *
 	 * @param AssociativeArrayStringToMixedAccessorContract $client HTTP client.
+	 * @param LoggerInterface                               $logger Logger interface.
 	 */
-	public function __construct( AssociativeArrayStringToMixedAccessorContract $client ) {
+	public function __construct( AssociativeArrayStringToMixedAccessorContract $client, LoggerInterface $logger ) {
 
 		$this->client      = $client;
+		$this->logger      = $logger;
 		$this->packageMeta = null;
 	}
 	/**
@@ -403,13 +401,26 @@ class ThemePackageMetaProvider implements ThemePackageMetaProviderContract {
 	 * Result is cached for subsequent calls.
 	 *
 	 * @return array<string,mixed> Associative array of theme metadata.
+	 * @throws UnexpectedValueException If the metadata is invalid.
 	 */
 	protected function getPackageMeta(): array {
 		if ( null !== $this->packageMeta ) {
 			return $this->packageMeta;
 		}
 		$metaArray = $this->client->get();
-		Validator::create( new ThemeHeadersArrayRule() )->check( $metaArray );
+		try {
+			Validator::create( new ThemeHeadersArrayRule() )->check( $metaArray );
+		} catch ( Throwable $e ) {
+			$this->logger->error(
+				'Failed to validate theme metadata.',
+				[
+					'exception' => $e,
+					'metaArray' => $metaArray,
+				]
+			);
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
+			throw new UnexpectedValueException( 'Invalid theme metadata.', 0, $e );
+		}
 		/**
 		 * Meta array will have been validated.
 		 *

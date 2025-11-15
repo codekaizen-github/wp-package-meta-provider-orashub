@@ -10,13 +10,64 @@ namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Accessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Accessor\MetaAnnotationKeyAccessor;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 
 /**
  * Undocumented class
  */
 class MetaAnnotationKeyAccessorTest extends TestCase {
+	/**
+	 * Undocumented variable
+	 *
+	 * @var (LoggerInterface&MockInterface)|null
+	 */
+	protected ?LoggerInterface $logger;
+	/**
+	 * Undocumented variable
+	 *
+	 * @var (MixedAccessorContract&MockInterface)|null
+	 */
+	protected ?MixedAccessorContract $client;
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->logger = Mockery::mock( LoggerInterface::class );
+		$this->client = Mockery::mock( MixedAccessorContract::class );
+	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return LoggerInterface&MockInterface
+	 */
+	protected function getLogger(): LoggerInterface {
+		self::assertNotNull( $this->logger );
+		return $this->logger;
+	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return MixedAccessorContract&MockInterface
+	 */
+	protected function getClient(): MixedAccessorContract {
+		self::assertNotNull( $this->client );
+		return $this->client;
+	}
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	protected function tearDown(): void {
+		Mockery::close();
+		parent::tearDown();
+	}
 	/**
 	 * Undocumented function
 	 *
@@ -61,10 +112,13 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			],
 		];
 		// phpcs:enable WordPress.WP.AlternativeFunctions.json_encode_json_encode -- Temporary disable sniff.
-		$client = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
-		$this->assertEquals( $expected, $metaAnnotationKeyAccessor->get() );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
+		$this->assertEquals( $expected, $sut->get() );
 	}
 	/**
 	 * Undocumented function
@@ -108,11 +162,15 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 				'testMetaAnnotationKey' => $expected,
 			],
 		];
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 	/**
 	 * Undocumented function
@@ -121,11 +179,15 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 	 */
 	public function testInputIsNotArrayAndThrowsException() {
 		$response = 'hi';
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 	/**
 	 * Undocumented function
@@ -137,11 +199,15 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 			'otherDataOne' => 1,
 			'otherDataTwo' => [ 'asdf', 'fda', [ 'asdf' ] ],
 		];
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 	/**
 	 * Undocumented function
@@ -157,11 +223,15 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 				'otherDataTwo' => [ 'asdf', 'fda', [ 'asdf' ] ],
 			],
 		];
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 	/**
 	 * Undocumented function
@@ -178,11 +248,15 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 				'testMetaAnnotationKey' => 'hi',
 			],
 		];
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 	/**
 	 * Undocumented function
@@ -199,10 +273,14 @@ class MetaAnnotationKeyAccessorTest extends TestCase {
 				'testMetaAnnotationKey' => [ 'hello', 'world' ],
 			],
 		];
-		$client   = Mockery::mock( MixedAccessorContract::class );
-		$client->shouldReceive( 'get' )->with()->andReturn( $response );
-		$metaAnnotationKeyAccessor = new MetaAnnotationKeyAccessor( $client, 'testMetaAnnotationKey' );
+		$this->getClient()->shouldReceive( 'get' )->with()->andReturn( $response );
+		$this->getLogger()->shouldReceive( 'error' );
+		$sut = new MetaAnnotationKeyAccessor(
+			$this->getClient(),
+			'testMetaAnnotationKey',
+			$this->getLogger()
+		);
 		$this->expectException( UnexpectedValueException::class );
-		$metaAnnotationKeyAccessor->get();
+		$sut->get();
 	}
 }

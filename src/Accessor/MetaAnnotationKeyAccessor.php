@@ -9,7 +9,8 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Accessor;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArrayStringToMixedAccessorContract;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\MixedAccessorContract;
-use PHP_CodeSniffer\Ruleset;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Respect\Validation\Validator;
 use Respect\Validation\Rules;
 use Respect\Validation\Exceptions\ValidationException;
@@ -32,14 +33,26 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 	 */
 	protected string $metaAnnotationKey;
 	/**
+	 * Undocumented variable
+	 *
+	 * @var LoggerInterface
+	 */
+	protected LoggerInterface $logger;
+	/**
 	 * Undocumented function
 	 *
 	 * @param MixedAccessorContract $accessor Accessor.
 	 * @param string                $metaAnnotationKey Meta Annotation Key.
+	 * @param LoggerInterface       $logger Logger. Logger.
 	 */
-	public function __construct( MixedAccessorContract $accessor, string $metaAnnotationKey ) {
+	public function __construct(
+		MixedAccessorContract $accessor,
+		string $metaAnnotationKey,
+		LoggerInterface $logger = new NullLogger()
+	) {
 		$this->accessor          = $accessor;
 		$this->metaAnnotationKey = $metaAnnotationKey;
+		$this->logger            = $logger;
 	}
 	/**
 	 * Undocumented function
@@ -66,6 +79,13 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 				)
 			)->check( $raw );
 		} catch ( ValidationException $e ) {
+			$this->logger->error(
+				'MetaAnnotationKeyAccessor raw validation failed',
+				[
+					'exception' => $e,
+					'raw'       => $raw,
+				]
+			);
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new UnexpectedValueException( $e->getMessage() );
 		}
@@ -91,6 +111,14 @@ class MetaAnnotationKeyAccessor implements AssociativeArrayStringToMixedAccessor
 				)
 			)->check( $metaDecoded );
 		} catch ( ValidationException $e ) {
+			$this->logger->error(
+				'MetaAnnotationKeyAccessor metaDecoded validation failed',
+				[
+					'exception'   => $e,
+					'metaDecoded' => $metaDecoded,
+					'raw'         => $raw,
+				]
+			);
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new UnexpectedValueException( $e->getMessage() );
 		}

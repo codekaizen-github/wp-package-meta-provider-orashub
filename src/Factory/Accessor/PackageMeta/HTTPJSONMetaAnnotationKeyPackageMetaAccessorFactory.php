@@ -86,6 +86,6 @@ class HTTPJSONMetaAnnotationKeyPackageMetaAccessorFactory implements Associative
 		$response = new ResponseAccessor( $client, $this->uri, $this->options );
 		$stream   = new StreamAccessor( $response );
 		$json     = new JSONDecoder( $stream );
-		return new MetaAnnotationKeyAccessor( $json, $this->metaAnnotationKey );
+		return new MetaAnnotationKeyAccessor( $json, $this->metaAnnotationKey, $this->logger );
 	}
 }

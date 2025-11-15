@@ -14,6 +14,7 @@ use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Accessor\AssociativeArraySt
 use CodeKaizen\WPPackageMetaProviderORASHub\Provider\PackageMeta\ThemePackageMetaProvider;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * Tests for the theme package metadata provider implementation.
@@ -94,7 +95,8 @@ class ThemePackageMetaProviderTest extends TestCase {
 		];
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
@@ -192,7 +194,8 @@ class ThemePackageMetaProviderTest extends TestCase {
 		];
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( 'Test Theme', $provider->getName() );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$encoded = json_encode( $provider );
@@ -285,7 +288,8 @@ class ThemePackageMetaProviderTest extends TestCase {
 		];
 		$metaAnnotationKeyAccessor        = Mockery::mock( AssociativeArrayStringToMixedAccessorContract::class );
 		$metaAnnotationKeyAccessor->shouldReceive( 'get' )->with()->andReturn( $response );
-		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor );
+		$logger   = Mockery::mock( LoggerInterface::class );
+		$provider = new ThemePackageMetaProvider( $metaAnnotationKeyAccessor, $logger );
 		$this->assertEquals( $nameExpected, $provider->getName() );
 		$this->assertEquals( $fullSlugExpected, $provider->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $provider->getShortSlug() );
