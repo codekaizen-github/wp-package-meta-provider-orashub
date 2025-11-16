@@ -242,9 +242,9 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	}
 
 
-		/**
-		 * Test getPackageMeta throws on assembler exception.
-		 */
+	/**
+	 * Test getPackageMeta throws on assembler exception.
+	 */
 	public function testGetPackageMetaThrowsOnAssemblerException(): void {
 		$this->expectException( UnexpectedValueException::class );
 		$this->getAssembler()->shouldReceive( 'assemble' )->with( $this->getResponse() )->andThrow( new UnexpectedValueException( 'Invalid meta' ) );
