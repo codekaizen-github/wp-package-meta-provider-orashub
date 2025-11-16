@@ -216,7 +216,7 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	 *
 	 * @return ClientInterface&MockInterface
 	 */
-	protected function getClient(): ClientInterface {
+	protected function getClient(): ClientInterface&MockInterface {
 		self::assertNotNull( $this->client );
 		return $this->client;
 	}

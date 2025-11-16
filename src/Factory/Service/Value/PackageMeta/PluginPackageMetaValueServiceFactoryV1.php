@@ -11,6 +11,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler;
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueService;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -66,7 +67,7 @@ class PluginPackageMetaValueServiceFactoryV1 {
 		$this->logger            = $logger;
 	}
 	/**
-	 * Creates a new PluginPackageMetaValueService instance.
+	 * Creates a new PluginPackageMetaValueServiceContract instance.
 	 *
 	 * @return PluginPackageMetaValueServiceContract
 	 */
@@ -76,7 +77,7 @@ class PluginPackageMetaValueServiceFactoryV1 {
 			$this->logger
 		);
 		$client    = new Client( $this->httpOptions );
-		$request   = new \GuzzleHttp\Psr7\Request( 'GET', $this->url );
+		$request   = new Request( 'GET', $this->url );
 		return new PluginPackageMetaValueService(
 			$request,
 			$client,
