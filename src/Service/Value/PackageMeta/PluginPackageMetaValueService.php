@@ -114,7 +114,8 @@ class PluginPackageMetaValueService implements PluginPackageMetaValueServiceCont
 				'body'         => $response->getBody(),
 			]
 		);
-		$assembled = $this->assembler->assemble( $response );
-		return new PluginPackageMetaValue( $assembled );
+		$assembled   = $this->assembler->assemble( $response );
+		$this->value = new PluginPackageMetaValue( $assembled );
+		return $this->value;
 	}
 }

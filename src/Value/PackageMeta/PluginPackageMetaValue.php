@@ -51,6 +51,7 @@ class PluginPackageMetaValue implements PluginPackageMetaValueContract {
 		array $packageMeta,
 		LoggerInterface $logger = new NullLogger()
 	) {
+		var_dump( $packageMeta );
 		$this->logger = $logger;
 		try {
 			Validator::create( new PluginHeadersArrayRule() )->check( $packageMeta );
