@@ -51,6 +51,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		array $packageMeta,
 		LoggerInterface $logger = new NullLogger()
 	) {
+		$this->logger = $logger;
 		try {
 			Validator::create( new ThemeHeadersArrayRule() )->check( $packageMeta );
 		} catch ( Throwable $e ) {
@@ -64,13 +65,12 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new UnexpectedValueException( 'Invalid theme metadata.', 0, $e );
 		}
-		$this->logger      = $logger;
 		$this->packageMeta = $packageMeta;
 	}
 	/**
-	 * Gets the name of the plugin.
+	 * Gets the name of the theme.
 	 *
-	 * @return string The plugin name.
+	 * @return string The theme name.
 	 */
 	public function getName(): string {
 		/**
@@ -110,9 +110,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin URI.
+	 * Gets the theme URI.
 	 *
-	 * @return ?string The plugin URI or null if not available.
+	 * @return ?string The theme URI or null if not available.
 	 */
 	public function getViewURL(): ?string {
 		/**
@@ -124,9 +124,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the version of the plugin.
+	 * Gets the version of the theme.
 	 *
-	 * @return ?string The plugin version or null if not available.
+	 * @return ?string The theme version or null if not available.
 	 */
 	public function getVersion(): ?string {
 		/**
@@ -138,9 +138,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the download URL for the plugin.
+	 * Gets the download URL for the theme.
 	 *
-	 * @return ?string The plugin download URL or null if not available.
+	 * @return ?string The theme download URL or null if not available.
 	 */
 	public function getDownloadURL(): ?string {
 		/**
@@ -152,7 +152,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the WordPress version the plugin has been tested with.
+	 * Gets the WordPress version the theme has been tested with.
 	 *
 	 * @return ?string Tested WordPress version or null if not available.
 	 */
@@ -166,7 +166,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the stable version of the plugin.
+	 * Gets the stable version of the theme.
 	 *
 	 * @return ?string The stable version or null if not available.
 	 */
@@ -180,9 +180,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin tags.
+	 * Gets the theme tags.
 	 *
-	 * @return string[] Array of plugin tags.
+	 * @return string[] Array of theme tags.
 	 */
 	public function getTags(): array {
 		/**
@@ -194,9 +194,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin author.
+	 * Gets the theme author.
 	 *
-	 * @return ?string The plugin author or null if not available.
+	 * @return ?string The theme author or null if not available.
 	 */
 	public function getAuthor(): ?string {
 		/**
@@ -208,9 +208,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin author's URL.
+	 * Gets the theme author's URL.
 	 *
-	 * @return ?string The plugin author's URL or null if not available.
+	 * @return ?string The theme author's URL or null if not available.
 	 */
 	public function getAuthorURL(): ?string {
 		/**
@@ -222,9 +222,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin license.
+	 * Gets the theme license.
 	 *
-	 * @return ?string The plugin license or null if not available.
+	 * @return ?string The theme license or null if not available.
 	 */
 	public function getLicense(): ?string {
 		/**
@@ -236,9 +236,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the plugin license URL.
+	 * Gets the theme license URL.
 	 *
-	 * @return ?string The plugin license URL or null if not available.
+	 * @return ?string The theme license URL or null if not available.
 	 */
 	public function getLicenseURL(): ?string {
 		/**
@@ -250,9 +250,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the short description of the plugin.
+	 * Gets the short description of the theme.
 	 *
-	 * @return ?string The plugin short description or null if not available.
+	 * @return ?string The theme short description or null if not available.
 	 */
 	public function getShortDescription(): ?string {
 		/**
@@ -264,9 +264,9 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the full description of the plugin.
+	 * Gets the full description of the theme.
 	 *
-	 * @return ?string The plugin full description or null if not available.
+	 * @return ?string The theme full description or null if not available.
 	 */
 	public function getDescription(): ?string {
 		/**
@@ -278,7 +278,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the minimum WordPress version required by the plugin.
+	 * Gets the minimum WordPress version required by the theme.
 	 *
 	 * @return ?string The required WordPress version or null if not specified.
 	 */
@@ -292,7 +292,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the minimum PHP version required by the plugin.
+	 * Gets the minimum PHP version required by the theme.
 	 *
 	 * @return ?string The required PHP version or null if not specified.
 	 */
@@ -306,7 +306,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the text domain used by the plugin for internationalization.
+	 * Gets the text domain used by the theme for internationalization.
 	 *
 	 * @return ?string The text domain or null if not specified.
 	 */
@@ -320,7 +320,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 		return $value;
 	}
 	/**
-	 * Gets the domain path for the plugin's translation files.
+	 * Gets the domain path for the theme's translation files.
 	 *
 	 * @return ?string The domain path or null if not specified.
 	 */

@@ -8,9 +8,9 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Service\Value\PackageMeta;
 
 // phpcs:disable Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueService;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaValueService;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
-use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
+use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ use Mockery\MockInterface;
 /**
  * Undocumented class
  */
-class PluginPackageMetaValueServiceTest extends TestCase {
+class ThemePackageMetaValueServiceTest extends TestCase {
 
 	/**
 	 * Undocumented variable
@@ -107,9 +107,9 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 			->andReturn( [] );
 		$metaKey             = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata';
 		$metaValue           = [
-			'name'                     => 'Test Plugin',
-			'fullSlug'                 => 'test-plugin/test-plugin.php',
-			'shortSlug'                => 'test-plugin',
+			'name'                     => 'Test Theme',
+			'fullSlug'                 => 'test-theme/style.css',
+			'shortSlug'                => 'test-theme',
 			'version'                  => '3.0.1',
 			'viewUrl'                  => 'https://codekaizen.net',
 			'downloadUrl'              => 'https://codekaizen.net',
@@ -120,11 +120,11 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 			'authorUrl'                => 'https://codekaizen.net/team/andrew-dawes',
 			'license'                  => 'GPL v2 or later',
 			'licenseUrl'               => 'https://www.gnu.org/licenses/gpl-2.0.html',
-			'description'              => 'This is a test plugin',
+			'description'              => 'This is a test theme',
 			'shortDescription'         => 'Test',
 			'requiresWordPressVersion' => '6.8.2',
 			'requiresPHPVersion'       => '8.2.1',
-			'textDomain'               => 'test-plugin',
+			'textDomain'               => 'test-theme',
 			'domainPath'               => '/languages',
 			'icons'                    => [
 				'1x'  => 'https://example.com/icon-128x128.png',
@@ -139,12 +139,8 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 				'1x' => 'https://example.com/banner-rtl-772x250.png',
 				'2x' => 'https://example.com/banner-rtl-1544x500.png',
 			],
-			'requiresPlugins'          => [ 'akismet', 'hello-dolly' ],
-			'sections'                 => [
-				'changelog' => 'changed',
-				'about'     => 'this is a plugin about section',
-			],
-			'network'                  => true,
+			'template'                 => 'default',
+			'status'                   => 'publish',
 		];
 		$responseBodyDecoded = [
 			'annotations' => [
@@ -235,8 +231,8 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta returns value on success.
 	 */
 	public function testGetPackageMetaReturnsValueOnSuccess(): void {
-		$sut = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
-		$this->assertInstanceOf( PluginPackageMetaValueContract::class, $sut->getPackageMeta() );
+		$sut = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$this->assertInstanceOf( ThemePackageMetaValueContract::class, $sut->getPackageMeta() );
 	}
 
 
@@ -244,7 +240,7 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta caches the value.
 	 */
 	public function testGetPackageMetaCachesValue(): void {
-		$sut    = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut    = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
 		$first  = $sut->getPackageMeta();
 		$second = $sut->getPackageMeta();
 		$this->assertSame( $first, $second );
@@ -261,7 +257,7 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 			->shouldReceive( 'assemble' )
 			->with( $this->getResponse() )
 			->andThrow( new UnexpectedValueException( 'Invalid meta' ) );
-		$sut = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
 		$sut->getPackageMeta();
 	}
 }

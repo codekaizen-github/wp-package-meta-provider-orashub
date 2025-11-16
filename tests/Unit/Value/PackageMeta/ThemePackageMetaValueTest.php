@@ -36,7 +36,6 @@ class ThemePackageMetaProviderTest extends TestCase {
 	 * @return void
 	 */
 	protected function setUp(): void {
-		parent::setUp();
 		$this->logger = Mockery::mock( LoggerInterface::class );
 	}
 
@@ -47,7 +46,6 @@ class ThemePackageMetaProviderTest extends TestCase {
 	 */
 	protected function tearDown(): void {
 		Mockery::close();
-		parent::tearDown();
 	}
 
 	/**

@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 
 /**
- * @covers \CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler
+ * Undocumented class
  */
 class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 	/**
@@ -25,18 +25,20 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 	 * @return void
 	 */
 	public function testAssembleReturnsDecodedMetaArrayOnValidResponse(): void {
-		$metaKey         = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata';
-		$metaArray       = [
+		$metaKey   = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata';
+		$metaArray = [
 			'foo' => 'bar',
 			'baz' => 123,
 		];
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$metaRaw         = json_encode( $metaArray );
 		$responseDecoded = [
 			'annotations' => [
 				$metaKey => $metaRaw,
 			],
 		];
-		$responseBody    = json_encode( $responseDecoded );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$responseBody = json_encode( $responseDecoded );
 
 		$response = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
@@ -65,8 +67,9 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 	 */
 	public function testAssembleThrowsOnMissingAnnotationsKey(): void {
 		$responseDecoded = [ 'not_annotations' => [] ];
-		$responseBody    = json_encode( $responseDecoded );
-		$response        = Mockery::mock( ResponseInterface::class );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$responseBody = json_encode( $responseDecoded );
+		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 		$assembler = new ResponsePackageMetaArrayAssembler();
 		$this->expectException( UnexpectedValueException::class );
@@ -82,8 +85,9 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$responseDecoded = [
 			'annotations' => [],
 		];
-		$responseBody    = json_encode( $responseDecoded );
-		$response        = Mockery::mock( ResponseInterface::class );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$responseBody = json_encode( $responseDecoded );
+		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 		$assembler = new ResponsePackageMetaArrayAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
@@ -101,8 +105,9 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 				$metaKey => 'not-json',
 			],
 		];
-		$responseBody    = json_encode( $responseDecoded );
-		$response        = Mockery::mock( ResponseInterface::class );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$responseBody = json_encode( $responseDecoded );
+		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 		$assembler = new ResponsePackageMetaArrayAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
@@ -114,14 +119,16 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 	 * @return void
 	 */
 	public function testAssembleThrowsOnMetaDecodedNotArray(): void {
-		$metaKey         = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata';
+		$metaKey = 'org.codekaizen-github.wp-package-deploy.wp-package-metadata';
+		// phpcs:disable WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$responseDecoded = [
 			'annotations' => [
 				$metaKey => json_encode( 'not-an-array' ),
 			],
 		];
 		$responseBody    = json_encode( $responseDecoded );
-		$response        = Mockery::mock( ResponseInterface::class );
+		// phpcs:enable WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$response = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 		$assembler = new ResponsePackageMetaArrayAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
@@ -138,8 +145,9 @@ class ResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$logger->shouldReceive( 'error' )
 			->once();
 		$responseDecoded = [ 'annotations' => [] ];
-		$responseBody    = json_encode( $responseDecoded );
-		$response        = Mockery::mock( ResponseInterface::class );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+		$responseBody = json_encode( $responseDecoded );
+		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 		$assembler = new ResponsePackageMetaArrayAssembler( $metaKey, $logger );
 		$this->expectException( UnexpectedValueException::class );

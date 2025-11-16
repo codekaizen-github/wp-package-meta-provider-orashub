@@ -114,7 +114,8 @@ class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContra
 				'body'         => $response->getBody(),
 			]
 		);
-		$assembled = $this->assembler->assemble( $response );
-		return new ThemePackageMetaValue( $assembled );
+		$assembled   = $this->assembler->assemble( $response );
+		$this->value = new ThemePackageMetaValue( $assembled );
+		return $this->value;
 	}
 }
