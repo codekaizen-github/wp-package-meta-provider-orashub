@@ -112,7 +112,7 @@ class ThemeHeadersArrayRule extends Simple {
 					'icons',
 					new Rules\AllOf(
 						new Rules\ArrayType(),
-						new Rules\Each( new Rules\StringType() ),
+						new Rules\Each( new Rules\Url() ),
 						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
 					),
 					false
@@ -121,7 +121,7 @@ class ThemeHeadersArrayRule extends Simple {
 					'banners',
 					new Rules\AllOf(
 						new Rules\ArrayType(),
-						new Rules\Each( new Rules\StringType() ),
+						new Rules\Each( new Rules\Url() ),
 						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
 					),
 					false
@@ -130,7 +130,7 @@ class ThemeHeadersArrayRule extends Simple {
 					'bannersRtl',
 					new Rules\AllOf(
 						new Rules\ArrayType(),
-						new Rules\Each( new Rules\StringType() ),
+						new Rules\Each( new Rules\Url() ),
 						new Rules\Call( 'array_keys', new Rules\Each( new Rules\StringType() ) ),
 					),
 					false
