@@ -51,6 +51,7 @@ class PluginPackageMetaValue implements PluginPackageMetaValueContract {
 		array $packageMeta,
 		LoggerInterface $logger = new NullLogger()
 	) {
+		$this->logger = $logger;
 		try {
 			Validator::create( new PluginHeadersArrayRule() )->check( $packageMeta );
 		} catch ( Throwable $e ) {
@@ -64,7 +65,6 @@ class PluginPackageMetaValue implements PluginPackageMetaValueContract {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message not displayed to end users.
 			throw new UnexpectedValueException( 'Invalid plugin metadata.', 0, $e );
 		}
-		$this->logger      = $logger;
 		$this->packageMeta = $packageMeta;
 	}
 	/**
