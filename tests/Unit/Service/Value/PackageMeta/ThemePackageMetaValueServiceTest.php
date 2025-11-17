@@ -237,13 +237,13 @@ class ThemePackageMetaValueServiceTest extends TestCase {
 
 
 	/**
-	 * Test getPackageMeta caches the value.
+	 * Test getPackageMeta does not cache the value.
 	 */
-	public function testGetPackageMetaCachesValue(): void {
+	public function testGetPackageMetaDoesNotCacheValue(): void {
 		$sut    = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
 		$first  = $sut->getPackageMeta();
 		$second = $sut->getPackageMeta();
-		$this->assertSame( $first, $second );
+		$this->assertNotSame( $first, $second );
 	}
 
 

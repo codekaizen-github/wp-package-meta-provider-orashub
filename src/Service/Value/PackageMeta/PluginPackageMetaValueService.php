@@ -59,13 +59,6 @@ class PluginPackageMetaValueService implements PluginPackageMetaValueServiceCont
 	protected LoggerInterface $logger;
 
 	/**
-	 * Undocumented variable
-	 *
-	 * @var PluginPackageMetaValueContract|null
-	 */
-	protected ?PluginPackageMetaValueContract $value;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param RequestInterface                          $request Request.
@@ -83,7 +76,6 @@ class PluginPackageMetaValueService implements PluginPackageMetaValueServiceCont
 		$this->client    = $client;
 		$this->assembler = $assembler;
 		$this->logger    = $logger;
-		$this->value     = null;
 	}
 
 	/**
@@ -94,9 +86,6 @@ class PluginPackageMetaValueService implements PluginPackageMetaValueServiceCont
 	 * @throws Throwable Throws exception on other errors.
 	 */
 	public function getPackageMeta(): PluginPackageMetaValueContract {
-		if ( null !== $this->value ) {
-			return $this->value;
-		}
 		$this->logger->debug(
 			"HTTP {$this->request->getMethod()} Request {$this->request->getUri()}",
 			[
@@ -114,8 +103,7 @@ class PluginPackageMetaValueService implements PluginPackageMetaValueServiceCont
 				'body'         => $response->getBody(),
 			]
 		);
-		$assembled   = $this->assembler->assemble( $response );
-		$this->value = new PluginPackageMetaValue( $assembled );
-		return $this->value;
+		$assembled = $this->assembler->assemble( $response );
+		return new PluginPackageMetaValue( $assembled );
 	}
 }

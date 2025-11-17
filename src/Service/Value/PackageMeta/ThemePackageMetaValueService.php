@@ -59,13 +59,6 @@ class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContra
 	protected LoggerInterface $logger;
 
 	/**
-	 * Undocumented variable
-	 *
-	 * @var ThemePackageMetaValueContract|null
-	 */
-	protected ?ThemePackageMetaValueContract $value;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param RequestInterface                          $request Request.
@@ -83,7 +76,6 @@ class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContra
 		$this->client    = $client;
 		$this->assembler = $assembler;
 		$this->logger    = $logger;
-		$this->value     = null;
 	}
 
 	/**
@@ -94,9 +86,6 @@ class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContra
 	 * @throws Throwable Throws exception on other errors.
 	 */
 	public function getPackageMeta(): ThemePackageMetaValueContract {
-		if ( null !== $this->value ) {
-			return $this->value;
-		}
 		$this->logger->debug(
 			"HTTP {$this->request->getMethod()} Request {$this->request->getUri()}",
 			[
@@ -114,8 +103,7 @@ class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContra
 				'body'         => $response->getBody(),
 			]
 		);
-		$assembled   = $this->assembler->assemble( $response );
-		$this->value = new ThemePackageMetaValue( $assembled );
-		return $this->value;
+		$assembled = $this->assembler->assemble( $response );
+		return new ThemePackageMetaValue( $assembled );
 	}
 }
