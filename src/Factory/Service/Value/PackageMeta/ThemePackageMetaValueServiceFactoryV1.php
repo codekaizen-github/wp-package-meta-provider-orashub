@@ -11,6 +11,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler;
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaValueService;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -76,7 +77,7 @@ class ThemePackageMetaValueServiceFactoryV1 {
 			$this->logger
 		);
 		$client    = new Client( $this->httpOptions );
-		$request   = new \GuzzleHttp\Psr7\Request( 'GET', $this->url );
+		$request   = new Request( 'GET', $this->url );
 		return new ThemePackageMetaValueService(
 			$request,
 			$client,
