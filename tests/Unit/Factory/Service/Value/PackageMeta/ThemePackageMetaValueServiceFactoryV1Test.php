@@ -1,13 +1,14 @@
 <?php
 /**
- * Factory for ThemePackageMetaValueService instances.
+ * Factory for StandardThemePackageMetaValueService instances.
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Factory\Service\Value\PackageMeta
  */
 
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Factory\Service\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta\ThemePackageMetaValueServiceFactoryV1;
+// phpcs:disable Generic.Files.LineLength
+use CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta\Theme\StandardThemePackageMetaValueServiceFactory;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\ThemePackageMetaValueServiceContract;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -17,7 +18,7 @@ use Mockery\MockInterface;
 /**
  * Undocumented class
  */
-class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
+class StandardThemePackageMetaValueServiceFactoryTest extends TestCase {
 
 	/**
 	 * Undocumented variable
@@ -62,7 +63,7 @@ class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
 		$this->request = Mockery::mock( 'overload:GuzzleHttp\Psr7\Request' );
 		// phpcs:disable Generic.Files.LineLength.TooLong
 		$this->service = Mockery::mock(
-			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaValueService',
+			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Theme\StandardThemePackageMetaValueService',
 			'CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\ThemePackageMetaValueServiceContract'
 		);
 		// phpcs:enable Generic.Files.LineLength.TooLong
@@ -116,7 +117,7 @@ class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
 	 * @return void
 	 */
 	public function testCreateReturnsServiceInstanceWithDefaults() {
-		$sut     = new ThemePackageMetaValueServiceFactoryV1( 'http://example.com/meta.json' );
+		$sut     = new StandardThemePackageMetaValueServiceFactory( 'http://example.com/meta.json' );
 		$service = $sut->create();
 		$this->assertInstanceOf( ThemePackageMetaValueServiceContract::class, $service );
 	}
@@ -130,7 +131,7 @@ class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
 	 */
 	public function testCreateReturnsServiceInstanceWithCustomLogger() {
 		$logger  = Mockery::mock( LoggerInterface::class );
-		$sut     = new ThemePackageMetaValueServiceFactoryV1(
+		$sut     = new StandardThemePackageMetaValueServiceFactory(
 			'http://example.com/meta.json',
 			'custom-key',
 			[],
@@ -152,7 +153,7 @@ class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
 		$this->getAssembler()->shouldReceive( '__construct' )
 			->with( $metaKey, Mockery::type( LoggerInterface::class ) )
 			->andReturnNull();
-		$sut     = new ThemePackageMetaValueServiceFactoryV1( 'http://example.com/meta.json', $metaKey );
+		$sut     = new StandardThemePackageMetaValueServiceFactory( 'http://example.com/meta.json', $metaKey );
 		$service = $sut->create();
 		$this->assertInstanceOf( ThemePackageMetaValueServiceContract::class, $service );
 	}

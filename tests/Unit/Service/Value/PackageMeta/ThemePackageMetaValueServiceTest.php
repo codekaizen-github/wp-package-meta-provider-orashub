@@ -8,7 +8,7 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Service\Value\PackageMeta;
 
 // phpcs:disable Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaValueService;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Theme\StandardThemePackageMetaValueService;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use GuzzleHttp\Psr7\Uri;
@@ -26,7 +26,7 @@ use Mockery\MockInterface;
 /**
  * Undocumented class
  */
-class ThemePackageMetaValueServiceTest extends TestCase {
+class StandardThemePackageMetaValueServiceTest extends TestCase {
 
 	/**
 	 * Undocumented variable
@@ -231,7 +231,11 @@ class ThemePackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta returns value on success.
 	 */
 	public function testGetPackageMetaReturnsValueOnSuccess(): void {
-		$sut = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut = new StandardThemePackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$this->assertInstanceOf( ThemePackageMetaValueContract::class, $sut->getPackageMeta() );
 	}
 
@@ -240,7 +244,11 @@ class ThemePackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta does not cache the value.
 	 */
 	public function testGetPackageMetaDoesNotCacheValue(): void {
-		$sut    = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut    = new StandardThemePackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$first  = $sut->getPackageMeta();
 		$second = $sut->getPackageMeta();
 		$this->assertNotSame( $first, $second );
@@ -257,7 +265,11 @@ class ThemePackageMetaValueServiceTest extends TestCase {
 			->shouldReceive( 'assemble' )
 			->with( $this->getResponse() )
 			->andThrow( new UnexpectedValueException( 'Invalid meta' ) );
-		$sut = new ThemePackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut = new StandardThemePackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$sut->getPackageMeta();
 	}
 }

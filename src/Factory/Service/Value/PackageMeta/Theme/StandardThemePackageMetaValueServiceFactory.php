@@ -1,16 +1,16 @@
 <?php
 /**
- * Factory for ThemePackageMetaValueService instances.
+ * Factory for StandardThemePackageMetaValueService instances.
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta\Theme;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\ThemePackageMetaValueServiceContract;
 // phpcs:ignore Generic.Files.LineLength.TooLong
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler;
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\ThemePackageMetaValueService;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Theme\StandardThemePackageMetaValueService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
@@ -19,7 +19,7 @@ use Psr\Log\NullLogger;
 /**
  * Undocumented class
  */
-class ThemePackageMetaValueServiceFactoryV1 {
+class StandardThemePackageMetaValueServiceFactory {
 	/**
 	 * URL to meta endpoint.
 	 *
@@ -68,7 +68,7 @@ class ThemePackageMetaValueServiceFactoryV1 {
 		$this->logger            = $logger;
 	}
 	/**
-	 * Creates a new ThemePackageMetaValueService instance.
+	 * Creates a new StandardThemePackageMetaValueService instance.
 	 *
 	 * @return ThemePackageMetaValueServiceContract
 	 */
@@ -79,7 +79,7 @@ class ThemePackageMetaValueServiceFactoryV1 {
 		);
 		$client    = new Client( $this->httpOptions );
 		$request   = new Request( 'GET', $this->url );
-		return new ThemePackageMetaValueService(
+		return new StandardThemePackageMetaValueService(
 			$request,
 			$client,
 			$assembler,

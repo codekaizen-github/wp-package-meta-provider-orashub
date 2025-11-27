@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Theme;
 
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
@@ -28,7 +28,7 @@ use Throwable;
  *
  * @since 1.0.0
  */
-class ThemePackageMetaValueService implements ThemePackageMetaValueServiceContract {
+class StandardThemePackageMetaValueService implements ThemePackageMetaValueServiceContract {
 
 	/**
 	 * Client.
