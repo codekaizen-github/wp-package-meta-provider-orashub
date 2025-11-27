@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Theme;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use Respect\Validation\Validator;
@@ -25,7 +25,7 @@ use UnexpectedValueException;
  *
  * @since 1.0.0
  */
-class ThemePackageMetaValue implements ThemePackageMetaValueContract {
+class StandardThemePackageMetaValue implements ThemePackageMetaValueContract {
 
 	/**
 	 * Logger.

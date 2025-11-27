@@ -15,7 +15,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\ThemePackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Theme\StandardThemePackageMetaValue;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -79,7 +79,7 @@ class StandardThemePackageMetaValueService implements ThemePackageMetaValueServi
 	}
 
 	/**
-	 * Creates a new ThemePackageMetaValue instance.
+	 * Creates a new StandardThemePackageMetaValue instance.
 	 *
 	 * @return ThemePackageMetaValueContract
 	 * @throws UnexpectedValueException If the metadata is invalid.
@@ -104,6 +104,6 @@ class StandardThemePackageMetaValueService implements ThemePackageMetaValueServi
 			]
 		);
 		$assembled = $this->assembler->assemble( $response );
-		return new ThemePackageMetaValue( $assembled );
+		return new StandardThemePackageMetaValue( $assembled );
 	}
 }

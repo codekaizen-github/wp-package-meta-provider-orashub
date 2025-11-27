@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\ThemePackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Theme\StandardThemePackageMetaValue;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -128,7 +128,7 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'template'                 => $templateExpected,
 			'status'                   => $statusExpected,
 		];
-		$sut                              = new ThemePackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardThemePackageMetaValue( $response, $this->getLogger() );
 		$this->assertEquals( $nameExpected, $sut->getName() );
 		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
@@ -224,7 +224,7 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'template'                 => $templateExpected,
 			'status'                   => $statusExpected,
 		];
-		$sut                              = new ThemePackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardThemePackageMetaValue( $response, $this->getLogger() );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$encoded = json_encode( $sut );
 		$this->assertIsString( $encoded );
@@ -314,7 +314,7 @@ class ThemePackageMetaProviderTest extends TestCase {
 			'fullSlug'  => $fullSlugExpected,
 			'shortSlug' => $shortSlugExpected,
 		];
-		$sut                              = new ThemePackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardThemePackageMetaValue( $response, $this->getLogger() );
 		$this->assertEquals( $nameExpected, $sut->getName() );
 		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
