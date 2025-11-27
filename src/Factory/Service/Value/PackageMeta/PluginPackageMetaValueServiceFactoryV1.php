@@ -8,7 +8,8 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\PluginPackageMetaValueServiceContract;
-use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler;
+// phpcs:ignore Generic.Files.LineLength.TooLong
+use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler;
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -72,7 +73,7 @@ class PluginPackageMetaValueServiceFactoryV1 {
 	 * @return PluginPackageMetaValueServiceContract
 	 */
 	public function create(): PluginPackageMetaValueServiceContract {
-		$assembler = new ResponsePackageMetaArrayAssembler(
+		$assembler = new StandardResponsePackageMetaArrayAssembler(
 			$this->metaAnnotationKey,
 			$this->logger
 		);

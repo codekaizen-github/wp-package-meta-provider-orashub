@@ -2,10 +2,10 @@
 /**
  * Assembler
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta;
+ * @package CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response;
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response;
 
 // phpcs:ignore Generic.Files.LineLength.TooLong
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
@@ -20,7 +20,7 @@ use UnexpectedValueException;
 /**
  * Class to assemble package meta from response
  */
-class ResponsePackageMetaArrayAssembler implements ResponsePackageMetaArrayAssemblerContract {
+class StandardResponsePackageMetaArrayAssembler implements ResponsePackageMetaArrayAssemblerContract {
 
 	/**
 	 * Undocumented variable

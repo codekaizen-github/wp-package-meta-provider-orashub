@@ -55,7 +55,7 @@ class ThemePackageMetaValueServiceFactoryV1Test extends TestCase {
 	protected function setUp(): void {
 		// phpcs:disable Generic.Files.LineLength.TooLong
 		$this->assembler = Mockery::mock(
-			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssembler'
+			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler'
 		);
 		// phpcs:enable Generic.Files.LineLength.TooLong
 		$this->client  = Mockery::mock( 'overload:GuzzleHttp\Client' );
