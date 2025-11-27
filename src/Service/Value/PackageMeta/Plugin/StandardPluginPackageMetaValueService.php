@@ -15,7 +15,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\PluginPackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Plugin\StandardPluginPackageMetaValue;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -79,7 +79,7 @@ class StandardPluginPackageMetaValueService implements PluginPackageMetaValueSer
 	}
 
 	/**
-	 * Creates a new PluginPackageMetaValue instance.
+	 * Creates a new StandardPluginPackageMetaValue instance.
 	 *
 	 * @return PluginPackageMetaValueContract
 	 * @throws UnexpectedValueException If the metadata is invalid.
@@ -104,6 +104,6 @@ class StandardPluginPackageMetaValueService implements PluginPackageMetaValueSer
 			]
 		);
 		$assembled = $this->assembler->assemble( $response );
-		return new PluginPackageMetaValue( $assembled );
+		return new StandardPluginPackageMetaValue( $assembled );
 	}
 }

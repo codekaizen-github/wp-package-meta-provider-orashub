@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Plugin;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
 use Respect\Validation\Validator;
@@ -25,7 +25,7 @@ use UnexpectedValueException;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaValue implements PluginPackageMetaValueContract {
+class StandardPluginPackageMetaValue implements PluginPackageMetaValueContract {
 
 	/**
 	 * Logger.

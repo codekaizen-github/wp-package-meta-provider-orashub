@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\PluginPackageMetaValue;
+use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Plugin\StandardPluginPackageMetaValue;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,7 +21,7 @@ use Mockery\MockInterface;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaValueTest extends TestCase {
+class StandardPluginPackageMetaValueTest extends TestCase {
 
 	/**
 	 * Undocumented variable
@@ -129,7 +129,7 @@ class PluginPackageMetaValueTest extends TestCase {
 			'sections'                 => $sectionsExpected,
 			'network'                  => $networkExpected,
 		];
-		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardPluginPackageMetaValue( $response, $this->getLogger() );
 		$this->assertEquals( $nameExpected, $sut->getName() );
 		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
@@ -227,7 +227,7 @@ class PluginPackageMetaValueTest extends TestCase {
 			'sections'                 => $sectionsExpected,
 			'network'                  => $networkExpected,
 		];
-		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardPluginPackageMetaValue( $response, $this->getLogger() );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$encoded = json_encode( $sut );
 		$this->assertIsString( $encoded );
@@ -320,7 +320,7 @@ class PluginPackageMetaValueTest extends TestCase {
 			'fullSlug'  => $fullSlugExpected,
 			'shortSlug' => $shortSlugExpected,
 		];
-		$sut                              = new PluginPackageMetaValue( $response, $this->getLogger() );
+		$sut                              = new StandardPluginPackageMetaValue( $response, $this->getLogger() );
 		$this->assertEquals( $nameExpected, $sut->getName() );
 		$this->assertEquals( $fullSlugExpected, $sut->getFullSlug() );
 		$this->assertEquals( $shortSlugExpected, $sut->getShortSlug() );
