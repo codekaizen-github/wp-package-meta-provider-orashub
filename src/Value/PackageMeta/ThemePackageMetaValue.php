@@ -12,7 +12,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePackageMetaValueContract;
 use Respect\Validation\Validator;
-use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemePackageMetaRule;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -53,7 +53,7 @@ class ThemePackageMetaValue implements ThemePackageMetaValueContract {
 	) {
 		$this->logger = $logger;
 		try {
-			Validator::create( new ThemeHeadersArrayRule() )->check( $packageMeta );
+			Validator::create( new ThemePackageMetaRule() )->check( $packageMeta );
 		} catch ( Throwable $e ) {
 			$this->logger->error(
 				'Failed to validate theme metadata.',

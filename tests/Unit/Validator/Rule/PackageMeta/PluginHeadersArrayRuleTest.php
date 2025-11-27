@@ -10,7 +10,8 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\PluginHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\Plugin\ArrayPluginPackageMetaRule;
+use PhpParser\Node\Expr\Cast\Array_;
 use PHPUnit\Framework\TestCase;
 use Respect\Validation\Validator;
 
@@ -19,7 +20,7 @@ use Respect\Validation\Validator;
  *
  * @since 1.0.0
  */
-class PluginHeadersArrayRuleTest extends TestCase {
+class ArrayPluginPackageMetaRuleTest extends TestCase {
 
 	/**
 	 * Tests validation of a complete plugin header array with all possible fields.
@@ -67,7 +68,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			],
 			'network'                  => true,
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -116,7 +117,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			],
 			'network'                  => true,
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -130,7 +131,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'fullSlug'  => 'test-plugin/test-plugin.php',
 			'shortSlug' => 'test-plugin',
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -179,7 +180,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			],
 			'network'                  => true,
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -228,7 +229,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			],
 			'network'                  => true,
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -277,7 +278,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'network'                  => true,
 		];
 		// Testing without using check() to avoid exception handling.
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -314,7 +315,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'sections'                 => [],
 			'network'                  => null,
 		];
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -335,7 +336,7 @@ class PluginHeadersArrayRuleTest extends TestCase {
 			'sections'        => null,
 		];
 		// Testing without using check() to avoid exception handling.
-		$isValid = Validator::create( new PluginHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ArrayPluginPackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 }

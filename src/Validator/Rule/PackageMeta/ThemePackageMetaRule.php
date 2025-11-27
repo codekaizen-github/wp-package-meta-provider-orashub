@@ -23,7 +23,7 @@ use Respect\Validation\Rules\Core\Simple;
  *
  * @since 1.0.0
  */
-class ThemeHeadersArrayRule extends Simple {
+class ThemePackageMetaRule extends Simple {
 
 	/**
 	 * Validates a WordPress theme header array.

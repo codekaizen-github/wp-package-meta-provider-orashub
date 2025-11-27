@@ -10,7 +10,7 @@
 
 namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta;
 
-use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemeHeadersArrayRule;
+use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\ThemePackageMetaRule;
 use PHPUnit\Framework\TestCase;
 use Respect\Validation\Validator;
 
@@ -19,7 +19,7 @@ use Respect\Validation\Validator;
  *
  * @since 1.0.0
  */
-class ThemeHeadersArrayRuleTest extends TestCase {
+class ThemePackageMetaRuleTest extends TestCase {
 
 	/**
 	 * Tests validation of a complete theme header array with all possible fields.
@@ -63,7 +63,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -108,7 +108,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -122,7 +122,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'fullSlug'  => 'test-theme/style.css',
 			'shortSlug' => 'test-theme',
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 	/**
@@ -167,7 +167,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -212,7 +212,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'template'                 => 'parent-theme',
 			'status'                   => 'publish',
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -257,7 +257,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'status'                   => 'publish',
 		];
 		// Testing without using check() to avoid exception handling.
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 	/**
@@ -292,7 +292,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'template'                 => null,
 			'status'                   => null,
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertTrue( $isValid );
 	}
 		/**
@@ -311,7 +311,7 @@ class ThemeHeadersArrayRuleTest extends TestCase {
 			'tags'       => null,
 
 		];
-		$isValid = Validator::create( new ThemeHeadersArrayRule() )->isValid( $input );
+		$isValid = Validator::create( new ThemePackageMetaRule() )->isValid( $input );
 		$this->assertFalse( $isValid );
 	}
 }
