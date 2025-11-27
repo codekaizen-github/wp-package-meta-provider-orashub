@@ -5,7 +5,7 @@
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta\Plugin;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\PluginPackageMetaValueServiceContract;
 // phpcs:ignore Generic.Files.LineLength.TooLong
@@ -19,7 +19,7 @@ use Psr\Log\NullLogger;
 /**
  * Undocumented class
  */
-class StandardPluginPackageMetaValueServiceFactory {
+class PluginPackageMetaValueServiceFactoryV1 {
 	/**
 	 * URL to meta endpoint.
 	 *

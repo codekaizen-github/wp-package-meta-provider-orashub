@@ -13,7 +13,7 @@ use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\ThemePac
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\ThemePackageMetaValueServiceContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Response\MixedArrayResponseAssemblerContract;
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Theme\StandardThemePackageMetaValue;
 use Psr\Http\Client\ClientInterface;
@@ -47,9 +47,9 @@ class StandardThemePackageMetaValueService implements ThemePackageMetaValueServi
 	/**
 	 * Assembler.
 	 *
-	 * @var ResponsePackageMetaArrayAssemblerContract
+	 * @var MixedArrayResponseAssemblerContract
 	 */
-	protected ResponsePackageMetaArrayAssemblerContract $assembler;
+	protected MixedArrayResponseAssemblerContract $assembler;
 
 	/**
 	 * Undocumented variable
@@ -61,15 +61,15 @@ class StandardThemePackageMetaValueService implements ThemePackageMetaValueServi
 	/**
 	 * Constructor.
 	 *
-	 * @param RequestInterface                          $request Request.
-	 * @param ClientInterface                           $client Client.
-	 * @param ResponsePackageMetaArrayAssemblerContract $assembler Assembler.
-	 * @param LoggerInterface                           $logger Logger.
+	 * @param RequestInterface                    $request Request.
+	 * @param ClientInterface                     $client Client.
+	 * @param MixedArrayResponseAssemblerContract $assembler Assembler.
+	 * @param LoggerInterface                     $logger Logger.
 	 */
 	public function __construct(
 		RequestInterface $request,
 		ClientInterface $client,
-		ResponsePackageMetaArrayAssemblerContract $assembler,
+		MixedArrayResponseAssemblerContract $assembler,
 		LoggerInterface $logger = new NullLogger()
 	) {
 		$this->request   = $request;

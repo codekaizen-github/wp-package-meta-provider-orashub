@@ -56,7 +56,7 @@ class StandardPluginPackageMetaValueServiceFactoryTest extends TestCase {
 	protected function setUp(): void {
 		// phpcs:disable Generic.Files.LineLength.TooLong
 		$this->assembler = Mockery::mock(
-			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler'
+			'overload:CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Response\MixedArray\StandardMixedArrayResponseAssembler'
 		);
 		// phpcs:enable Generic.Files.LineLength.TooLong
 		$this->client  = Mockery::mock( 'overload:GuzzleHttp\Client' );

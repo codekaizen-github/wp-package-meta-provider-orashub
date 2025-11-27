@@ -5,10 +5,10 @@
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response;
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Response\MixedArray;
 
 // phpcs:ignore Generic.Files.LineLength.TooLong
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Response\MixedArrayResponseAssemblerContract;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -20,7 +20,7 @@ use UnexpectedValueException;
 /**
  * Class to assemble package meta from response
  */
-class StandardResponsePackageMetaArrayAssembler implements ResponsePackageMetaArrayAssemblerContract {
+class StandardMixedArrayResponseAssembler implements MixedArrayResponseAssemblerContract {
 
 	/**
 	 * Undocumented variable

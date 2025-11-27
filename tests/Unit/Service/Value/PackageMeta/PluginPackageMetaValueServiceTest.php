@@ -9,7 +9,7 @@ namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Service\Value\Packa
 
 // phpcs:disable Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Plugin\StandardPluginPackageMetaValueService;
-use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
+use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Response\MixedArrayResponseAssemblerContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Utils;
@@ -52,9 +52,9 @@ class StandardPluginPackageMetaValueServiceTest extends TestCase {
 	/**
 	 * Undocumented variable
 	 *
-	 * @var (ResponsePackageMetaArrayAssemblerContract&MockInterface)|null
+	 * @var (MixedArrayResponseAssemblerContract&MockInterface)|null
 	 */
-	protected ?ResponsePackageMetaArrayAssemblerContract $assembler;
+	protected ?MixedArrayResponseAssemblerContract $assembler;
 
 	/**
 	 * Undocumented variable
@@ -73,7 +73,7 @@ class StandardPluginPackageMetaValueServiceTest extends TestCase {
 		$this->request   = Mockery::mock( RequestInterface::class );
 		$this->response  = Mockery::mock( ResponseInterface::class );
 		$this->client    = Mockery::mock( ClientInterface::class );
-		$this->assembler = Mockery::mock( ResponsePackageMetaArrayAssemblerContract::class );
+		$this->assembler = Mockery::mock( MixedArrayResponseAssemblerContract::class );
 		$this
 			->getRequest()
 			->shouldReceive( 'getMethod' )
@@ -224,9 +224,9 @@ class StandardPluginPackageMetaValueServiceTest extends TestCase {
 	/**
 	 * Undocumented function
 	 *
-	 * @return ResponsePackageMetaArrayAssemblerContract&MockInterface
+	 * @return MixedArrayResponseAssemblerContract&MockInterface
 	 */
-	protected function getAssembler(): ResponsePackageMetaArrayAssemblerContract {
+	protected function getAssembler(): MixedArrayResponseAssemblerContract {
 		self::assertNotNull( $this->assembler );
 		return $this->assembler;
 	}

@@ -8,7 +8,7 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Assembler\Array\PackageMeta;
 
 // phpcs:ignore Generic.Files.LineLength.TooLong
-use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler;
+use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Response\MixedArray\StandardMixedArrayResponseAssembler;
 use GuzzleHttp\Psr7\Utils;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ use UnexpectedValueException;
 /**
  * Undocumented class
  */
-class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
+class StandardMixedArrayResponseAssemblerTest extends TestCase {
 	/**
 	 * Undocumented function
 	 *
@@ -44,7 +44,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$response = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
 
-		$assembler = new StandardResponsePackageMetaArrayAssembler( $metaKey );
+		$assembler = new StandardMixedArrayResponseAssembler( $metaKey );
 		$result    = $assembler->assemble( $response );
 		$this->assertSame( $metaArray, $result );
 	}
@@ -57,7 +57,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 	public function testAssembleThrowsOnInvalidJsonResponse(): void {
 		$response = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( 'not-json' ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler();
+		$assembler = new StandardMixedArrayResponseAssembler();
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
@@ -72,7 +72,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$responseBody = json_encode( $responseDecoded );
 		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler();
+		$assembler = new StandardMixedArrayResponseAssembler();
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
@@ -90,7 +90,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$responseBody = json_encode( $responseDecoded );
 		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler( $metaKey );
+		$assembler = new StandardMixedArrayResponseAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
@@ -110,7 +110,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$responseBody = json_encode( $responseDecoded );
 		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler( $metaKey );
+		$assembler = new StandardMixedArrayResponseAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
@@ -131,7 +131,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		// phpcs:enable WordPress.WP.AlternativeFunctions.json_encode_json_encode
 		$response = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler( $metaKey );
+		$assembler = new StandardMixedArrayResponseAssembler( $metaKey );
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
@@ -150,7 +150,7 @@ class StandardResponsePackageMetaArrayAssemblerTest extends TestCase {
 		$responseBody = json_encode( $responseDecoded );
 		$response     = Mockery::mock( ResponseInterface::class );
 		$response->shouldReceive( 'getBody' )->andReturn( Utils::streamFor( $responseBody ) );
-		$assembler = new StandardResponsePackageMetaArrayAssembler( $metaKey, $logger );
+		$assembler = new StandardMixedArrayResponseAssembler( $metaKey, $logger );
 		$this->expectException( UnexpectedValueException::class );
 		$assembler->assemble( $response );
 	}
