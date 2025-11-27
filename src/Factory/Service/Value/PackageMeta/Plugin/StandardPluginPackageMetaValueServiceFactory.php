@@ -1,16 +1,16 @@
 <?php
 /**
- * Factory for PluginPackageMetaValueService instances.
+ * Factory for StandardPluginPackageMetaValueService instances.
  *
  * @package CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Factory\Service\Value\PackageMeta\Plugin;
 
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Service\Value\PackageMeta\PluginPackageMetaValueServiceContract;
 // phpcs:ignore Generic.Files.LineLength.TooLong
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Array\PackageMeta\Response\StandardResponsePackageMetaArrayAssembler;
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueService;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Plugin\StandardPluginPackageMetaValueService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
@@ -19,7 +19,7 @@ use Psr\Log\NullLogger;
 /**
  * Undocumented class
  */
-class PluginPackageMetaValueServiceFactoryV1 {
+class StandardPluginPackageMetaValueServiceFactory {
 	/**
 	 * URL to meta endpoint.
 	 *
@@ -79,7 +79,7 @@ class PluginPackageMetaValueServiceFactoryV1 {
 		);
 		$client    = new Client( $this->httpOptions );
 		$request   = new Request( 'GET', $this->url );
-		return new PluginPackageMetaValueService(
+		return new StandardPluginPackageMetaValueService(
 			$request,
 			$client,
 			$assembler,

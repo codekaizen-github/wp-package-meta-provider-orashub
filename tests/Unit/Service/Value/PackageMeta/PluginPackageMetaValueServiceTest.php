@@ -8,7 +8,7 @@
 namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Service\Value\PackageMeta;
 
 // phpcs:disable Generic.Files.LineLength -- Keep import on one line.
-use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\PluginPackageMetaValueService;
+use CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Plugin\StandardPluginPackageMetaValueService;
 use CodeKaizen\WPPackageMetaProviderORASHub\Contract\Assembler\Array\PackageMeta\ResponsePackageMetaArrayAssemblerContract;
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
 use GuzzleHttp\Psr7\Uri;
@@ -26,7 +26,7 @@ use Mockery\MockInterface;
 /**
  * Undocumented class
  */
-class PluginPackageMetaValueServiceTest extends TestCase {
+class StandardPluginPackageMetaValueServiceTest extends TestCase {
 
 	/**
 	 * Undocumented variable
@@ -235,7 +235,11 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta returns value on success.
 	 */
 	public function testGetPackageMetaReturnsValueOnSuccess(): void {
-		$sut = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut = new StandardPluginPackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$this->assertInstanceOf( PluginPackageMetaValueContract::class, $sut->getPackageMeta() );
 	}
 
@@ -244,7 +248,11 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 	 * Test getPackageMeta does not cache the value.
 	 */
 	public function testGetPackageMetaDoesNotCacheValue(): void {
-		$sut    = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut    = new StandardPluginPackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$first  = $sut->getPackageMeta();
 		$second = $sut->getPackageMeta();
 		$this->assertNotSame( $first, $second );
@@ -261,7 +269,11 @@ class PluginPackageMetaValueServiceTest extends TestCase {
 			->shouldReceive( 'assemble' )
 			->with( $this->getResponse() )
 			->andThrow( new UnexpectedValueException( 'Invalid meta' ) );
-		$sut = new PluginPackageMetaValueService( $this->getRequest(), $this->getClient(), $this->getAssembler() );
+		$sut = new StandardPluginPackageMetaValueService(
+			$this->getRequest(),
+			$this->getClient(),
+			$this->getAssembler()
+		);
 		$sut->getPackageMeta();
 	}
 }

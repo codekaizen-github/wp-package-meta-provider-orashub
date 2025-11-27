@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHub\Service\Value\PackageMeta\Plugin;
 
 // phpcs:ignore Generic.Files.LineLength -- Keep import on one line.
 use CodeKaizen\WPPackageMetaProviderContract\Contract\Value\PackageMeta\PluginPackageMetaValueContract;
@@ -28,7 +28,7 @@ use Throwable;
  *
  * @since 1.0.0
  */
-class PluginPackageMetaValueService implements PluginPackageMetaValueServiceContract {
+class StandardPluginPackageMetaValueService implements PluginPackageMetaValueServiceContract {
 
 	/**
 	 * Client.
