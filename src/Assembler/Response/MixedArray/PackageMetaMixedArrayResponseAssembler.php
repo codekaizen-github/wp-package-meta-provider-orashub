@@ -20,7 +20,7 @@ use UnexpectedValueException;
 /**
  * Class to assemble package meta from response
  */
-class StandardMixedArrayResponseAssembler implements MixedArrayResponseAssemblerContract {
+class PackageMetaMixedArrayResponseAssembler implements MixedArrayResponseAssemblerContract {
 
 	/**
 	 * Undocumented variable
