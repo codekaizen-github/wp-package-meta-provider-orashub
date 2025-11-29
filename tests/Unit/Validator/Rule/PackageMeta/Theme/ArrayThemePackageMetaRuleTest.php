@@ -4,11 +4,11 @@
  *
  * Tests for validating theme header arrays according to WordPress standards.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta\Theme
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Validator\Rule\PackageMeta\Theme;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Validator\Rule\PackageMeta\Theme\ArrayThemePackageMetaRule;
 use PHPUnit\Framework\TestCase;

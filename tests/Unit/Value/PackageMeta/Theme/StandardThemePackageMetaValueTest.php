@@ -4,11 +4,11 @@
  *
  * Tests for the sut that reads and extracts metadata from local theme files.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta\Theme
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta\Theme;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Theme\StandardThemePackageMetaValue;
 use Mockery;

@@ -4,11 +4,11 @@
  *
  * Tests for the sut that reads and extracts metadata from local plugin files.
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta\Plugin
  * @since 1.0.0
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Value\PackageMeta\Plugin;
 
 use CodeKaizen\WPPackageMetaProviderORASHub\Value\PackageMeta\Plugin\StandardPluginPackageMetaValue;
 use Mockery;

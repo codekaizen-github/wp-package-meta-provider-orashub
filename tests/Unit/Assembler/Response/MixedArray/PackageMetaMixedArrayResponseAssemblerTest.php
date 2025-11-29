@@ -2,10 +2,10 @@
 /**
  * Response Package Meta Array Assembler Test
  *
- * @package CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Assembler\Array\PackageMeta
+ * @package CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Assembler\Response\MixedArray
  */
 
-namespace CodeKaizen\WPPackageMetaProviderORASHub\Tests\Unit\Assembler\Array\PackageMeta;
+namespace CodeKaizen\WPPackageMetaProviderORASHubTests\Unit\Assembler\Response\MixedArray;
 
 // phpcs:ignore Generic.Files.LineLength.TooLong
 use CodeKaizen\WPPackageMetaProviderORASHub\Assembler\Response\MixedArray\PackageMetaMixedArrayResponseAssembler;
