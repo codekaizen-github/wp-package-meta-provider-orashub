@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d290a7cba801c3e80856d5dc2ddacdad",
+    "content-hash": "b7ebbce9f170746531dc984fbd1b34b9",
     "packages": [
         {
             "name": "codekaizen/wp-package-meta-provider-contract",
-            "version": "2.0.1",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/codekaizen-github/wp-package-meta-provider-contract.git",
-                "reference": "e7ca65bc8f8dbcb92fee7e8d8bb72edb372f106a"
+                "reference": "6f3186e5b034a0864506b4fd5c4b45a8b1a69246"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/e7ca65bc8f8dbcb92fee7e8d8bb72edb372f106a",
-                "reference": "e7ca65bc8f8dbcb92fee7e8d8bb72edb372f106a",
+                "url": "https://api.github.com/repos/codekaizen-github/wp-package-meta-provider-contract/zipball/6f3186e5b034a0864506b4fd5c4b45a8b1a69246",
+                "reference": "6f3186e5b034a0864506b4fd5c4b45a8b1a69246",
                 "shasum": ""
             },
             "require": {
@@ -46,9 +46,9 @@
             ],
             "support": {
                 "issues": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/issues",
-                "source": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/tree/2.0.1"
+                "source": "https://github.com/codekaizen-github/wp-package-meta-provider-contract/tree/3.0.3"
             },
-            "time": "2025-11-15T18:42:40+00:00"
+            "time": "2025-11-30T12:51:38+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
