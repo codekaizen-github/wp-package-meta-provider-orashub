@@ -15,7 +15,8 @@
                 "wongjn.php-sniffer",
                 "EditorConfig.EditorConfig",
                 "tenninebt.vscode-koverage",
-                "ms-vscode.live-server"
+                "ms-vscode.live-server",
+                "GitHub.vscode-pull-request-github"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",
@@ -25,7 +26,7 @@
                     "SPL",
                     "standard",
                     "json",
-                    "wordpress",
+                    "wordpress"
                 ],
                 // PHP specific settings
                 "[php]": {
