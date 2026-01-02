@@ -3,5 +3,7 @@ parameters:
     paths:
         - src
         - tests
+    parallel:
+        maximumNumberOfProcesses: 1
 includes:
     - vendor/phpstan/phpstan-mockery/extension.neon

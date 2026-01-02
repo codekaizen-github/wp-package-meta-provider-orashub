@@ -4,3 +4,5 @@ composer analyze;
 composer test;
 composer run fix;
 composer run sniff;
+composer run cover-php-html;
+exit 0;

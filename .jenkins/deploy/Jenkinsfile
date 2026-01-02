@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         // Hardcoded package URL as requested
@@ -33,22 +33,35 @@ pipeline {
                             sh "composer run analyze"
                             sh "composer run test"
                             sh "composer run sniff"
+                            sh "composer run cover-php"
+                            recordCoverage(name: "Code Coverage: PHP ${PHP_VERSION}", tools: [[parser: 'CLOVER', pattern: 'clover.xml']],
+                                sourceCodeRetention: 'MODIFIED',
+                            )
                         }
                     }
                 }
             }
         }
-
         stage('Update Packagist') {
-            agent any
             steps {
-                withCredentials([conjurSecretCredential(credentialsId: 'andrewjdawes-packagist-api-token', variable: 'PACKAGIST_API_TOKEN')]) {
+                withCredentials([conjurSecretCredential(credentialsId: 'andrewjdawes/packagist/api-token', variable: 'PACKAGIST_API_TOKEN')]) {
                     script {
                         echo "Notifying Packagist of new changes"
                         sh '''
-                            curl -XPOST -H "content-type:application/json" \
+                            TMPFILE=$(mktemp)
+                            curl -s -XPOST -H "content-type:application/json" \
                             "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_API_TOKEN}" \
-                            -d "{\\\"repository\\\":{\\\"url\\\":\\\"${PACKAGE_URL}\\\"}}"
+                            -d "{\\\"repository\\\":{\\\"url\\\":\\\"${PACKAGE_URL}\\\"}}" > "$TMPFILE"
+
+                            cat "$TMPFILE"
+
+                            if ! grep -q '"status":"success"' "$TMPFILE"; then
+                                echo "ERROR: Packagist API did not return success status"
+                                rm -f "$TMPFILE"
+                                exit 1
+                            fi
+
+                            rm -f "$TMPFILE"
                         '''
                     }
                 }

@@ -13,10 +13,30 @@
                 "SanderRonde.phpstan-vscode",
                 "valeryanm.vscode-phpsab",
                 "wongjn.php-sniffer",
-                "EditorConfig.EditorConfig"
+                "EditorConfig.EditorConfig",
+                "tenninebt.vscode-koverage",
+                "ms-vscode.live-server"
             ],
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "bash"
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "intelephense.stubs": [
+                    "Core",
+                    "pcre",
+                    "SPL",
+                    "standard",
+                    "json",
+                    "wordpress",
+                ],
+                // PHP specific settings
+                "[php]": {
+                    "editor.defaultFormatter": "valeryanm.vscode-phpsab",
+                    "editor.formatOnSave": true, // Set to true if you want automatic formatting on save
+                },
+                "terminal.integrated.suggest.enabled": false,
+                "koverage.coverageCommand": "composer run cover-php",
+                "koverage.lowCoverageThreshold": 50,
+                "koverage.sufficientCoverageThreshold": 90,
+                "livePreview.defaultPreviewPath": "/coverage-report/index.html"
             }
         }
     },
